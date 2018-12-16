@@ -32,18 +32,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 
-#include <QtGui>
-#include <QWindow>
+#pragma once
 
-int main(int argc, char *argv[])
-{
-	QGuiApplication a(argc, argv);
-
-	QWindow window;
-
-	window.resize(800, 600);
-	window.show();
-	window.setTitle("Test");
-
-	return a.exec();
-}
+#ifdef EsferixisCommon_EXPORTS
+	#define EsferixisCommon_API __declspec(dllexport)
+#else
+	#define EsferixisCommon_API __declspec(dllimport)
+#endif

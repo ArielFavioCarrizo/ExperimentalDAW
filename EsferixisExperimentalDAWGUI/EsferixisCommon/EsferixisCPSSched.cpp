@@ -32,18 +32,60 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 
-#include <QtGui>
-#include <QWindow>
+#include "stdafx.h"
+#include <stdexcept>
 
-int main(int argc, char *argv[])
-{
-	QGuiApplication a(argc, argv);
+#include "EsferixisCPSSched.h"
 
-	QWindow window;
+#include <iostream>
 
-	window.resize(800, 600);
-	window.show();
-	window.setTitle("Test");
+#define SELFCLASS esferixis::cps::Sched
 
-	return a.exec();
+static thread_local SELFCLASS * currentCPSSched = nullptr;
+
+SELFCLASS::Sched() {
+	
+}
+
+SELFCLASS::~Sched() {
+	
+}
+
+void SELFCLASS::attach(esferixis::cps::Sched *sched) {
+	if (currentCPSSched == nullptr) {
+		currentCPSSched = sched;
+	}
+	else {
+		throw std::runtime_error("The current OS thread already has a green threads scheduler!");
+	}
+}
+
+void SELFCLASS::detach(esferixis::cps::Sched *sched) {
+	if (currentCPSSched == sched) {
+		currentCPSSched = nullptr;
+	}
+	else {
+		throw std::runtime_error("Attemped to remove an scheduler that isn't assigned to the current OS thread!");
+	}
+}
+
+esferixis::cps::Cont SELFCLASS::yield(esferixis::cps::Cont cont) {
+	return SELFCLASS::currentSched()->yield_impl(cont);
+}
+
+esferixis::cps::Cont SELFCLASS::fork(esferixis::cps::Cont cont1, esferixis::cps::Cont cont2) {
+	return SELFCLASS::currentSched()->fork_impl(cont1, cont2);
+}
+
+esferixis::cps::Cont SELFCLASS::waitFor(std::chrono::nanoseconds duration, esferixis::cps::Cont cont) {
+	return SELFCLASS::currentSched()->waitFor_impl(duration, cont);
+}
+
+esferixis::cps::Sched * SELFCLASS::currentSched() {
+	if (currentCPSSched != nullptr) {
+		return currentCPSSched;
+	}
+	else {
+		throw std::runtime_error("The current OS thread doesn't have a green threads scheduler!");
+	}
 }

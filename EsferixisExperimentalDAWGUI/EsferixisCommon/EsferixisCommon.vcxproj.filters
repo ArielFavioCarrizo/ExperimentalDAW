@@ -19,6 +19,12 @@
     <Filter Include="Header Files\Esferixis\CPS">
       <UniqueIdentifier>{457a4c99-8db1-472a-9ad1-55b642af7717}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Esferixis\CPS\Sched">
+      <UniqueIdentifier>{0c00d8dc-3ae3-47aa-9f17-4f12c886431e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Esferixis\CPS\Synchronization">
+      <UniqueIdentifier>{2cf9dcc6-6904-4637-9426-2bc60a2dc62b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -30,6 +36,12 @@
     <ClInclude Include="EsferixisCPSCont.h">
       <Filter>Header Files\Esferixis\CPS</Filter>
     </ClInclude>
+    <ClInclude Include="EsferixisCPSSched.h">
+      <Filter>Header Files\Esferixis\CPS\Sched</Filter>
+    </ClInclude>
+    <ClInclude Include="EsferixisCommon.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -38,8 +50,8 @@
     <ClCompile Include="dllmain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="EsferixisCPSCont.cpp">
-      <Filter>Header Files\Esferixis\CPS</Filter>
+    <ClCompile Include="EsferixisCPSSched.cpp">
+      <Filter>Header Files\Esferixis\CPS\Sched</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
