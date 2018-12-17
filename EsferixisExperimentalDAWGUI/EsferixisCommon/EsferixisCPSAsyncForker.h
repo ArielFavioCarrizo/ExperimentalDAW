@@ -30,18 +30,47 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include <QtGui>
-#include <QWindow>
+#pragma once
 
-int main(int argc, char *argv[])
-{
-	QGuiApplication a(argc, argv);
+#include "EsferixisCommon.h"
 
-	QWindow window;
+#include <boost/noncopyable.hpp>
 
-	window.resize(800, 600);
-	window.show();
-	window.setTitle("Test");
+#include "EsferixisCPSCont.h"
 
-	return a.exec();
+namespace esferixis {
+	namespace cps {
+		class EsferixisCommon_API AsyncForker final : private boost::noncopyable
+		{
+		public:
+			/**
+			 * @post Creates an async forker
+			 */
+			AsyncForker();
+
+			/**
+			 * @post Destroys the async forker
+			 */
+			~AsyncForker();
+
+			/**
+			 * @post Forks the green thread with the given
+			         continuations after forking and the
+					 continuation after join
+			 */
+			Cont fork(esferixis::cps::Cont onFork1, esferixis::cps::Cont onFork2, esferixis::cps::Cont onJoin);
+
+			/**
+			 * @post Joins the thread
+			 */
+			Cont join();
+
+		private:
+			struct Impl;
+
+			Impl *impl_m;
+		};
+
+	}
 }
+

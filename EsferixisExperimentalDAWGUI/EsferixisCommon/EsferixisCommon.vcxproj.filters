@@ -13,17 +13,20 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Header Files\Esferixis">
+    <Filter Include="Source Files\Esferixis">
       <UniqueIdentifier>{adbf7d64-b978-4ef3-8bfe-93325b603146}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Esferixis\CPS">
+    <Filter Include="Source Files\Esferixis\CPS">
       <UniqueIdentifier>{457a4c99-8db1-472a-9ad1-55b642af7717}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Esferixis\CPS\Sched">
+    <Filter Include="Source Files\Esferixis\CPS\Sched">
       <UniqueIdentifier>{0c00d8dc-3ae3-47aa-9f17-4f12c886431e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Esferixis\CPS\Synchronization">
+    <Filter Include="Source Files\Esferixis\CPS\Concurrency">
       <UniqueIdentifier>{2cf9dcc6-6904-4637-9426-2bc60a2dc62b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Esferixis\Procedural">
+      <UniqueIdentifier>{d5e0c966-4aca-4066-be2c-60c0ab17a12c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -34,13 +37,16 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="EsferixisCPSCont.h">
-      <Filter>Header Files\Esferixis\CPS</Filter>
+      <Filter>Source Files\Esferixis\CPS</Filter>
     </ClInclude>
     <ClInclude Include="EsferixisCPSSched.h">
-      <Filter>Header Files\Esferixis\CPS\Sched</Filter>
+      <Filter>Source Files\Esferixis\CPS\Sched</Filter>
+    </ClInclude>
+    <ClInclude Include="EsferixisCPSAsyncForker.h">
+      <Filter>Source Files\Esferixis\CPS\Concurrency</Filter>
     </ClInclude>
     <ClInclude Include="EsferixisCommon.h">
-      <Filter>Header Files</Filter>
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -51,7 +57,13 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="EsferixisCPSSched.cpp">
-      <Filter>Header Files\Esferixis\CPS\Sched</Filter>
+      <Filter>Source Files\Esferixis\CPS\Sched</Filter>
     </ClCompile>
+    <ClCompile Include="EsferixisCPSAsyncForker.cpp">
+      <Filter>Source Files\Esferixis\CPS\Concurrency</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

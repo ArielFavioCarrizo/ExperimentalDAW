@@ -1,5 +1,4 @@
 /*
-
 BSD 3-Clause License
 
 Copyright (c) 2018, Ariel Favio Carrizo
@@ -29,13 +28,13 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 */
 
 #pragma once
 
 #include <atomic>
 #include <chrono>
+#include <boost/noncopyable.hpp>
 
 #include "EsferixisCommon.h"
 
@@ -43,7 +42,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace esferixis {
 	namespace cps {
-		class EsferixisCommon_API Sched
+		class EsferixisCommon_API Sched : private boost::noncopyable
 		{
 		public:
 			/**
@@ -86,6 +85,11 @@ namespace esferixis {
 			 */
 			static Cont waitFor(std::chrono::nanoseconds duration, Cont cont);
 
+			/**
+			 * @post Terminates the current green thread
+			 */
+			static Cont exit();
+
 		protected:
 			/**
 			 * @post Yields to another tasks with the given continuation (Implementation)
@@ -102,6 +106,11 @@ namespace esferixis {
 			 * @post Waits the given duration an executes the given continuation (Implementation)
 			 */
 			virtual Cont waitFor_impl(std::chrono::nanoseconds duration, Cont cont) =0;
+
+			/**
+			 * @post Terminates the current green thread (Implementation)
+			 */
+			virtual Cont exit_impl() =0;
 
 		private:
 			/**

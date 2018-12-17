@@ -30,18 +30,66 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include <QtGui>
-#include <QWindow>
+#include "stdafx.h"
 
-int main(int argc, char *argv[])
-{
-	QGuiApplication a(argc, argv);
+#include "EsferixisCPSSched.h"
+#include "EsferixisCPSAsyncForker.h"
 
-	QWindow window;
+#include <boost/thread/mutex.hpp>
 
-	window.resize(800, 600);
-	window.show();
-	window.setTitle("Test");
+#include <stdexcept>
 
-	return a.exec();
+#define SELFCLASS esferixis::cps::AsyncForker
+
+struct esferixis::cps::AsyncForker::Impl {
+	Cont onFork1;
+	Cont onFork2;
+	Cont onJoin;
+
+	int remainingJoins;
+
+	boost::mutex stateMutex;
+};
+
+SELFCLASS::AsyncForker() {
+	this->impl_m = new SELFCLASS::Impl();
+}
+
+SELFCLASS::~AsyncForker() {
+	delete this->impl_m;
+}
+
+esferixis::cps::Cont SELFCLASS::fork(esferixis::cps::Cont onFork1, esferixis::cps::Cont onFork2, esferixis::cps::Cont onJoin) {
+	boost::unique_lock<boost::mutex> stateUniqueLock(this->impl_m->stateMutex);
+
+	if (this->impl_m->remainingJoins == 0) {
+		this->impl_m->onFork1 = onFork1;
+		this->impl_m->onFork2 = onFork2;
+		this->impl_m->onJoin = onJoin;
+
+		this->impl_m->remainingJoins = 2;
+
+		return esferixis::cps::Sched::fork(this->impl_m->onFork1, this->impl_m->onFork2);
+	}
+	else {
+		throw std::runtime_error("Unexpected active async forker");
+	}
+}
+
+esferixis::cps::Cont SELFCLASS::join() {
+	boost::unique_lock<boost::mutex> stateUniqueLock(this->impl_m->stateMutex);
+
+	if (this->impl_m->remainingJoins == 2) {
+		this->impl_m->remainingJoins = 1;
+
+		return esferixis::cps::Sched::exit();
+	}
+	else if (this->impl_m->remainingJoins == 1) {
+		this->impl_m->remainingJoins = 0;
+
+		return this->impl_m->onJoin;
+	}
+	else {
+		throw std::runtime_error("Unexpected inactive async forker");
+	}
 }
