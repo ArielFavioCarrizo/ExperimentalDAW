@@ -57,17 +57,22 @@ namespace esferixis {
 			virtual ~Sched();
 
 			/**
+			 * @post Shows if the current os thread has a scheduler
+			 */
+			static bool currentThreadHasAScheduler();
+
+			/**
 			 * @pre Expects that the current OS thread doesn't have a scheduler and the scheduler isn't attached to any OS thread.
 			 * @post Adds an scheduler in the current OS thread.
 			         If the scheduler exists it throws an exception.
 			 */
-			static void attach(esferixis::cps::Sched *sched);
+			void attachToCurrentThread();
 
 			/**
 			 * @pre Expects that the current OS thread does have the given scheduler
 			   @post Removes the scheduler from the current OS thread
 			 */
-			static void detach(esferixis::cps::Sched *sched);
+			void detachFromCurrentThread();
 
 			/**
 			 * @post Yields to another tasks with the given continuation

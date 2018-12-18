@@ -28,6 +28,18 @@
     <Filter Include="Source Files\Esferixis\Procedural">
       <UniqueIdentifier>{d5e0c966-4aca-4066-be2c-60c0ab17a12c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Esferixis">
+      <UniqueIdentifier>{ae1e3d7c-7961-472e-b9e8-491f3a7a173b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Esferixis\CPS">
+      <UniqueIdentifier>{401bf550-6c21-4806-a025-85575e83b0f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Esferixis\CPS\Concurrency">
+      <UniqueIdentifier>{b15b6951-ab60-4000-996c-5ba0a285c84b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Esferixis\CPS\Sched">
+      <UniqueIdentifier>{d5859f77-b4f5-4d4d-b4ea-ef0b2b2f332c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -39,14 +51,17 @@
     <ClInclude Include="EsferixisCPSCont.h">
       <Filter>Source Files\Esferixis\CPS</Filter>
     </ClInclude>
-    <ClInclude Include="EsferixisCPSSched.h">
-      <Filter>Source Files\Esferixis\CPS\Sched</Filter>
-    </ClInclude>
-    <ClInclude Include="EsferixisCPSAsyncForker.h">
-      <Filter>Source Files\Esferixis\CPS\Concurrency</Filter>
-    </ClInclude>
     <ClInclude Include="EsferixisCommon.h">
       <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EsferixisCPSAsyncForker.h">
+      <Filter>Header Files\Esferixis\CPS\Concurrency</Filter>
+    </ClInclude>
+    <ClInclude Include="EsferixisCPSSched.h">
+      <Filter>Header Files\Esferixis\CPS\Sched</Filter>
+    </ClInclude>
+    <ClInclude Include="EsferixisCPSSchedPool.h">
+      <Filter>Header Files\Esferixis\CPS\Sched</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -61,6 +76,9 @@
     </ClCompile>
     <ClCompile Include="EsferixisCPSAsyncForker.cpp">
       <Filter>Source Files\Esferixis\CPS\Concurrency</Filter>
+    </ClCompile>
+    <ClCompile Include="EsferixisCPSSchedPool.cpp">
+      <Filter>Source Files\Esferixis\CPS\Sched</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

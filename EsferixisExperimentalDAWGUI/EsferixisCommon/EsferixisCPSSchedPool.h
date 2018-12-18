@@ -32,45 +32,44 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #pragma once
 
-#include "EsferixisCommon.h"
-
-#include <boost/noncopyable.hpp>
-
-#include "EsferixisCPSCont.h"
+#include "EsferixisCPSSched.h"
 
 namespace esferixis {
 	namespace cps {
-		class EsferixisCommon_API AsyncForker final : private boost::noncopyable
+		class EsferixisCommon_API SchedPool final
 		{
 		public:
 			/**
-			 * @post Creates an async forker
+			 * @post Creates a pool of CPS Schedulers with the given factory function
+					 and its context, and the given initial capacity
 			 */
-			AsyncForker();
+			template<typename T>
+			inline SchedPool(esferixis::cps::Sched * (*factoryFunPtr) (T *data), T *factoryFunData, int initialCapacity) {
+				this->implInit(reinterpret_cast<esferixis::cps::Sched * (*) (void *)>(factoryFunPtr), reinterpret_cast<void *>(factoryFunData), initialCapacity);
+			}
 
 			/**
-			 * @post Destroys the async forker
+			 * @post Destroys the pool
 			 */
-			~AsyncForker();
+			~SchedPool();
 
 			/**
-			 * @post Forks the green thread with the given
-			         continuations to execute after forking and the
-					 continuation to execute after join
+			 * @post Sets the scheduler for the current thread
+					 If it exists does nothing
 			 */
-			Cont fork(esferixis::cps::Cont onFork1, esferixis::cps::Cont onFork2, esferixis::cps::Cont onJoin);
-
-			/**
-			 * @post Joins the thread
-			 */
-			Cont join();
+			void setSchedForCurrentThread();
 
 		private:
 			struct Impl;
 
-			Impl *impl_m;
-		};
+			/**
+			 * @post Does the implementation initialization with the given factory function
+					 and its context, and the given initial capacity
+			 */
+			void implInit(esferixis::cps::Sched * (*factoryFunPtr) (void *data), void *factoryFunData, int initialCapacity);
 
+			Impl *impl;
+		};
 	}
 }
 

@@ -31,67 +31,71 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include "stdafx.h"
-#include <stdexcept>
+#include "EsferixisCPSSchedPool.h"
 
-#include "EsferixisCPSSched.h"
+#include <boost/thread/mutex.hpp>
+#include <stack>
 
-#include <iostream>
+#define SELFCLASS esferixis::cps::SchedPool
+#define SELF_NewSched impl->factoryFunPtr( impl->factoryFunData )
 
-#define SELFCLASS esferixis::cps::Sched
+struct SELFCLASS::Impl {
+	esferixis::cps::Sched * (*factoryFunPtr) (void *);
+	void *factoryFunData;
 
-static thread_local SELFCLASS * currentCPSSched = nullptr;
+	std::stack<esferixis::cps::Sched *> unattachedScheds;
+	std::stack<esferixis::cps::Sched *> createdScheds;
 
-SELFCLASS::Sched() {
+	boost::mutex stateMutex;
+};
+
+SELFCLASS::~SchedPool() {
+	while ( !impl->createdScheds.empty()) {
+		delete impl->createdScheds.top();
+		impl->createdScheds.pop();
+	}
+
+	delete impl;
+}
+
+void SELFCLASS::setSchedForCurrentThread() {
+	if (!esferixis::cps::Sched::currentThreadHasAScheduler()) {
+		boost::unique_lock<boost::mutex> stateLock;
+
+		esferixis::cps::Sched *schedToAttach;
+
+		if (!impl->unattachedScheds.empty()) {
+			schedToAttach = impl->unattachedScheds.top();
+			impl->unattachedScheds.pop();
+
+			stateLock.unlock();
+		}
+		else {
+			stateLock.unlock();
+
+			schedToAttach = SELF_NewSched;
+
+			stateLock.lock();
+
+			impl->createdScheds.push(schedToAttach);
+
+			stateLock.unlock();
+		}
+
+		schedToAttach->attachToCurrentThread();
+	}
+}
+
+void SELFCLASS::implInit(esferixis::cps::Sched * (*factoryFunPtr) (void *data), void *factoryFunData, int initialCapacity) {
+	impl = new SELFCLASS::Impl();
+
+	impl->factoryFunPtr = factoryFunPtr;
+	impl->factoryFunData = factoryFunData;
 	
-}
+	for (int i = 0; i <initialCapacity; i++) {
+		auto eachSched = SELF_NewSched;
 
-SELFCLASS::~Sched() {
-	
-}
-
-bool SELFCLASS::currentThreadHasAScheduler() {
-	return (currentCPSSched != nullptr);
-}
-
-void SELFCLASS::attachToCurrentThread() {
-	if (currentCPSSched == nullptr) {
-		currentCPSSched = this;
-	}
-	else {
-		throw std::runtime_error("The current OS thread already has a green threads scheduler!");
-	}
-}
-
-void SELFCLASS::detachFromCurrentThread() {
-	if (currentCPSSched == this) {
-		currentCPSSched = nullptr;
-	}
-	else {
-		throw std::runtime_error("Attemped to remove an scheduler that isn't assigned to the current OS thread!");
-	}
-}
-
-esferixis::cps::Cont SELFCLASS::yield(esferixis::cps::Cont cont) {
-	return SELFCLASS::currentSched()->yield_impl(cont);
-}
-
-esferixis::cps::Cont SELFCLASS::fork(esferixis::cps::Cont cont1, esferixis::cps::Cont cont2) {
-	return SELFCLASS::currentSched()->fork_impl(cont1, cont2);
-}
-
-esferixis::cps::Cont SELFCLASS::waitFor(std::chrono::nanoseconds duration, esferixis::cps::Cont cont) {
-	return SELFCLASS::currentSched()->waitFor_impl(duration, cont);
-}
-
-esferixis::cps::Cont SELFCLASS::exit() {
-	return SELFCLASS::currentSched()->exit_impl();
-}
-
-esferixis::cps::Sched * SELFCLASS::currentSched() {
-	if (currentCPSSched != nullptr) {
-		return currentCPSSched;
-	}
-	else {
-		throw std::runtime_error("The current OS thread doesn't have a green threads scheduler!");
+		impl->unattachedScheds.push(eachSched);
+		impl->createdScheds.push(eachSched);
 	}
 }
