@@ -30,62 +30,14 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#pragma once
+#include "multigraph.h"
 
-#include <stdexcept>
+#define SELFCLASS esferixis::daw::gui::Multigraph
 
-#include "EsferixisCommon.h"
+SELFCLASS::Multigraph() {
 
-namespace esferixis {
-	namespace cps {
-		class Cont final
-		{
-		public:
-			/**
-			 * @post Creates an invalid continuation
-			 */
-			inline Cont() {
-				this->funptr_m = esferixis::cps::Cont::invalidFun;
-			}
+}
 
-			/**
-			 * @post Creates a continuation with the given function pointer and data
-			 */
-			template<typename T>
-			inline Cont(Cont(*funptr) (T *), T *data) {
-				this->funptr_m = reinterpret_cast<Cont(*) (void *)>(funptr);
-				this->data_m = reinterpret_cast<void *>(data);
-			}
+SELFCLASS::~Multigraph() {
 
-			template<typename T>
-			static inline Cont create(Cont(*funptr) (T *), T *data) {
-				return Cont(funptr, data);
-			}
-
-			friend void runCPS(Cont firstContinuation);
-
-		private:
-			static Cont invalidFun(void *data) {
-				throw std::runtime_error("Invalid continuation");
-			}
-
-			Cont(*funptr_m) (void *);
-			void *data_m;
-		};
-
-		// Continuation for qutting the CPS loop (Trampoline)
-		const Cont CPS_RET = Cont::create<void *>(nullptr, nullptr);
-
-		/**
-		 * @post Run the given continuation and its successors until
-		         CPS_RET
-		 */
-		inline void runCPS(Cont firstContinuation) {
-			Cont currentCont = firstContinuation;
-
-			while (currentCont.funptr_m != nullptr) {
-				currentCont = currentCont.funptr_m(currentCont.data_m);
-			}
-		}
-	}
 }

@@ -32,13 +32,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #pragma once
 
-#include <atomic>
 #include <chrono>
 #include <boost/noncopyable.hpp>
 
-#include "EsferixisCommon.h"
-
-#include "EsferixisCPSCont.h"
+#include <esferixis/common/common.h>
+#include <esferixis/common/cps/cont.h>
 
 namespace esferixis {
 	namespace cps {

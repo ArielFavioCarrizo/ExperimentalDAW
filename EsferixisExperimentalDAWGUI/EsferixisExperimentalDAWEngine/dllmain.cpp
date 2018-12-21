@@ -30,72 +30,22 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+// dllmain.cpp : Defines the entry point for the DLL application.
 #include "stdafx.h"
-#include "EsferixisCPSSchedPool.h"
 
-#include <boost/thread/mutex.hpp>
-#include <stack>
-
-#define SELFCLASS esferixis::cps::SchedPool
-#define SELF_NewSched impl->factoryFunPtr( impl->factoryFunData )
-
-struct SELFCLASS::Impl {
-	esferixis::cps::Sched * (*factoryFunPtr) (void *);
-	void *factoryFunData;
-
-	std::stack<esferixis::cps::Sched *> unattachedScheds;
-	std::stack<esferixis::cps::Sched *> createdScheds;
-
-	boost::mutex stateMutex;
-};
-
-SELFCLASS::~SchedPool() {
-	while ( !impl->createdScheds.empty()) {
-		delete impl->createdScheds.top();
-		impl->createdScheds.pop();
-	}
-
-	delete impl;
+BOOL APIENTRY DllMain( HMODULE hModule,
+                       DWORD  ul_reason_for_call,
+                       LPVOID lpReserved
+                     )
+{
+    switch (ul_reason_for_call)
+    {
+    case DLL_PROCESS_ATTACH:
+    case DLL_THREAD_ATTACH:
+    case DLL_THREAD_DETACH:
+    case DLL_PROCESS_DETACH:
+        break;
+    }
+    return TRUE;
 }
 
-void SELFCLASS::setSchedForCurrentThread() {
-	if (!esferixis::cps::Sched::currentThreadHasAScheduler()) {
-		boost::unique_lock<boost::mutex> stateLock;
-
-		esferixis::cps::Sched *schedToAttach;
-
-		if (!impl->unattachedScheds.empty()) {
-			schedToAttach = impl->unattachedScheds.top();
-			impl->unattachedScheds.pop();
-
-			stateLock.unlock();
-		}
-		else {
-			stateLock.unlock();
-
-			schedToAttach = SELF_NewSched;
-
-			stateLock.lock();
-
-			impl->createdScheds.push(schedToAttach);
-
-			stateLock.unlock();
-		}
-
-		schedToAttach->attachToCurrentThread();
-	}
-}
-
-void SELFCLASS::implInit(esferixis::cps::Sched * (*factoryFunPtr) (void *data), void *factoryFunData, int initialCapacity) {
-	impl = new SELFCLASS::Impl();
-
-	impl->factoryFunPtr = factoryFunPtr;
-	impl->factoryFunData = factoryFunData;
-	
-	for (int i = 0; i <initialCapacity; i++) {
-		auto eachSched = SELF_NewSched;
-
-		impl->unattachedScheds.push(eachSched);
-		impl->createdScheds.push(eachSched);
-	}
-}

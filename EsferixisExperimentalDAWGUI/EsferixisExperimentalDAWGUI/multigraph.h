@@ -32,44 +32,27 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #pragma once
 
-#include "EsferixisCPSSched.h"
+#include <boost/noncopyable.hpp>
+#include <esferixis/common/cps/cont.h>
+
+#include "multigraphcelement.h"
 
 namespace esferixis {
-	namespace cps {
-		class EsferixisCommon_API SchedPool final
-		{
-		public:
-			/**
-			 * @post Creates a pool of CPS Schedulers with the given factory function
-					 and its context, and the given initial capacity
-			 */
-			template<typename T>
-			inline SchedPool(esferixis::cps::Sched * (*factoryFunPtr) (T *data), T *factoryFunData, int initialCapacity) {
-				this->implInit(reinterpret_cast<esferixis::cps::Sched * (*) (void *)>(factoryFunPtr), reinterpret_cast<void *>(factoryFunData), initialCapacity);
-			}
+	namespace daw {
+		namespace gui {
+			class Multigraph final : private boost::noncopyable
+			{
+			public:
+				/**
+				 * @post Creates an multigraph
+				 */
+				Multigraph();
 
-			/**
-			 * @post Destroys the pool
-			 */
-			~SchedPool();
-
-			/**
-			 * @post Sets the scheduler for the current thread
-					 If it exists does nothing
-			 */
-			void setSchedForCurrentThread();
-
-		private:
-			struct Impl;
-
-			/**
-			 * @post Does the implementation initialization with the given factory function
-					 and its context, and the given initial capacity
-			 */
-			void implInit(esferixis::cps::Sched * (*factoryFunPtr) (void *data), void *factoryFunData, int initialCapacity);
-
-			Impl *impl;
-		};
+				/**
+				 * @post Destroys the multigraph
+				 */
+				~Multigraph();
+			};
+		}
 	}
 }
-

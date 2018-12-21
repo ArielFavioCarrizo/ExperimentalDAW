@@ -32,45 +32,34 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #pragma once
 
-#include "EsferixisCommon.h"
-
-#include <boost/noncopyable.hpp>
-
-#include "EsferixisCPSCont.h"
+#include <esferixis/common/common.h>
 
 namespace esferixis {
-	namespace cps {
-		class EsferixisCommon_API AsyncForker final : private boost::noncopyable
-		{
-		public:
-			/**
-			 * @post Creates an async forker
-			 */
-			AsyncForker();
+	class EsferixisCommon_API Contextualized
+	{
+	public:
+		/**
+		 * @post Creates an contextualized object
+		 */
+		Contextualized();
 
-			/**
-			 * @post Destroys the async forker
-			 */
-			~AsyncForker();
+		/**
+		 * @post Destroys the contextualized object
+		 */
+		virtual ~Contextualized();
 
-			/**
-			 * @post Forks the green thread with the given
-			         continuations to execute after forking and the
-					 continuation to execute after join
-			 */
-			Cont fork(esferixis::cps::Cont onFork1, esferixis::cps::Cont onFork2, esferixis::cps::Cont onJoin);
+		/**
+		 * @post Sets the context
+		 */
+		void setContext(void *context);
 
-			/**
-			 * @post Joins the thread
-			 */
-			Cont join();
+		/**
+		 * @post Gets the context
+		 */
+		void * getContext();
 
-		private:
-			struct Impl;
-
-			Impl *impl_m;
-		};
-
-	}
+	private:
+		void *context_m;
+	};
 }
 
