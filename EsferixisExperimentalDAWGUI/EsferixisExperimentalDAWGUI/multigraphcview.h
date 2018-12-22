@@ -55,57 +55,41 @@ namespace esferixis {
 				virtual ~MultigraphCView();
 
 				/**
-				 * @post Sets the continuation to notify a new element
+				 * @post Gets the referenced on the current state
 				 */
-				virtual void setOnNewElement(esferixis::cps::Cont cont) =0;
+				virtual esferixis::daw::gui::MultigraphCElement * getReferencedElement() = 0;
 
 				/**
-				 * @post Gets the notified new element
+				 * @post Sets the continuation to notify a new loaded element
 				 */
-				virtual esferixis::daw::gui::MultigraphCElement * getNewElement() =0;
+				virtual void setOnElementLoad(esferixis::cps::Cont cont) =0;
 
 				/**
-				 * @post Sets the continuation notify a element to delete
+				 * @post Sets the continuation to notify a element that will be unloaded
+				 *      
+				 *		 Warning: The element will be invalidated by the next action
 				 */
-				virtual void setOnElementToDelete(esferixis::cps::Cont cont) =0;
-
-				/**
-				 * @post Gets the element to delete
-				 */
-				virtual esferixis::daw::gui::MultigraphCElement * getElementToDelete() =0;
+				virtual void setOnElementToUnload(esferixis::cps::Cont cont) =0;
 
 				/*
-				 * @post Sets the continuation for notify no more updates
-				 */
-				virtual void setOnNoMoreUpdates(esferixis::cps::Cont cont) =0;
-
-				/**
-				 * @post Sets the continuation after updating the current element selection
-				 */
-				virtual void setOnSelectionUpdated(esferixis::cps::Cont cont) =0;
-
-				/**
-				 * @post Gets the current selected element
-				 */
-				virtual esferixis::daw::gui::MultigraphCElement * getSelectedElement() =0;
-
-				/**
-				 * @post Do the next update
-				 */
-				virtual esferixis::cps::Cont doNextUpdate() =0;
-
-				/*
-				 * @post Sets the continuation after closing
+				 * @post Sets the continuation after the view is closed
+				 *		 
+				 *		 Warning: The view will be invalidated by the next action
 				 */
 				virtual void setOnClosed(esferixis::cps::Cont cont) =0;
 
 				/**
-				 * @pre There must be no more updates
 				 * @post Closes the view
-				 *       It will delete each element and then it will proceed to
+				 *		 
+				 *       It will unload each element and then it will proceed to
 				 *		 close the view
 				 */
 				virtual void close() =0;
+
+				/**
+				 * @post Do the next action
+				 */
+				virtual esferixis::cps::Cont doNextAction() =0;
 			};
 		}
 	}

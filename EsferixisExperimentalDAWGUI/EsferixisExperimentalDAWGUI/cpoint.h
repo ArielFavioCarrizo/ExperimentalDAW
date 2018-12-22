@@ -52,22 +52,26 @@ namespace esferixis {
 				/**
 				 * @post Destroys the client point
 				 */
-				~CPoint();
-
-				/**
-				 * @post Sets the continuation after new position
-				 */
-				virtual void setOnUpdated(esferixis::cps::Cont cont);
+				virtual ~CPoint();
 
 				/**
 				 * @post Gets the position
 				 */
-				virtual QPointF getPosition() =0;
+				virtual QPointF getPosition() = 0;
+
+				/**
+				 * @post Sets the continuation after new position
+				 */
+				virtual void setOnNewPosition(esferixis::cps::Cont cont);
 
 				/**
 				 * @post Sets the position
+				 *		 
+				 *		 Warning: The method can only be invoked in response to user action over
+								  the associated widget.
+							      Otherwise undefined behavior is expected.
 				 */
-				virtual void setPosition(QPointF position) =0;
+				virtual esferixis::cps::Cont setPosition(QPointF position, esferixis::cps::Cont cont) =0;
 			};
 		}
 	}

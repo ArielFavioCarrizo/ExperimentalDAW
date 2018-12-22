@@ -54,14 +54,24 @@ namespace esferixis {
 				virtual ~MultigraphCElement();
 
 				/**
-				 * @post Sets the continuation on new color
-				 */
-				virtual void setOnNewColor(esferixis::cps::Cont cont) =0;
-
-				/**
 				 * @post Gets the new color
 				 */
 				virtual QColor getNewColor() =0;
+
+				/**
+				 * @post Gets a boolean indicating if it is selected
+				 */
+				virtual bool isSelected() =0;
+
+				/**
+				 * @post Sets the continuation to notify new selection state
+				 */
+				virtual void setOnNewSelectionState(esferixis::cps::Cont cont) =0;
+
+				/**
+				 * @post Sets the continuation to notify a new color
+				 */
+				virtual void setOnNewColor(esferixis::cps::Cont cont) =0;
 			};
 		}
 	}

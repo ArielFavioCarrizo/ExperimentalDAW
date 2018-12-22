@@ -30,18 +30,26 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include <QtGui>
+#include <qapplication.h>
 #include <QWindow>
 
 int main(int argc, char *argv[])
 {
-	QGuiApplication a(argc, argv);
+	QApplication a(argc, argv);
+
+	bool willQuit = false;
+
+	//a.setQuitOnLastWindowClosed(false);
 
 	QWindow window;
 
 	window.resize(800, 600);
 	window.show();
 	window.setTitle("Test");
+
+	while ( !willQuit ) {
+		a.processEvents(QEventLoop::WaitForMoreEvents);
+	}
 
 	return a.exec();
 }

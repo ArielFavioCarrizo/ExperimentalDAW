@@ -37,3 +37,5 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #else
 	#define EsferixisCommon_API __declspec(dllimport)
 #endif
+
+#define Esferixis_EXPORT __declspec(dllexport)

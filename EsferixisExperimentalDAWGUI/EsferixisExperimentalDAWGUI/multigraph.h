@@ -44,14 +44,14 @@ namespace esferixis {
 			{
 			public:
 				/**
-				 * @post Creates an multigraph
+				 * @post Creates an editable multigraph
 				 */
 				Multigraph();
 
 				/**
 				 * @post Destroys the multigraph
 				 */
-				~Multigraph();
+				virtual ~Multigraph();
 			};
 		}
 	}
