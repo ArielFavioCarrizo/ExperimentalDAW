@@ -40,18 +40,18 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace esferixis {
 	namespace daw {
 		namespace gui {
-			class MultigraphCElement : public esferixis::Contextualized, private boost::noncopyable
+			class MultigraphCPath : public esferixis::Contextualized, private boost::noncopyable
 			{
 			public:
 				/**
-				 * @post Creates an multigraph element
+				 * @post Creates an multigraph path
 				 */
-				MultigraphCElement();
+				MultigraphCPath();
 
 				/**
-				 * @post Destroys the multigraph element
+				 * @post Destroys the multigraph path
 				 */
-				virtual ~MultigraphCElement();
+				virtual ~MultigraphCPath();
 
 				/**
 				 * @post Gets the new color

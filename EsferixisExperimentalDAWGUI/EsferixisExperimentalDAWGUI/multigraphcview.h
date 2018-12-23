@@ -79,6 +79,11 @@ namespace esferixis {
 				virtual void setOnClosed(esferixis::cps::Cont cont) =0;
 
 				/**
+				 * @post Sets a time interval
+				 */
+				virtual void setTimeInterval(double min, double max) =0;
+
+				/**
 				 * @post Closes the view
 				 *		 
 				 *       It will unload each element and then it will proceed to

@@ -45,8 +45,7 @@ int SELFCLASS::run(int &argc, char **argv, esferixis::cps::Cont cont) {
 
 	instance->qApp_m = std::make_unique<QApplication>(argc, argv, QCoreApplication::ApplicationFlags);
 	instance->qApp_m->setQuitOnLastWindowClosed(false);
-	
-	instance->processEvents_m = false;
+
 	instance->processGUIEvents_m = false;
 	instance->quit_m = false;
 
@@ -59,19 +58,14 @@ int SELFCLASS::run(int &argc, char **argv, esferixis::cps::Cont cont) {
 	bool quitLoop = false;
 
 	while ( !quitLoop ) {
-		if (instance->processEvents_m) {
-			instance->processEvents_m = false;
-
+		if (instance->quit_m) {
+			quitLoop = true;
+		}
+		else {
 			instance->qApp_m->processEvents(
 				(instance_m->processGUIEvents_m ? QEventLoop::AllEvents : QEventLoop::ExcludeUserInputEvents) |
 				QEventLoop::WaitForMoreEvents
 			);
-		}
-		else if ( instance->quit_m ) {
-			quitLoop = true;
-		}
-		else {
-			throw std::runtime_error("Unexpected return");
 		}
 	}
 
@@ -120,8 +114,6 @@ esferixis::cps::Cont SELFCLASS::LocalSched::yield_impl(esferixis::cps::Cont cont
 	QObject *obj = QThread::currentThread()->eventDispatcher();
 	QMetaObject::invokeMethod(obj, [cont]() { runCPS(cont); }, ::Qt::QueuedConnection);
 
-	this->app_m->processEvents_m = true;
-	
 	return esferixis::cps::CPS_RET;
 }
 
@@ -135,14 +127,10 @@ esferixis::cps::Cont SELFCLASS::LocalSched::fork_impl(esferixis::cps::Cont cont1
 esferixis::cps::Cont SELFCLASS::LocalSched::waitFor_impl(std::chrono::nanoseconds duration, esferixis::cps::Cont cont) {
 	QTimer::singleShot(std::chrono::duration_cast<std::chrono::milliseconds>(duration), [cont]() { runCPS(cont); });
 
-	this->app_m->processEvents_m = true;
-
 	return esferixis::cps::CPS_RET;
 }
 
 esferixis::cps::Cont SELFCLASS::LocalSched::exit_impl() {
-	this->app_m->processEvents_m = true;
-
 	return esferixis::cps::CPS_RET;
 }
 

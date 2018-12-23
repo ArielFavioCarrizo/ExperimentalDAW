@@ -31,3 +31,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include "cpoint.h"
+
+#define SELFCLASS esferixis::daw::gui::CPoint
+
+SELFCLASS::CPoint() {
+
+}
+
+SELFCLASS::~CPoint() {
+
+}

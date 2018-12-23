@@ -123,7 +123,6 @@ namespace esferixis {
 
 			std::unique_ptr<QApplication> qApp_m;
 
-			bool processEvents_m;
 			bool processGUIEvents_m;
 			bool quit_m;
 		};

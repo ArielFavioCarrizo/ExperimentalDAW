@@ -127,7 +127,7 @@
   <ItemGroup>
     <ClInclude Include="cpoint.h" />
     <ClInclude Include="multigraph.h" />
-    <ClInclude Include="multigraphcelement.h" />
+    <ClInclude Include="multigraphcpath.h" />
     <ClInclude Include="multigraphcview.h" />
     <ClInclude Include="EsferixisQtApplication.h" />
   </ItemGroup>

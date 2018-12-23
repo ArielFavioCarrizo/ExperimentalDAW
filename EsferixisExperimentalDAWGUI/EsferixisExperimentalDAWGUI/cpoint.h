@@ -62,7 +62,7 @@ namespace esferixis {
 				/**
 				 * @post Sets the continuation after new position
 				 */
-				virtual void setOnNewPosition(esferixis::cps::Cont cont);
+				virtual void setOnNewPosition(esferixis::cps::Cont cont) =0;
 
 				/**
 				 * @post Sets the position

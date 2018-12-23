@@ -30,9 +30,36 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include <qapplication.h>
+#include <esferixis/common/cps/cont.h>
+#include "EsferixisQtApplication.h"
 #include <QWindow>
 
+struct Context {
+	QWindow *window;
+};
+
+esferixis::cps::Cont setup(Context *context);
+
+int main(int argc, char *argv[])
+{
+	esferixis::Qt::Application::run(argc, argv, esferixis::cps::Cont(setup, new Context()));
+}
+
+esferixis::cps::Cont setup(Context *context) {
+	QWindow *window = new QWindow();
+
+	context->window = window;
+
+	window->resize(800, 600);
+	window->show();
+	window->setTitle("Test");
+
+	esferixis::Qt::Application::unlockGUI();
+
+	return esferixis::cps::Sched::exit();
+}
+
+/*
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
@@ -53,3 +80,4 @@ int main(int argc, char *argv[])
 
 	return a.exec();
 }
+*/

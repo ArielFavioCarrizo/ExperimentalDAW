@@ -28,41 +28,53 @@
       <Extensions>qrc;*</Extensions>
       <ParseFiles>false</ParseFiles>
     </Filter>
+    <Filter Include="Header Files\QT">
+      <UniqueIdentifier>{c79c5d8c-21bd-42a7-8b02-9f15f371fd6b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\QT">
+      <UniqueIdentifier>{dc8cebbe-7a66-40d2-8292-850447b1b729}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Widgets">
+      <UniqueIdentifier>{429fe43e-c940-4785-806a-44b6ca47be8f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Widgets">
+      <UniqueIdentifier>{f38c8bb9-b72d-4fe3-96a0-f5a2e7c51337}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="multigraphcelement.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="multigraphcview.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="multigraph.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="EsferixisQtApplication.h">
+      <Filter>Header Files\QT</Filter>
     </ClInclude>
     <ClInclude Include="cpoint.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Widgets</Filter>
     </ClInclude>
-    <ClInclude Include="EsferixisQtApplication.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="multigraph.h">
+      <Filter>Header Files\Widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="multigraphcview.h">
+      <Filter>Header Files\Widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="multigraphcpath.h">
+      <Filter>Header Files\Widgets</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="multigraph.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="EsferixisQtApplication.cpp">
+      <Filter>Source Files\QT</Filter>
     </ClCompile>
     <ClCompile Include="cpoint.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="multigraph.cpp">
+      <Filter>Source Files\Widgets</Filter>
     </ClCompile>
     <ClCompile Include="multigraphcelement.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Widgets</Filter>
     </ClCompile>
-    <ClCompile Include="EsferixisQtApplication.cpp">
+    <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
