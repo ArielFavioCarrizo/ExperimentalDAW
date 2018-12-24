@@ -44,16 +44,6 @@ namespace esferixis {
 			{
 			public:
 				/**
-				 * @post Creates an horizontal note segment
-				 */
-				MultigraphCNoteSegment();
-
-				/**
-				 * @post Destroys the horizontal note segment
-				 */
-				virtual ~MultigraphCNoteSegment();
-
-				/**
 				 * @post Gets the offset
 				 */
 				virtual double getOffset() =0;
@@ -102,6 +92,17 @@ namespace esferixis {
 				 * @post Deselects the note segment
 				 */
 				virtual esferixis::cps::Cont deselect(esferixis::cps::Cont cont) = 0;
+
+			protected:
+				/**
+				 * @post Creates an horizontal note segment
+				 */
+				MultigraphCNoteSegment();
+
+				/**
+				 * @post Destroys the horizontal note segment
+				 */
+				virtual ~MultigraphCNoteSegment();
 			};
 		}
 	}

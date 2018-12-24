@@ -40,6 +40,18 @@
     <Filter Include="Source Files\Widgets">
       <UniqueIdentifier>{f38c8bb9-b72d-4fe3-96a0-f5a2e7c51337}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Test">
+      <UniqueIdentifier>{4a4772e5-a067-4b35-aa23-c7f2d6e42e49}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Test\Widgets">
+      <UniqueIdentifier>{7b81662c-0701-48dd-a33f-f3739c8a6f8c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Test">
+      <UniqueIdentifier>{e47c7973-1939-47d7-8909-28ac62257325}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Test\Widgets">
+      <UniqueIdentifier>{cc1c4ce4-7abb-49ca-9709-46804598a89f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -57,6 +69,12 @@
     <ClInclude Include="MultigraphCNoteSegment.h">
       <Filter>Header Files\Widgets</Filter>
     </ClInclude>
+    <ClInclude Include="MultigraphCViewMock.h">
+      <Filter>Header Files\Test\Widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="MultigraphCNoteSegmentMock.h">
+      <Filter>Header Files\Test\Widgets</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="EsferixisQtApplication.cpp">
@@ -73,6 +91,12 @@
     </ClCompile>
     <ClCompile Include="MultigraphCNoteSegment.cpp">
       <Filter>Source Files\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="MultigraphCViewMock.cpp">
+      <Filter>Source Files\Test\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="MultigraphCNoteSegmentMock.cpp">
+      <Filter>Source Files\Test\Widgets</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

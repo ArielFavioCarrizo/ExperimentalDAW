@@ -44,20 +44,7 @@ namespace esferixis {
 			template<typename E>
 			class MultigraphCView : public esferixis::Contextualized, private boost::noncopyable
 			{
-				/**
-				 * @post Creates a client view
-				 */
-				MultigraphCView() {
-
-				}
-
-				/**
-				 * @post Destroys the client view
-				 */
-				virtual ~MultigraphCView() {
-
-				}
-
+			public:
 				/**
 				 * @post Gets the referenced element on the current state
 				 */
@@ -109,6 +96,21 @@ namespace esferixis {
 				 * @post Do the next action
 				 */
 				virtual esferixis::cps::Cont doNextAction() =0;
+
+			protected:
+				/**
+				 * @post Creates a client view
+				 */
+				MultigraphCView() {
+
+				}
+
+				/**
+				 * @post Destroys the client view
+				 */
+				virtual ~MultigraphCView() {
+
+				}
 			};
 		}
 	}
