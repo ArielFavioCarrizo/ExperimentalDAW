@@ -125,18 +125,17 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="cpoint.h" />
-    <ClInclude Include="multigraph.h" />
-    <ClInclude Include="multigraphcpath.h" />
-    <ClInclude Include="multigraphcview.h" />
+    <ClInclude Include="Multigraph.h" />
+    <ClInclude Include="MultigraphCNoteSegment.h" />
+    <ClInclude Include="MultigraphCView.h" />
     <ClInclude Include="EsferixisQtApplication.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="cpoint.cpp" />
-    <ClCompile Include="multigraph.cpp" />
-    <ClCompile Include="multigraphcelement.cpp" />
+    <ClCompile Include="Multigraph.cpp" />
+    <ClCompile Include="MultigraphCNoteSegment.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="EsferixisQtApplication.cpp" />
+    <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

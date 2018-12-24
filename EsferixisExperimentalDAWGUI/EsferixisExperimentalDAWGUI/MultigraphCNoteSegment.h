@@ -33,82 +33,85 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #pragma once
 
 #include <boost/noncopyable.hpp>
-#include <boost/optional.hpp>
-#include <esferixis/common/contextualized.h>
-
 #include <esferixis/common/cps/cont.h>
+#include <esferixis/common/contextualized.h>
+#include <QtGui/qcolor.h>
 
 namespace esferixis {
 	namespace daw {
 		namespace gui {
-			template<typename E>
-			class MultigraphCView : public esferixis::Contextualized, private boost::noncopyable
+			class MultigraphCNoteSegment : public esferixis::Contextualized, private boost::noncopyable
 			{
+			public:
 				/**
-				 * @post Creates a client view
+				 * @post Creates an horizontal note segment
 				 */
-				MultigraphCView() {
-
-				}
-
-				/**
-				 * @post Destroys the client view
-				 */
-				virtual ~MultigraphCView() {
-
-				}
+				MultigraphCNoteSegment();
 
 				/**
-				 * @post Gets the referenced element on the current state
+				 * @post Destroys the horizontal note segment
 				 */
-				virtual E * getReferencedElement() = 0;
+				virtual ~MultigraphCNoteSegment();
 
 				/**
-				 * @post Sets the continuation to notify a new loaded element
+				 * @post Gets the offset
 				 */
-				virtual void setOnElementLoad(esferixis::cps::Cont cont) =0;
-
-				/**
-				 * @post Sets the continuation to notify a element that will be unloaded
-				 *      
-				 *		 Warning: The element will be invalidated by the next action
-				 */
-				virtual void setOnElementToUnload(esferixis::cps::Cont cont) =0;
+				virtual double getOffset() =0;
 
 				/*
-				 * @post Sets the continuation after the view is closed
-				 *		 
-				 *		 Warning: The view will be invalidated by the next action
+				 * @post Gets the height
 				 */
-				virtual void setOnClosed(esferixis::cps::Cont cont) =0;
+				virtual double getHeight() =0;
 
 				/**
-				 * @post Sets a time interval to view
+				 * @post Gets the color
 				 */
-				virtual esferixis::cps::Cont setTimeIntervalToView(double min, double max, esferixis::cps::Cont cont) =0;
+				virtual QColor getColor() =0;
 
 				/**
-				 * @post Starts a dragging
+				 * @post Gets a boolean indicating if the segment is a continuation of the previous note
 				 */
-				virtual esferixis::cps::Cont startDragging(double time, double height, esferixis::cps::Cont) =0;
+				virtual bool isAContinuation() =0;
 
 				/**
-				 * @post Terminates a dragging (Drop)
+				 * @post Gets a boolean indicating if it is selected
 				 */
-				virtual esferixis::cps::Cont drop(double time, double height, esferixis::cps::Cont) =0;
+				virtual bool isSelected() =0;
 
 				/**
-				 * @post Closes the view
-				 *		 
-				 *       It will unload each element and then it will proceed to
-				 *		 close the view
+				 * @post Gets the previous segment
 				 */
-				virtual void close() =0;
+				virtual MultigraphCNoteSegment * getPrevious() =0;
 
 				/**
-				 * @post Do the next action
+				 * @post Gets the next segment
 				 */
-				virtual esferixis::cps::Cont doNextAction() =0;
+				virtual MultigraphCNoteSegment * getNext() =0;
+
+				/**
+				 * @post Selects the note segment
+				 */
+				virtual esferixis::cps::Cont select(esferixis::cps::Cont cont) =0;
+
+				/**
+				 * @post Deselects the note segment
+				 */
+				virtual esferixis::cps::Cont deselect(esferixis::cps::Cont cont) =0;
+
+				/**
+				 * @post Sets the continuation to notify a new selection state
+				 */
+				virtual void setOnNewSelectionState(esferixis::cps::Cont cont) =0;
+
+				/**
+				 * @post Sets the continuation to notify a new color
+				 */
+				virtual void setOnNewColor(esferixis::cps::Cont cont) =0;
+
+				/**
+				 * @post Sets the continuation to notify a change in the 'isAContinuation' property
+				 */
+				virtual void setOnIsAContinuationChange(esferixis::cps::Cont cont) =0;
 			};
 		}
 	}

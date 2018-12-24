@@ -30,49 +30,14 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#pragma once
+#include "MultigraphCNoteSegment.h"
 
-#include <boost/noncopyable.hpp>
-#include <esferixis/common/cps/cont.h>
-#include <esferixis/common/contextualized.h>
-#include <QtGui/qcolor.h>
+#define SELFCLASS esferixis::daw::gui::MultigraphCNoteSegment
 
-namespace esferixis {
-	namespace daw {
-		namespace gui {
-			class MultigraphCPath : public esferixis::Contextualized, private boost::noncopyable
-			{
-			public:
-				/**
-				 * @post Creates an multigraph path
-				 */
-				MultigraphCPath();
+SELFCLASS::MultigraphCNoteSegment() {
 
-				/**
-				 * @post Destroys the multigraph path
-				 */
-				virtual ~MultigraphCPath();
+}
 
-				/**
-				 * @post Gets the new color
-				 */
-				virtual QColor getNewColor() =0;
+SELFCLASS::~MultigraphCNoteSegment() {
 
-				/**
-				 * @post Gets a boolean indicating if it is selected
-				 */
-				virtual bool isSelected() =0;
-
-				/**
-				 * @post Sets the continuation to notify new selection state
-				 */
-				virtual void setOnNewSelectionState(esferixis::cps::Cont cont) =0;
-
-				/**
-				 * @post Sets the continuation to notify a new color
-				 */
-				virtual void setOnNewColor(esferixis::cps::Cont cont) =0;
-			};
-		}
-	}
 }

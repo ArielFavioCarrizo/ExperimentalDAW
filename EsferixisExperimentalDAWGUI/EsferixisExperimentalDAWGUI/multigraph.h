@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <boost/noncopyable.hpp>
 #include <esferixis/common/cps/cont.h>
 
-#include "multigraphcelement.h"
+#include "multigraph.h"
 
 namespace esferixis {
 	namespace daw {

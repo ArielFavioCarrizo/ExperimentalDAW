@@ -48,16 +48,13 @@
     <ClInclude Include="EsferixisQtApplication.h">
       <Filter>Header Files\QT</Filter>
     </ClInclude>
-    <ClInclude Include="cpoint.h">
+    <ClInclude Include="Multigraph.h">
       <Filter>Header Files\Widgets</Filter>
     </ClInclude>
-    <ClInclude Include="multigraph.h">
+    <ClInclude Include="MultigraphCView.h">
       <Filter>Header Files\Widgets</Filter>
     </ClInclude>
-    <ClInclude Include="multigraphcview.h">
-      <Filter>Header Files\Widgets</Filter>
-    </ClInclude>
-    <ClInclude Include="multigraphcpath.h">
+    <ClInclude Include="MultigraphCNoteSegment.h">
       <Filter>Header Files\Widgets</Filter>
     </ClInclude>
   </ItemGroup>
@@ -65,17 +62,17 @@
     <ClCompile Include="EsferixisQtApplication.cpp">
       <Filter>Source Files\QT</Filter>
     </ClCompile>
-    <ClCompile Include="cpoint.cpp">
-      <Filter>Source Files\Widgets</Filter>
-    </ClCompile>
-    <ClCompile Include="multigraph.cpp">
-      <Filter>Source Files\Widgets</Filter>
-    </ClCompile>
-    <ClCompile Include="multigraphcelement.cpp">
-      <Filter>Source Files\Widgets</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Multigraph.cpp">
+      <Filter>Source Files\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="Source.cpp">
+      <Filter>Header Files\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="MultigraphCNoteSegment.cpp">
+      <Filter>Source Files\Widgets</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
