@@ -79,26 +79,6 @@ namespace esferixis {
 				virtual bool isSelected() =0;
 
 				/**
-				 * @post Gets the previous segment
-				 */
-				virtual MultigraphCNoteSegment * getPrevious() =0;
-
-				/**
-				 * @post Gets the next segment
-				 */
-				virtual MultigraphCNoteSegment * getNext() =0;
-
-				/**
-				 * @post Selects the note segment
-				 */
-				virtual esferixis::cps::Cont select(esferixis::cps::Cont cont) =0;
-
-				/**
-				 * @post Deselects the note segment
-				 */
-				virtual esferixis::cps::Cont deselect(esferixis::cps::Cont cont) =0;
-
-				/**
 				 * @post Sets the continuation to notify a new selection state
 				 */
 				virtual void setOnNewSelectionState(esferixis::cps::Cont cont) =0;
@@ -112,6 +92,16 @@ namespace esferixis {
 				 * @post Sets the continuation to notify a change in the 'isAContinuation' property
 				 */
 				virtual void setOnIsAContinuationChange(esferixis::cps::Cont cont) =0;
+
+				/**
+				 * @post Selects the note segment
+				 */
+				virtual esferixis::cps::Cont select(esferixis::cps::Cont cont) = 0;
+
+				/**
+				 * @post Deselects the note segment
+				 */
+				virtual esferixis::cps::Cont deselect(esferixis::cps::Cont cont) = 0;
 			};
 		}
 	}
