@@ -22,6 +22,9 @@
     <Filter Include="Header Files\Esferixis\CPS">
       <UniqueIdentifier>{401bf550-6c21-4806-a025-85575e83b0f5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Esferixis\Data">
+      <UniqueIdentifier>{47782deb-18fb-444c-905d-5e601b3b7833}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -47,6 +50,9 @@
     </ClInclude>
     <ClInclude Include="include\esferixis\common\contextualized.h">
       <Filter>Header Files\Esferixis</Filter>
+    </ClInclude>
+    <ClInclude Include="include\esferixis\common\data\linkedlist.h">
+      <Filter>Header Files\Esferixis\Data</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

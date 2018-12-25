@@ -30,14 +30,15 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include "MultigraphCNoteSegment.h"
+#include "MultigraphCHNoteSegmentMock.h"
 
-#define SELFCLASS esferixis::daw::gui::MultigraphCNoteSegment
+#define SELFCLASS esferixis::daw::gui::test::MultigraphCHNoteSegmentMock
 
-SELFCLASS::MultigraphCNoteSegment() {
-
+SELFCLASS::MultigraphCHNoteSegmentMock()
+{
 }
 
-SELFCLASS::~MultigraphCNoteSegment() {
 
+SELFCLASS::~MultigraphCHNoteSegmentMock()
+{
 }

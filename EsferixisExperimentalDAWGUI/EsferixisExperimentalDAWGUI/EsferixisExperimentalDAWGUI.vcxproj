@@ -126,18 +126,18 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Multigraph.h" />
-    <ClInclude Include="MultigraphCNoteSegment.h" />
-    <ClInclude Include="MultigraphCNoteSegmentMock.h" />
+    <ClInclude Include="MultigraphCHNoteSegment.h" />
+    <ClInclude Include="MultigraphCHNoteSegmentMock.h" />
     <ClInclude Include="MultigraphCView.h" />
     <ClInclude Include="EsferixisQtApplication.h" />
     <ClInclude Include="MultigraphCViewMock.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Multigraph.cpp" />
-    <ClCompile Include="MultigraphCNoteSegment.cpp" />
+    <ClCompile Include="MultigraphCHNoteSegment.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="EsferixisQtApplication.cpp" />
-    <ClCompile Include="MultigraphCNoteSegmentMock.cpp" />
+    <ClCompile Include="MultigraphCHNoteSegmentMock.cpp" />
     <ClCompile Include="MultigraphCViewMock.cpp" />
     <ClCompile Include="Source.cpp" />
   </ItemGroup>

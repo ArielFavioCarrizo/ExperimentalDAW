@@ -30,15 +30,64 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include "MultigraphCNoteSegmentMock.h"
+#pragma once
+#include "MultigraphCHNoteSegment.h"
 
+namespace esferixis {
+	namespace daw {
+		namespace gui {
+			namespace test {
+				class MultigraphCViewMock;
 
+				class MultigraphCHNoteSegmentMock : public esferixis::daw::gui::MultigraphCHNoteSegment
+				{
+					friend class MultigraphCViewMock;
 
-MultigraphCNoteSegmentMock::MultigraphCNoteSegmentMock()
-{
+				public:
+					double getOffset() override;
+
+					double getHeight() override;
+
+					QColor getColor() override;
+
+					bool isAContinuation() override;
+
+					bool isSelected() override;
+
+					void setOnNewSelectionState(esferixis::cps::Cont cont) override;
+
+					void setOnNewColor(esferixis::cps::Cont cont) override;
+
+					void setOnIsAContinuationChange(esferixis::cps::Cont cont) override;
+
+					esferixis::cps::Cont select(esferixis::cps::Cont cont) override;
+
+					esferixis::cps::Cont deselect(esferixis::cps::Cont cont) override;
+
+				protected:
+					/**
+					 * @post Creates a note segment mock
+					 */
+					MultigraphCHNoteSegmentMock();
+
+					/**
+					 * @post Destroys the note segment mock
+					 */
+					virtual ~MultigraphCHNoteSegmentMock();
+
+				private:
+					double offset_m;
+					double height_m;
+					QColor color_m;
+					bool isAContinuation_m;
+					bool isSelected_m;
+
+					esferixis::cps::Cont onNewSelectionState_m;
+					esferixis::cps::Cont onNewColor_m;
+					esferixis::cps::Cont onIsAContinuationChange_m;
+				};
+			}
+		}
+	}
 }
 
-
-MultigraphCNoteSegmentMock::~MultigraphCNoteSegmentMock()
-{
-}

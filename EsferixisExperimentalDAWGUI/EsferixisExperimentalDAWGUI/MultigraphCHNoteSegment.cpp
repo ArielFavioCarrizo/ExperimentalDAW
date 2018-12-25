@@ -30,55 +30,14 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#pragma once
-
-#include "MultigraphCView.h"
 #include "MultigraphCHNoteSegment.h"
 
-namespace esferixis {
-	namespace daw {
-		namespace gui {
-			namespace test {
-				class MultigraphCHNoteSegmentMock;
+#define SELFCLASS esferixis::daw::gui::MultigraphCHNoteSegment
 
-				class MultigraphCViewMock : public esferixis::daw::gui::MultigraphCView<esferixis::daw::gui::MultigraphCHNoteSegment>
-				{
-					friend class MultigraphCHNoteSegmentMock;
+SELFCLASS::MultigraphCHNoteSegment() {
 
-				public:
-					/**
-					 * @post Creates a mock
-					 */
-					MultigraphCViewMock();
-
-					/**
-					 * @post Destroys the mock
-					 */
-					virtual ~MultigraphCViewMock();
-
-					esferixis::daw::gui::MultigraphCHNoteSegment * getReferencedElement() override;
-
-					void setOnElementLoad(esferixis::cps::Cont cont) override;
-
-					void setOnElementToUnload(esferixis::cps::Cont cont) override;
-
-					void setOnClosed(esferixis::cps::Cont cont) override;
-
-					esferixis::cps::Cont setTimeIntervalToView(double min, double max, esferixis::cps::Cont cont) override;
-
-					esferixis::cps::Cont startDragging(double time, double height, esferixis::cps::Cont) override;
-
-					esferixis::cps::Cont drop(double time, double height, esferixis::cps::Cont) override;
-
-					void close() override;
-
-					esferixis::cps::Cont doNextAction() override;
-
-				private:
-
-				};
-			}
-		}
-	}
 }
 
+SELFCLASS::~MultigraphCHNoteSegment() {
+
+}

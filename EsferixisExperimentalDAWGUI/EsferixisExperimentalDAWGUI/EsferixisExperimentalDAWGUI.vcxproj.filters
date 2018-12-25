@@ -66,13 +66,13 @@
     <ClInclude Include="MultigraphCView.h">
       <Filter>Header Files\Widgets</Filter>
     </ClInclude>
-    <ClInclude Include="MultigraphCNoteSegment.h">
+    <ClInclude Include="MultigraphCHNoteSegment.h">
       <Filter>Header Files\Widgets</Filter>
     </ClInclude>
-    <ClInclude Include="MultigraphCViewMock.h">
+    <ClInclude Include="MultigraphCHNoteSegmentMock.h">
       <Filter>Header Files\Test\Widgets</Filter>
     </ClInclude>
-    <ClInclude Include="MultigraphCNoteSegmentMock.h">
+    <ClInclude Include="MultigraphCViewMock.h">
       <Filter>Header Files\Test\Widgets</Filter>
     </ClInclude>
   </ItemGroup>
@@ -89,13 +89,13 @@
     <ClCompile Include="Source.cpp">
       <Filter>Header Files\Widgets</Filter>
     </ClCompile>
-    <ClCompile Include="MultigraphCNoteSegment.cpp">
+    <ClCompile Include="MultigraphCHNoteSegment.cpp">
       <Filter>Source Files\Widgets</Filter>
     </ClCompile>
-    <ClCompile Include="MultigraphCViewMock.cpp">
+    <ClCompile Include="MultigraphCHNoteSegmentMock.cpp">
       <Filter>Source Files\Test\Widgets</Filter>
     </ClCompile>
-    <ClCompile Include="MultigraphCNoteSegmentMock.cpp">
+    <ClCompile Include="MultigraphCViewMock.cpp">
       <Filter>Source Files\Test\Widgets</Filter>
     </ClCompile>
   </ItemGroup>

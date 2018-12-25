@@ -40,7 +40,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace esferixis {
 	namespace daw {
 		namespace gui {
-			class MultigraphCNoteSegment : public esferixis::Contextualized, private boost::noncopyable
+			class MultigraphCHNoteSegment : public esferixis::Contextualized, private boost::noncopyable
 			{
 			public:
 				/**
@@ -97,12 +97,12 @@ namespace esferixis {
 				/**
 				 * @post Creates an horizontal note segment
 				 */
-				MultigraphCNoteSegment();
+				MultigraphCHNoteSegment();
 
 				/**
 				 * @post Destroys the horizontal note segment
 				 */
-				virtual ~MultigraphCNoteSegment();
+				virtual ~MultigraphCHNoteSegment();
 			};
 		}
 	}

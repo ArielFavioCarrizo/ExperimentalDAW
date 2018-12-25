@@ -31,55 +31,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #pragma once
-#include "MultigraphCNoteSegment.h"
 
 namespace esferixis {
-	namespace daw {
-		namespace gui {
-			namespace test {
-				class MultigraphCViewMock;
-
-				class MultigraphCNoteSegmentMock : public esferixis::daw::gui::MultigraphCNoteSegment
-				{
-					friend class MultigraphCViewMock;
-
-				public:
-					double getOffset() override;
-
-					double getHeight() override;
-
-					QColor getColor() override;
-
-					bool isAContinuation() override;
-
-					bool isSelected() override;
-
-					void setOnNewSelectionState(esferixis::cps::Cont cont) override;
-
-					void setOnNewColor(esferixis::cps::Cont cont) override;
-
-					void setOnIsAContinuationChange(esferixis::cps::Cont cont) override;
-
-					esferixis::cps::Cont select(esferixis::cps::Cont cont) override;
-
-					esferixis::cps::Cont deselect(esferixis::cps::Cont cont) override;
-
-				protected:
-					/**
-					 * @post Creates a note segment mock
-					 */
-					MultigraphCNoteSegmentMock();
-
-					/**
-					 * @post Destroys the note segment mock
-					 */
-					virtual ~MultigraphCNoteSegmentMock();
-
-				private:
-
-				};
-			}
-		}
+	namespace data {
+		
 	}
 }
-

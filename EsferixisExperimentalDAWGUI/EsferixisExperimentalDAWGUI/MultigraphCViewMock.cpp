@@ -32,13 +32,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "MultigraphCViewMock.h"
 
+#define SELFCLASS esferixis::daw::gui::test::MultigraphCViewMock
 
-
-MultigraphCViewMock::MultigraphCViewMock()
+SELFCLASS::MultigraphCViewMock()
 {
 }
 
 
-MultigraphCViewMock::~MultigraphCViewMock()
+SELFCLASS::~MultigraphCViewMock()
 {
 }
