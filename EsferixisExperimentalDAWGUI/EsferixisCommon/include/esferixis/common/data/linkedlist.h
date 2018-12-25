@@ -31,9 +31,149 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #pragma once
+#include <boost/noncopyable.hpp>
+#include <stdexcept>
 
 namespace esferixis {
-	namespace data {
-		
-	}
+	template<typename T>
+	class LinkedList final : private boost::noncopyable {
+	public:
+		class Node final : private boost::noncopyable {
+			friend class esferixis::LinkedList<T>;
+
+		public:
+			/**
+			 * @post Creates a node
+			 */
+			inline Node() {
+				this->previousNode_m = nullptr;
+				this->nextNode_m = nullptr;
+				this->isInAList_m = false;
+			}
+
+			/**
+			 * @post Sets the node's value
+			 */
+			inline void set(T value) {
+				this->value_m = value;
+			}
+
+			/**
+			 * @post Gets the node's value
+			 */
+			inline T get() const {
+				return this->value_m;
+			}
+
+		private:
+			esferixis::LinkedList<T>::Node *previousNode_m;
+			esferixis::LinkedList<T>::Node *nextNode_m;
+
+			esferixis::LinkedList<T>::Node *list_m;
+
+			T value_m;
+		};
+
+		/**
+		 * @post Creates a linked list
+		 */
+		inline LinkedList() {
+			this->firstNode_m = nullptr;
+			this->lastNode_m = nullptr;
+		}
+
+		/**
+		 * @pre The given node cannot already been present in a list
+		 * @post Adds the given node at the last position
+		 */
+		inline void addLast(esferixis::LinkedList<T>::Node *node) {
+			if ( node->list_m == nullptr ) {
+				if ( this->firstNode_m == nullptr) {
+					this->firstNode_m = node;
+				}
+				
+				node->previousNode = this->lastNode_m;
+				node->nextNode = nullptr;
+				node->list_m = this;
+
+				if (this->lastNode_m != nullptr) {
+					this->lastNode_m.nextNode = node;
+				}
+
+				this->lastNode_m = node;
+			}
+		}
+
+		/**
+		 * @pre The given node must be present in the list
+		 * @post Removes the given node
+		 */
+		inline void remove(esferixis::LinkedList<T>::Node *node) {
+			if (node->list_m == this) {
+				const previousNode = node->previousNode_m;
+				const nextNode = node->nextNode_m;
+
+				if (this->lastNode_m == node) {
+					this->lastNode_m = previousNode;
+				}
+				else {
+					nextNode.previousNode_m = previousNode;
+				}
+
+				if (this->firstNode_m == node) {
+					this->firstNode_m = nullptr;
+				}
+				else {
+					previousNode.nextNode_m = nextNode;
+				}
+
+				node->list_m = nullptr;
+			}
+			else {
+				throw std::runtime_error("The given node is already been on a list");
+			}
+		}
+
+		/**
+		 * @post Gets the first node
+		 */
+		inline esferixis::LinkedList<T>::Node * first() const {
+			return this->firstNode_m;
+		}
+
+		/**
+		 * @post Gets the last node
+		 */
+		inline esferixis::LinkedList<T>::Node * last() const {
+			return this->lastNode_m;
+		}
+
+		/**
+		 * @post Gets the next node of the given node
+		 */
+		inline esferixis::LinkedList<T>::Node * next(esferixis::LinkedList<T>::Node *node) const {
+			if (node->list_m == this) {
+				return node->nextNode_m;
+			}
+			else {
+				throw std::runtime_error("List mismatch");
+			}
+		}
+
+		/**
+		 * @post Gets the previous node of the given node
+		 */
+		inline esferixis::LinkedList<T>::Node * previous(esferixis::LinkedList<T>::Node *node) const {
+			if (node->list_m == this) {
+				return node->previousNode_m;
+			}
+			else {
+				throw std::runtime_error("List mismatch");
+			}
+		}
+
+	private:
+		esferixis::LinkedList<T>::Node *firstNode_m;
+		esferixis::LinkedList<T>::Node *lastNode_m;
+	};
 }
