@@ -62,6 +62,16 @@ namespace esferixis {
 				 */
 				virtual void setOnElementToUnload(esferixis::cps::Cont cont) =0;
 
+				/**
+				 * @post Locks the reference to element to preserve it
+				 */
+				virtual esferixis::cps::Cont lockElement(E *element, esferixis::cps::Cont cont) = 0;
+
+				/**
+				 * @post Unlocks the reference to element to allow to delete it
+				 */
+				virtual esferixis::cps::Cont unlockElement(E *element, esferixis::cps::Cont cont) = 0;
+
 				/*
 				 * @post Sets the continuation after the view is closed
 				 *		 
@@ -73,16 +83,6 @@ namespace esferixis {
 				 * @post Sets a time interval to view
 				 */
 				virtual esferixis::cps::Cont setTimeIntervalToView(double min, double max, esferixis::cps::Cont cont) =0;
-
-				/**
-				 * @post Starts a dragging
-				 */
-				virtual esferixis::cps::Cont startDragging(double time, double height, esferixis::cps::Cont) =0;
-
-				/**
-				 * @post Terminates a dragging (Drop)
-				 */
-				virtual esferixis::cps::Cont drop(double time, double height, esferixis::cps::Cont) =0;
 
 				/**
 				 * @post Closes the view

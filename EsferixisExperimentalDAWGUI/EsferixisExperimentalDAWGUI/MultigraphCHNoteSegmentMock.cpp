@@ -32,13 +32,89 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "MultigraphCHNoteSegmentMock.h"
 
+#include "MultigraphCViewMock.h"
+
 #define SELFCLASS esferixis::daw::gui::test::MultigraphCHNoteSegmentMock
 
-SELFCLASS::MultigraphCHNoteSegmentMock()
+SELFCLASS::MultigraphCHNoteSegmentMock(esferixis::daw::gui::test::MultigraphCViewMock *multigraphCViewMock) : multigraphCViewMock_m(multigraphCViewMock)
 {
 }
 
 
 SELFCLASS::~MultigraphCHNoteSegmentMock()
 {
+}
+
+double SELFCLASS::getOffset() {
+	return this->offset_m;
+}
+
+double SELFCLASS::getHeight() {
+	return this->height_m;
+}
+
+QColor SELFCLASS::getColor() {
+	return this->color_m;
+}
+
+bool SELFCLASS::isAContinuation() {
+	return this->isAContinuation_m;
+}
+
+bool SELFCLASS::isSelected() {
+	return this->isSelected_m;
+}
+
+esferixis::cps::Cont SELFCLASS::setOffset(double offset, esferixis::cps::Cont cont) {
+	this->multigraphCViewMock_m->nextActionCont_m = cont;
+
+	this->offset_m = offset;
+	return this->onNewOffset_m;
+}
+
+esferixis::cps::Cont SELFCLASS::setHeight(double height, esferixis::cps::Cont cont) {
+	this->multigraphCViewMock_m->nextActionCont_m = cont;
+
+	this->height_m = height;
+	return this->onNewHeight_m;
+}
+
+esferixis::cps::Cont SELFCLASS::setColor(QColor color, esferixis::cps::Cont cont) {
+	this->multigraphCViewMock_m->nextActionCont_m = cont;
+
+	this->color_m = color;
+	return this->onNewColor_m;
+}
+
+esferixis::cps::Cont SELFCLASS::setIsAContinuation(bool isAContinuation, esferixis::cps::Cont cont) {
+	this->multigraphCViewMock_m->nextActionCont_m = cont;
+
+	this->isAContinuation_m = isAContinuation;
+	return this->onIsAContinuationChange_m;
+}
+
+esferixis::cps::Cont SELFCLASS::erase(esferixis::cps::Cont cont) {
+	this->multigraphCViewMock_m->nextActionCont_m = cont;
+
+	// FIXME: Complete implementation
+}
+
+void SELFCLASS::setOnNewOffset(esferixis::cps::Cont cont) {
+	this->onNewOffset_m = cont;
+}
+
+void SELFCLASS::setOnNewHeight(esferixis::cps::Cont cont) {
+	this->onNewHeight_m = cont;
+}
+
+void SELFCLASS::setOnNewColor(esferixis::cps::Cont cont) {
+	this->onNewColor_m = cont;
+}
+
+void SELFCLASS::setOnIsAContinuationChange(esferixis::cps::Cont cont) {
+	this->onIsAContinuationChange_m = cont;
+}
+
+void SELFCLASS::setOnNewSelectionState(esferixis::cps::Cont cont) {
+	this->onNewSelectionState_m = cont;
 }

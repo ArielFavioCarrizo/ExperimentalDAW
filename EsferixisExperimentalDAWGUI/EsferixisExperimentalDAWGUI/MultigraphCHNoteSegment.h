@@ -69,9 +69,39 @@ namespace esferixis {
 				virtual bool isSelected() =0;
 
 				/**
-				 * @post Sets the continuation to notify a new selection state
+				 * @post Sets the offset
 				 */
-				virtual void setOnNewSelectionState(esferixis::cps::Cont cont) =0;
+				virtual esferixis::cps::Cont setOffset(double offset, esferixis::cps::Cont cont) = 0;
+
+				/**
+				 * @post Sets the height
+				 */
+				virtual esferixis::cps::Cont setHeight(double height, esferixis::cps::Cont cont) = 0;
+
+				/**
+				 * @post Sets the color
+				 */
+				virtual esferixis::cps::Cont setColor(QColor color, esferixis::cps::Cont cont) = 0;
+
+				/**
+				 * @post Sets a boolean indicating if is a continuation
+				 */
+				virtual esferixis::cps::Cont setIsAContinuation(bool isAContinuation, esferixis::cps::Cont cont) = 0;
+
+				/**
+				 * @post Erases the note segment
+				 */
+				virtual esferixis::cps::Cont erase(esferixis::cps::Cont cont) =0;
+
+				/**
+				 * @post Sets the continuation to notify a new offset
+				 */
+				virtual void setOnNewOffset(esferixis::cps::Cont cont) = 0;
+
+				/**
+				 * @post Sets the continuation to notify a new height
+				 */
+				virtual void setOnNewHeight(esferixis::cps::Cont cont) = 0;
 
 				/**
 				 * @post Sets the continuation to notify a new color
@@ -84,14 +114,9 @@ namespace esferixis {
 				virtual void setOnIsAContinuationChange(esferixis::cps::Cont cont) =0;
 
 				/**
-				 * @post Selects the note segment
+				 * @post Sets the continuation to notify a new selection state
 				 */
-				virtual esferixis::cps::Cont select(esferixis::cps::Cont cont) = 0;
-
-				/**
-				 * @post Deselects the note segment
-				 */
-				virtual esferixis::cps::Cont deselect(esferixis::cps::Cont cont) = 0;
+				virtual void setOnNewSelectionState(esferixis::cps::Cont cont) = 0;
 
 			protected:
 				/**

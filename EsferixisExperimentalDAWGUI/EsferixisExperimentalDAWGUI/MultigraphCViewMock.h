@@ -35,6 +35,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "MultigraphCView.h"
 #include "MultigraphCHNoteSegment.h"
 
+#include "esferixis/common/data/linkedlist.h"
+
 namespace esferixis {
 	namespace daw {
 		namespace gui {
@@ -66,16 +68,21 @@ namespace esferixis {
 
 					esferixis::cps::Cont setTimeIntervalToView(double min, double max, esferixis::cps::Cont cont) override;
 
-					esferixis::cps::Cont startDragging(double time, double height, esferixis::cps::Cont) override;
+					esferixis::cps::Cont lockElement(esferixis::daw::gui::MultigraphCHNoteSegment *element, esferixis::cps::Cont cont) override;
 
-					esferixis::cps::Cont drop(double time, double height, esferixis::cps::Cont) override;
+					esferixis::cps::Cont unlockElement(esferixis::daw::gui::MultigraphCHNoteSegment *element, esferixis::cps::Cont cont) override;
 
 					void close() override;
 
 					esferixis::cps::Cont doNextAction() override;
 
 				private:
+					esferixis::cps::Cont onElementLoad_m;
+					esferixis::cps::Cont onElementUnload_m;
+					esferixis::cps::Cont onClosed_m;
+					esferixis::cps::Cont onElementLoad_m;
 
+					esferixis::cps::Cont nextActionCont_m;
 				};
 			}
 		}

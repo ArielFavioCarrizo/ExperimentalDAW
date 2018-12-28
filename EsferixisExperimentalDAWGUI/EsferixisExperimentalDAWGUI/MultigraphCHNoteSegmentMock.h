@@ -54,21 +54,32 @@ namespace esferixis {
 
 					bool isSelected() override;
 
-					void setOnNewSelectionState(esferixis::cps::Cont cont) override;
+					esferixis::cps::Cont setOffset(double offset, esferixis::cps::Cont cont) override;
+
+					esferixis::cps::Cont setHeight(double height, esferixis::cps::Cont cont) override;
+
+					esferixis::cps::Cont setColor(QColor color, esferixis::cps::Cont cont) override;
+
+					esferixis::cps::Cont setIsAContinuation(bool isAContinuation, esferixis::cps::Cont cont) override;
+
+					esferixis::cps::Cont erase(esferixis::cps::Cont cont) override;
+
+					void setOnNewOffset(esferixis::cps::Cont cont) override;
+
+					void setOnNewHeight(esferixis::cps::Cont cont) override;
 
 					void setOnNewColor(esferixis::cps::Cont cont) override;
 
 					void setOnIsAContinuationChange(esferixis::cps::Cont cont) override;
 
-					esferixis::cps::Cont select(esferixis::cps::Cont cont) override;
-
-					esferixis::cps::Cont deselect(esferixis::cps::Cont cont) override;
+					void setOnNewSelectionState(esferixis::cps::Cont cont) override;
 
 				protected:
 					/**
-					 * @post Creates a note segment mock
+					 * @post Creates a note segment mock with the specified
+					 *		 multigraph view mock
 					 */
-					MultigraphCHNoteSegmentMock();
+					MultigraphCHNoteSegmentMock(esferixis::daw::gui::test::MultigraphCViewMock *multigraphCViewMock);
 
 					/**
 					 * @post Destroys the note segment mock
@@ -76,15 +87,19 @@ namespace esferixis {
 					virtual ~MultigraphCHNoteSegmentMock();
 
 				private:
+					esferixis::daw::gui::test::MultigraphCViewMock *multigraphCViewMock_m;
+
 					double offset_m;
 					double height_m;
 					QColor color_m;
 					bool isAContinuation_m;
 					bool isSelected_m;
 
-					esferixis::cps::Cont onNewSelectionState_m;
+					esferixis::cps::Cont onNewOffset_m;
+					esferixis::cps::Cont onNewHeight_m;
 					esferixis::cps::Cont onNewColor_m;
 					esferixis::cps::Cont onIsAContinuationChange_m;
+					esferixis::cps::Cont onNewSelectionState_m;
 				};
 			}
 		}
