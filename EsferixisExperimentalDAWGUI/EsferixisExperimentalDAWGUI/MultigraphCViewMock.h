@@ -43,11 +43,35 @@ namespace esferixis {
 			namespace test {
 				class MultigraphCHNoteSegmentMock;
 
-				class MultigraphCViewMock : public esferixis::daw::gui::MultigraphCView<esferixis::daw::gui::MultigraphCHNoteSegment>
+				class MultigraphCViewMock : public esferixis::daw::gui::MultigraphCView<esferixis::daw::gui::MultigraphCHNoteSegment, esferixis::daw::gui::MultigraphCHNoteSegment::Essence>
 				{
 					friend class MultigraphCHNoteSegmentMock;
 
 				public:
+					/**
+					 * @post Creates the view mock
+					 */
+					static esferixis::cps::Cont create(esferixis::daw::gui::MultigraphCView<esferixis::daw::gui::MultigraphCHNoteSegment, esferixis::daw::gui::MultigraphCHNoteSegment::Essence>::ContextEssence contextEssence, esferixis::cps::Cont cont);
+
+					esferixis::daw::gui::MultigraphCHNoteSegment * getReferencedElement() override;
+
+					esferixis::cps::Cont createElement(esferixis::daw::gui::MultigraphCHNoteSegment::Essence elementEssence, esferixis::cps::Cont cont) override;
+
+					void setOnElementLoad(esferixis::cps::Cont cont) override;
+
+					void setOnElementToUnload(esferixis::cps::Cont cont) override;
+
+					esferixis::cps::Cont setTimeIntervalToView(double min, double max, esferixis::cps::Cont cont) override;
+
+					esferixis::cps::Cont lockElement(esferixis::daw::gui::MultigraphCHNoteSegment *element, esferixis::cps::Cont cont) override;
+
+					esferixis::cps::Cont unlockElement(esferixis::daw::gui::MultigraphCHNoteSegment *element, esferixis::cps::Cont cont) override;
+
+					esferixis::cps::Cont close(esferixis::cps::Cont cont) override;
+
+					esferixis::cps::Cont doNextAction() override;
+
+				private:
 					/**
 					 * @post Creates a mock
 					 */
@@ -58,31 +82,18 @@ namespace esferixis {
 					 */
 					virtual ~MultigraphCViewMock();
 
-					esferixis::daw::gui::MultigraphCHNoteSegment * getReferencedElement() override;
+					static esferixis::cps::Cont close_unloadElement(esferixis::daw::gui::test::MultigraphCViewMock *self);
+					static esferixis::cps::Cont close_deleteItself(esferixis::daw::gui::test::MultigraphCViewMock *self);
 
-					void setOnElementLoad(esferixis::cps::Cont cont) override;
+					esferixis::daw::gui::MultigraphCHNoteSegment *referencedElement_m;
 
-					void setOnElementToUnload(esferixis::cps::Cont cont) override;
+					esferixis::LinkedList<esferixis::daw::gui::MultigraphCHNoteSegment *> noteSegments_m;
 
-					void setOnClosed(esferixis::cps::Cont cont) override;
-
-					esferixis::cps::Cont setTimeIntervalToView(double min, double max, esferixis::cps::Cont cont) override;
-
-					esferixis::cps::Cont lockElement(esferixis::daw::gui::MultigraphCHNoteSegment *element, esferixis::cps::Cont cont) override;
-
-					esferixis::cps::Cont unlockElement(esferixis::daw::gui::MultigraphCHNoteSegment *element, esferixis::cps::Cont cont) override;
-
-					void close() override;
-
-					esferixis::cps::Cont doNextAction() override;
-
-				private:
 					esferixis::cps::Cont onElementLoad_m;
 					esferixis::cps::Cont onElementUnload_m;
 					esferixis::cps::Cont onClosed_m;
-					esferixis::cps::Cont onElementLoad_m;
 
-					esferixis::cps::Cont nextActionCont_m;
+					esferixis::cps::Cont nextExternalActionCont_m;
 				};
 			}
 		}

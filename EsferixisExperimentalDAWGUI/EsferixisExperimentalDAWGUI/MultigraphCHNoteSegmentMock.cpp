@@ -36,8 +36,16 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define SELFCLASS esferixis::daw::gui::test::MultigraphCHNoteSegmentMock
 
-SELFCLASS::MultigraphCHNoteSegmentMock(esferixis::daw::gui::test::MultigraphCViewMock *multigraphCViewMock) : multigraphCViewMock_m(multigraphCViewMock)
+SELFCLASS::MultigraphCHNoteSegmentMock(esferixis::daw::gui::MultigraphCHNoteSegment::Essence essence, esferixis::daw::gui::test::MultigraphCViewMock *multigraphCViewMock) :
+	multigraphCViewMock_m(multigraphCViewMock),
+	containerNode_m(this)
 {
+	this->multigraphCViewMock_m->noteSegments_m.addLast(&(this->containerNode_m));
+
+	this->offset_m = essence.offset;
+	this->height_m = essence.height;
+	this->isAContinuation_m = false;
+	this->isSelected_m = false;
 }
 
 
@@ -54,7 +62,7 @@ double SELFCLASS::getHeight() {
 }
 
 QColor SELFCLASS::getColor() {
-	return this->color_m;
+	return Qt::GlobalColor::red;
 }
 
 bool SELFCLASS::isAContinuation() {
@@ -66,37 +74,43 @@ bool SELFCLASS::isSelected() {
 }
 
 esferixis::cps::Cont SELFCLASS::setOffset(double offset, esferixis::cps::Cont cont) {
-	this->multigraphCViewMock_m->nextActionCont_m = cont;
+	this->multigraphCViewMock_m->nextExternalActionCont_m = cont;
 
 	this->offset_m = offset;
 	return this->onNewOffset_m;
 }
 
 esferixis::cps::Cont SELFCLASS::setHeight(double height, esferixis::cps::Cont cont) {
-	this->multigraphCViewMock_m->nextActionCont_m = cont;
+	this->multigraphCViewMock_m->nextExternalActionCont_m = cont;
 
 	this->height_m = height;
 	return this->onNewHeight_m;
 }
 
-esferixis::cps::Cont SELFCLASS::setColor(QColor color, esferixis::cps::Cont cont) {
-	this->multigraphCViewMock_m->nextActionCont_m = cont;
-
-	this->color_m = color;
-	return this->onNewColor_m;
-}
-
 esferixis::cps::Cont SELFCLASS::setIsAContinuation(bool isAContinuation, esferixis::cps::Cont cont) {
-	this->multigraphCViewMock_m->nextActionCont_m = cont;
+	this->multigraphCViewMock_m->nextExternalActionCont_m = cont;
 
 	this->isAContinuation_m = isAContinuation;
 	return this->onIsAContinuationChange_m;
 }
 
 esferixis::cps::Cont SELFCLASS::erase(esferixis::cps::Cont cont) {
-	this->multigraphCViewMock_m->nextActionCont_m = cont;
+	this->multigraphCViewMock_m->referencedElement_m = this;
+	this->multigraphCViewMock_m->nextExternalActionCont_m = esferixis::cps::Cont(SELFCLASS::deleteItself, this);
+	this->returnCont_m = cont;
 
-	// FIXME: Complete implementation
+	return this->multigraphCViewMock_m->onElementUnload_m;
+}
+
+esferixis::cps::Cont SELFCLASS::deleteItself(esferixis::daw::gui::test::MultigraphCHNoteSegmentMock *self) {
+	esferixis::daw::gui::test::MultigraphCViewMock *view = self->multigraphCViewMock_m;
+	esferixis::cps::Cont cont = self->returnCont_m;
+
+	view->noteSegments_m.remove(&(self->containerNode_m));
+
+	delete self;
+
+	return cont;
 }
 
 void SELFCLASS::setOnNewOffset(esferixis::cps::Cont cont) {
@@ -108,7 +122,7 @@ void SELFCLASS::setOnNewHeight(esferixis::cps::Cont cont) {
 }
 
 void SELFCLASS::setOnNewColor(esferixis::cps::Cont cont) {
-	this->onNewColor_m = cont;
+	// Do nothing
 }
 
 void SELFCLASS::setOnIsAContinuationChange(esferixis::cps::Cont cont) {

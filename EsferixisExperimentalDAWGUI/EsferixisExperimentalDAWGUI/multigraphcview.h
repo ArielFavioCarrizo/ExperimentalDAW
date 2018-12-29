@@ -41,14 +41,26 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace esferixis {
 	namespace daw {
 		namespace gui {
-			template<typename E>
+			template<typename E, typename EEssence>
 			class MultigraphCView : public esferixis::Contextualized, private boost::noncopyable
 			{
 			public:
+				struct ContextEssence {
+					esferixis::daw::gui::MultigraphCView<E, EEssence> **instance;
+
+					esferixis::cps::Cont onElementLoad;
+					esferixis::cps::Cont onElementUnload;
+				};
+
 				/**
 				 * @post Gets the referenced element on the current state
 				 */
 				virtual E * getReferencedElement() = 0;
+
+				/**
+				 * @post Creates an element with the given essence and continuation
+				 */
+				virtual esferixis::cps::Cont createElement(EEssence elementEssence, esferixis::cps::Cont cont) =0;
 
 				/**
 				 * @post Sets the continuation to notify a new loaded element
@@ -72,13 +84,6 @@ namespace esferixis {
 				 */
 				virtual esferixis::cps::Cont unlockElement(E *element, esferixis::cps::Cont cont) = 0;
 
-				/*
-				 * @post Sets the continuation after the view is closed
-				 *		 
-				 *		 Warning: The view will be invalidated by the next action
-				 */
-				virtual void setOnClosed(esferixis::cps::Cont cont) =0;
-
 				/**
 				 * @post Sets a time interval to view
 				 */
@@ -88,9 +93,10 @@ namespace esferixis {
 				 * @post Closes the view
 				 *		 
 				 *       It will unload each element and then it will proceed to
-				 *		 close the view
+				 *		 close the view.
+				 *		 The view will be invalidated.
 				 */
-				virtual void close() =0;
+				virtual esferixis::cps::Cont close(esferixis::cps::Cont cont) =0;
 
 				/**
 				 * @post Do the next action

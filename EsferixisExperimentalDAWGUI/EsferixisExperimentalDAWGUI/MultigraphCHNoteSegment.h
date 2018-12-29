@@ -43,6 +43,14 @@ namespace esferixis {
 			class MultigraphCHNoteSegment : public esferixis::Contextualized, private boost::noncopyable
 			{
 			public:
+				struct Essence {
+					double offset;
+					double height;
+
+					bool isAContinuation;
+					bool isSelected;
+				};
+
 				/**
 				 * @post Gets the offset
 				 */
@@ -77,11 +85,6 @@ namespace esferixis {
 				 * @post Sets the height
 				 */
 				virtual esferixis::cps::Cont setHeight(double height, esferixis::cps::Cont cont) = 0;
-
-				/**
-				 * @post Sets the color
-				 */
-				virtual esferixis::cps::Cont setColor(QColor color, esferixis::cps::Cont cont) = 0;
 
 				/**
 				 * @post Sets a boolean indicating if is a continuation

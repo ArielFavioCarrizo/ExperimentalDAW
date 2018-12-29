@@ -52,6 +52,16 @@ namespace esferixis {
 			}
 
 			/**
+			 * @post Creates a node with the specified value
+			 */
+			inline Node(T value) {
+				this->previousNode_m = nullptr;
+				this->nextNode_m = nullptr;
+				this->list_m = nullptr;
+				this->value_m = value;
+			}
+
+			/**
 			 * @post Sets the node's value
 			 */
 			inline void set(T value) {
@@ -69,7 +79,7 @@ namespace esferixis {
 			esferixis::LinkedList<T>::Node *previousNode_m;
 			esferixis::LinkedList<T>::Node *nextNode_m;
 
-			esferixis::LinkedList<T>::Node *list_m;
+			esferixis::LinkedList<T> *list_m;
 
 			T value_m;
 		};
@@ -92,12 +102,12 @@ namespace esferixis {
 					this->firstNode_m = node;
 				}
 				
-				node->previousNode = this->lastNode_m;
-				node->nextNode = nullptr;
+				node->previousNode_m = this->lastNode_m;
+				node->nextNode_m = nullptr;
 				node->list_m = this;
 
 				if (this->lastNode_m != nullptr) {
-					this->lastNode_m.nextNode = node;
+					this->lastNode_m->nextNode_m = node;
 				}
 
 				this->lastNode_m = node;
@@ -110,21 +120,21 @@ namespace esferixis {
 		 */
 		inline void remove(esferixis::LinkedList<T>::Node *node) {
 			if (node->list_m == this) {
-				const previousNode = node->previousNode_m;
-				const nextNode = node->nextNode_m;
+				auto previousNode = node->previousNode_m;
+				auto nextNode = node->nextNode_m;
 
 				if (this->lastNode_m == node) {
 					this->lastNode_m = previousNode;
 				}
 				else {
-					nextNode.previousNode_m = previousNode;
+					nextNode->previousNode_m = previousNode;
 				}
 
 				if (this->firstNode_m == node) {
 					this->firstNode_m = nullptr;
 				}
 				else {
-					previousNode.nextNode_m = nextNode;
+					previousNode->nextNode_m = nextNode;
 				}
 
 				node->list_m = nullptr;
@@ -170,6 +180,14 @@ namespace esferixis {
 			else {
 				throw std::runtime_error("List mismatch");
 			}
+		}
+
+
+		/**
+		 * @post Gets a boolean indicating if it is empty
+		 */
+		bool isEmpty() const {
+			return (this->firstNode_m == nullptr);
 		}
 
 	private:

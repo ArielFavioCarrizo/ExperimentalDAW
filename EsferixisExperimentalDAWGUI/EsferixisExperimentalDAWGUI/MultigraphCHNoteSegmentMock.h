@@ -33,6 +33,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #pragma once
 #include "MultigraphCHNoteSegment.h"
 
+#include "esferixis/common/data/linkedlist.h"
+
 namespace esferixis {
 	namespace daw {
 		namespace gui {
@@ -58,8 +60,6 @@ namespace esferixis {
 
 					esferixis::cps::Cont setHeight(double height, esferixis::cps::Cont cont) override;
 
-					esferixis::cps::Cont setColor(QColor color, esferixis::cps::Cont cont) override;
-
 					esferixis::cps::Cont setIsAContinuation(bool isAContinuation, esferixis::cps::Cont cont) override;
 
 					esferixis::cps::Cont erase(esferixis::cps::Cont cont) override;
@@ -76,22 +76,24 @@ namespace esferixis {
 
 				protected:
 					/**
-					 * @post Creates a note segment mock with the specified
-					 *		 multigraph view mock
-					 */
-					MultigraphCHNoteSegmentMock(esferixis::daw::gui::test::MultigraphCViewMock *multigraphCViewMock);
-
-					/**
 					 * @post Destroys the note segment mock
 					 */
 					virtual ~MultigraphCHNoteSegmentMock();
 
 				private:
+					/**
+					 * @post Creates a note segment mock with the specified essence and
+					 *		 multigraph view mock
+					 */
+					MultigraphCHNoteSegmentMock(esferixis::daw::gui::MultigraphCHNoteSegment::Essence essence, esferixis::daw::gui::test::MultigraphCViewMock *multigraphCViewMock);
+
+					static esferixis::cps::Cont deleteItself(esferixis::daw::gui::test::MultigraphCHNoteSegmentMock *self);
+
 					esferixis::daw::gui::test::MultigraphCViewMock *multigraphCViewMock_m;
+					esferixis::LinkedList<esferixis::daw::gui::MultigraphCHNoteSegment *>::Node containerNode_m;
 
 					double offset_m;
 					double height_m;
-					QColor color_m;
 					bool isAContinuation_m;
 					bool isSelected_m;
 
@@ -100,6 +102,8 @@ namespace esferixis {
 					esferixis::cps::Cont onNewColor_m;
 					esferixis::cps::Cont onIsAContinuationChange_m;
 					esferixis::cps::Cont onNewSelectionState_m;
+
+					esferixis::cps::Cont returnCont_m;
 				};
 			}
 		}
