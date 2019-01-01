@@ -35,23 +35,21 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <boost/noncopyable.hpp>
 #include <esferixis/common/cps/cont.h>
 
-#include "multigraph.h"
-
 namespace esferixis {
 	namespace daw {
 		namespace gui {
-			class Multigraph final : private boost::noncopyable
+			class HNoteSegmentMultigraph final : private boost::noncopyable
 			{
 			public:
 				/**
-				 * @post Creates an editable multigraph
+				 * @post Creates an editable multigraph based on horizontal note segments
 				 */
-				Multigraph();
+				HNoteSegmentMultigraph();
 
 				/**
 				 * @post Destroys the multigraph
 				 */
-				virtual ~Multigraph();
+				virtual ~HNoteSegmentMultigraph();
 			};
 		}
 	}

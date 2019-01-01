@@ -60,9 +60,6 @@
     <ClInclude Include="EsferixisQtApplication.h">
       <Filter>Header Files\QT</Filter>
     </ClInclude>
-    <ClInclude Include="Multigraph.h">
-      <Filter>Header Files\Widgets</Filter>
-    </ClInclude>
     <ClInclude Include="MultigraphCView.h">
       <Filter>Header Files\Widgets</Filter>
     </ClInclude>
@@ -74,6 +71,9 @@
     </ClInclude>
     <ClInclude Include="MultigraphCViewMock.h">
       <Filter>Header Files\Test\Widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="HNoteSegmentMultigraph.h">
+      <Filter>Header Files\Widgets</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
