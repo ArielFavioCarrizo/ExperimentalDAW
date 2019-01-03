@@ -32,7 +32,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <esferixis/common/cps/cont.h>
 #include "EsferixisQtApplication.h"
+
 #include <QWindow>
+#include <QObject>
+#include <QCloseEvent>
 
 struct Context {
 	QWindow *window;
@@ -52,13 +55,39 @@ esferixis::cps::Cont setup(Context *context) {
 		}
 	};
 
-	QWindow *window = new QWindow();
+	class LocalQWindow : public QWindow {
+	public:
+		LocalQWindow(Context *context) {
+			this->context_m = context;
+		}
+	protected:
+		bool event(QEvent *event) override {
+			if (event->type() == QEvent::Type::Close) {
+				this->deleteLater();
+				event->accept();
+
+				return true;
+			}
+			else {
+				QWindow::event(event);
+			}
+		}
+
+	private:
+		Context *context_m;
+	};
+
+	QWindow *window = new LocalQWindow(context);
 
 	context->window = window;
 
 	window->resize(800, 600);
 	window->show();
 	window->setTitle("Test");
+
+	QObject::connect(window, &QWindow::destroyed, []() {
+		runCPS( esferixis::Qt::Application::quit() );
+	});
 
 	return esferixis::Qt::Application::unlockGUI( esferixis::cps::Cont(STM::onGUIUnlocked, context) );
 }

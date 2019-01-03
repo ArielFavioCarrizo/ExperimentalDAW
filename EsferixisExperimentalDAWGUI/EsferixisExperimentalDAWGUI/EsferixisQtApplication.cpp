@@ -46,14 +46,14 @@ int SELFCLASS::run(int &argc, char **argv, esferixis::cps::Cont cont) {
 	instance->qApp_m = std::make_unique<QApplication>(argc, argv, QCoreApplication::ApplicationFlags);
 	instance->qApp_m->setQuitOnLastWindowClosed(false);
 
-	instance->processGUIEvents_m = false;
+	instance->processGUIEvents_m = true;
 	instance->quit_m = false;
 
 	SELFCLASS::LocalSched localSched(instance);
 
 	localSched.attachToCurrentThread();
 
-	runCPS(cont);
+	runCPS( SELFCLASS::lockGUI( cont ) );
 
 	int retCode = instance->qApp_m->exec();
 
@@ -83,6 +83,8 @@ esferixis::cps::Cont SELFCLASS::lockGUI(esferixis::cps::Cont cont) {
 		while (!self->processGUIEvents_m && (!self->quit_m)) {
 			self->qApp_m->processEvents(QEventLoop::ExcludeUserInputEvents | QEventLoop::WaitForMoreEvents);
 		}
+
+		return esferixis::cps::CPS_RET;
 	}
 	else {
 		return cont;

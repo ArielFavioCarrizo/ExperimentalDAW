@@ -67,6 +67,8 @@ esferixis::cps::Cont SELFCLASS::create(esferixis::daw::gui::HNoteSegmentMultigra
 	self->contextEssence_m.onElementLoad = esferixis::cps::Cont(STM::onElementLoad, self);
 	self->contextEssence_m.onElementUnload = esferixis::cps::Cont(STM::onElementUnload, self);
 	self->contextEssence_m.onInitialized = esferixis::cps::Cont(STM::onInitializedView, self);
+	self->widget_m = nullptr;
+	self->view_m = nullptr;
 	self->nextExternalCont_m = cont;
 
 	*instance = self;
