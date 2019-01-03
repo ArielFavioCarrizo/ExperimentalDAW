@@ -51,7 +51,7 @@ namespace esferixis {
 					/**
 					 * @post Creates the view mock
 					 */
-					static esferixis::cps::Cont create(esferixis::daw::gui::MultigraphCView<esferixis::daw::gui::MultigraphCHNoteSegment, esferixis::daw::gui::MultigraphCHNoteSegment::Essence>::ContextEssence contextEssence, esferixis::cps::Cont cont);
+					static esferixis::cps::Cont create(esferixis::daw::gui::MultigraphCView<esferixis::daw::gui::MultigraphCHNoteSegment, esferixis::daw::gui::MultigraphCHNoteSegment::Essence>::ContextEssence contextEssence);
 
 					esferixis::daw::gui::MultigraphCHNoteSegment * getReferencedElement() override;
 
@@ -81,9 +81,6 @@ namespace esferixis {
 					 * @post Destroys the mock
 					 */
 					virtual ~MultigraphCViewMock();
-
-					static esferixis::cps::Cont close_unloadElement(esferixis::daw::gui::test::MultigraphCViewMock *self);
-					static esferixis::cps::Cont close_deleteItself(esferixis::daw::gui::test::MultigraphCViewMock *self);
 
 					esferixis::daw::gui::MultigraphCHNoteSegment *referencedElement_m;
 

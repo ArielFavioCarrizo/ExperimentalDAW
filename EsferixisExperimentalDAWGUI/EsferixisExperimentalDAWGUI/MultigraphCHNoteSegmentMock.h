@@ -87,8 +87,6 @@ namespace esferixis {
 					 */
 					MultigraphCHNoteSegmentMock(esferixis::daw::gui::MultigraphCHNoteSegment::Essence essence, esferixis::daw::gui::test::MultigraphCViewMock *multigraphCViewMock);
 
-					static esferixis::cps::Cont deleteItself(esferixis::daw::gui::test::MultigraphCHNoteSegmentMock *self);
-
 					esferixis::daw::gui::test::MultigraphCViewMock *multigraphCViewMock_m;
 					esferixis::LinkedList<esferixis::daw::gui::MultigraphCHNoteSegment *>::Node containerNode_m;
 

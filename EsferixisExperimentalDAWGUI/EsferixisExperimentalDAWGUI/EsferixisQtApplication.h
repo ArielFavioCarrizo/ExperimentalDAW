@@ -65,12 +65,12 @@ namespace esferixis {
 			/**
 			 * @post Lock GUI
 			 */
-			static void lockGUI();
+			static esferixis::cps::Cont lockGUI(esferixis::cps::Cont cont);
 
 			/**
 			 * @post Unlock GUI
 			 */
-			static void unlockGUI();
+			static esferixis::cps::Cont unlockGUI(esferixis::cps::Cont cont);
 
 			/**
 			 * @post Quits application

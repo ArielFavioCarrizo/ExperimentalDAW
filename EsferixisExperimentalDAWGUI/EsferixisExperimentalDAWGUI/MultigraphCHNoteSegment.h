@@ -54,27 +54,27 @@ namespace esferixis {
 				/**
 				 * @post Gets the offset
 				 */
-				virtual double getOffset() =0;
+				virtual double getOffset() = 0;
 
 				/*
 				 * @post Gets the height
 				 */
-				virtual double getHeight() =0;
+				virtual double getHeight() = 0;
 
 				/**
 				 * @post Gets the color
 				 */
-				virtual QColor getColor() =0;
+				virtual QColor getColor() = 0;
 
 				/**
 				 * @post Gets a boolean indicating if the segment is a continuation of the previous note
 				 */
-				virtual bool isAContinuation() =0;
+				virtual bool isAContinuation() = 0;
 
 				/**
 				 * @post Gets a boolean indicating if it is selected
 				 */
-				virtual bool isSelected() =0;
+				virtual bool isSelected() = 0;
 
 				/**
 				 * @post Sets the offset

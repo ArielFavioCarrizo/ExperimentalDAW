@@ -55,22 +55,6 @@ int SELFCLASS::run(int &argc, char **argv, esferixis::cps::Cont cont) {
 
 	runCPS(cont);
 
-	bool quitLoop = false;
-
-	while ( !quitLoop ) {
-		if (instance->quit_m) {
-			quitLoop = true;
-		}
-		else {
-			instance->qApp_m->processEvents(
-				(instance_m->processGUIEvents_m ? QEventLoop::AllEvents : QEventLoop::ExcludeUserInputEvents) |
-				QEventLoop::WaitForMoreEvents
-			);
-		}
-	}
-
-	instance->qApp_m->quit();
-
 	int retCode = instance->qApp_m->exec();
 
 	localSched.detachFromCurrentThread();
@@ -88,16 +72,34 @@ esferixis::cps::Cont SELFCLASS::toGuiThread(esferixis::cps::Cont cont) {
 	return esferixis::cps::Sched::exit();
 }
 
-void SELFCLASS::lockGUI() {
-	SELFCLASS::instance()->checkIsTheGUIThread()->processGUIEvents_m = false;
+esferixis::cps::Cont SELFCLASS::lockGUI(esferixis::cps::Cont cont) {
+	SELFCLASS *self = SELFCLASS::instance()->checkIsTheGUIThread();
+
+	if (self->processGUIEvents_m) {
+		self->processGUIEvents_m = false;
+
+		runCPS(cont);
+
+		while (!self->processGUIEvents_m && (!self->quit_m)) {
+			self->qApp_m->processEvents(QEventLoop::ExcludeUserInputEvents | QEventLoop::WaitForMoreEvents);
+		}
+	}
+	else {
+		return cont;
+	}
 }
 
-void SELFCLASS::unlockGUI() {
+esferixis::cps::Cont SELFCLASS::unlockGUI(esferixis::cps::Cont cont) {
 	SELFCLASS::instance()->checkIsTheGUIThread()->processGUIEvents_m = true;
+
+	return cont;
 }
 
 esferixis::cps::Cont SELFCLASS::quit() {
-	SELFCLASS::instance()->checkIsTheGUIThread()->quit_m = true;
+	SELFCLASS *self = SELFCLASS::instance()->checkIsTheGUIThread();
+
+	self->quit_m = true;
+	self->qApp_m->quit();
 
 	return esferixis::cps::CPS_RET;
 }

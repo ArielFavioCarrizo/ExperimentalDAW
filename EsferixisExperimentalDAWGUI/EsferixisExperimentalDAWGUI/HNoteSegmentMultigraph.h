@@ -32,8 +32,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #pragma once
 
-#include <boost/noncopyable.hpp>
+#include "MultigraphCView.h"
+#include "MultigraphCHNoteSegment.h"
+
 #include <esferixis/common/cps/cont.h>
+
+#include <qwidget.h>
 
 namespace esferixis {
 	namespace daw {
@@ -43,13 +47,51 @@ namespace esferixis {
 			public:
 				/**
 				 * @post Creates an editable multigraph based on horizontal note segments
+				         with the specified continuation
 				 */
-				HNoteSegmentMultigraph();
+				static esferixis::cps::Cont create(esferixis::daw::gui::HNoteSegmentMultigraph **instance, esferixis::cps::Cont cont);
+
+				/*
+				 * @post Gets the QT widget
+				 */
+				QWidget * widget() const;
 
 				/**
-				 * @post Destroys the multigraph
+				 * @post Returns the context essence of the view
+			     *		 
+				 *		 Warning: Use of this essence must be preceeded by the setting of the 'on opened' continuation
 				 */
-				virtual ~HNoteSegmentMultigraph();
+				esferixis::daw::gui::MultigraphCView<esferixis::daw::gui::MultigraphCHNoteSegment, esferixis::daw::gui::MultigraphCHNoteSegment::Essence>::ContextEssence viewContextEssence() const;
+
+				/**
+				 * @post Sets the continuation on opened
+				 * 
+				 *		 This continuation will be executed after a view is created using the view context essence of
+				 *		 this multigraph
+				 */
+				void setOnOpened(esferixis::cps::Cont cont);
+
+				/**
+				 * @post Closes the multiview without destroying it
+				 */
+				esferixis::cps::Cont close(esferixis::cps::Cont cont);
+
+			private:
+				class LocalQWidget final : public QWidget {
+				public:
+					LocalQWidget(esferixis::daw::gui::HNoteSegmentMultigraph *multigraph);
+
+					void paintEvent(QPaintEvent *event) override;
+
+				private:
+					esferixis::daw::gui::HNoteSegmentMultigraph *multigraph_m;
+				};
+
+				esferixis::daw::gui::MultigraphCView<esferixis::daw::gui::MultigraphCHNoteSegment, esferixis::daw::gui::MultigraphCHNoteSegment::Essence>::ContextEssence contextEssence_m;
+
+				QWidget *widget_m;
+				esferixis::daw::gui::MultigraphCView<esferixis::daw::gui::MultigraphCHNoteSegment, esferixis::daw::gui::MultigraphCHNoteSegment::Essence> *view_m;
+				esferixis::cps::Cont nextExternalCont_m;
 			};
 		}
 	}

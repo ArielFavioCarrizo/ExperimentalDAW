@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define SELFCLASS esferixis::daw::gui::test::MultigraphCViewMock
 
-esferixis::cps::Cont SELFCLASS::create(esferixis::daw::gui::MultigraphCView<esferixis::daw::gui::MultigraphCHNoteSegment, esferixis::daw::gui::MultigraphCHNoteSegment::Essence>::ContextEssence contextEssence, esferixis::cps::Cont cont) {
+esferixis::cps::Cont SELFCLASS::create(esferixis::daw::gui::MultigraphCView<esferixis::daw::gui::MultigraphCHNoteSegment, esferixis::daw::gui::MultigraphCHNoteSegment::Essence>::ContextEssence contextEssence) {
 	SELFCLASS *self = new SELFCLASS();
 
 	*contextEssence.instance = self;
@@ -43,7 +43,7 @@ esferixis::cps::Cont SELFCLASS::create(esferixis::daw::gui::MultigraphCView<esfe
 	self->onElementLoad_m = contextEssence.onElementLoad;
 	self->onElementUnload_m = contextEssence.onElementUnload;
 
-	return cont;
+	return contextEssence.onInitialized;
 }
 
 SELFCLASS::MultigraphCViewMock()
@@ -91,26 +91,24 @@ esferixis::cps::Cont SELFCLASS::unlockElement(esferixis::daw::gui::MultigraphCHN
 }
 
 esferixis::cps::Cont SELFCLASS::close(esferixis::cps::Cont cont) {
+	struct STM {
+		static esferixis::cps::Cont loop(SELFCLASS *self) {
+			if (!self->noteSegments_m.isEmpty()) {
+				return self->noteSegments_m.first()->get()->erase(esferixis::cps::Cont(loop, self));
+			}
+			else {
+				esferixis::cps::Cont cont = self->onClosed_m;
+
+				delete self;
+
+				return cont;
+			}
+		}
+	};
+
 	this->onClosed_m = cont;
 
-	return esferixis::cps::Cont(SELFCLASS::close_unloadElement, this);
-}
-
-esferixis::cps::Cont SELFCLASS::close_unloadElement(esferixis::daw::gui::test::MultigraphCViewMock *self) {
-	if (!self->noteSegments_m.isEmpty()) {
-		return self->noteSegments_m.first()->get()->erase( esferixis::cps::Cont(SELFCLASS::close_unloadElement, self) );
-	}
-	else {
-		return esferixis::cps::Cont(SELFCLASS::close_deleteItself, self);
-	}
-}
-
-esferixis::cps::Cont SELFCLASS::close_deleteItself(esferixis::daw::gui::test::MultigraphCViewMock *self) {
-	esferixis::cps::Cont cont = self->onClosed_m;
-
-	delete self;
-
-	return cont;
+	return esferixis::cps::Cont(STM::loop, this);
 }
 
 esferixis::cps::Cont SELFCLASS::doNextAction() {

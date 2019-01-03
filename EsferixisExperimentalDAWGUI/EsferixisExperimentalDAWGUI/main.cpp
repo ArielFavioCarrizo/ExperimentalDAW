@@ -46,6 +46,12 @@ int main(int argc, char *argv[])
 }
 
 esferixis::cps::Cont setup(Context *context) {
+	struct STM {
+		static esferixis::cps::Cont onGUIUnlocked(Context *context) {
+			return esferixis::cps::Sched::exit();
+		}
+	};
+
 	QWindow *window = new QWindow();
 
 	context->window = window;
@@ -54,9 +60,7 @@ esferixis::cps::Cont setup(Context *context) {
 	window->show();
 	window->setTitle("Test");
 
-	esferixis::Qt::Application::unlockGUI();
-
-	return esferixis::cps::Sched::exit();
+	return esferixis::Qt::Application::unlockGUI( esferixis::cps::Cont(STM::onGUIUnlocked, context) );
 }
 
 /*

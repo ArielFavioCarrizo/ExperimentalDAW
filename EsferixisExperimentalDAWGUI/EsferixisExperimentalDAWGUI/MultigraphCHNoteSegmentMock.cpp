@@ -77,6 +77,7 @@ esferixis::cps::Cont SELFCLASS::setOffset(double offset, esferixis::cps::Cont co
 	this->multigraphCViewMock_m->nextExternalActionCont_m = cont;
 
 	this->offset_m = offset;
+
 	return this->onNewOffset_m;
 }
 
@@ -84,6 +85,7 @@ esferixis::cps::Cont SELFCLASS::setHeight(double height, esferixis::cps::Cont co
 	this->multigraphCViewMock_m->nextExternalActionCont_m = cont;
 
 	this->height_m = height;
+
 	return this->onNewHeight_m;
 }
 
@@ -95,22 +97,23 @@ esferixis::cps::Cont SELFCLASS::setIsAContinuation(bool isAContinuation, esferix
 }
 
 esferixis::cps::Cont SELFCLASS::erase(esferixis::cps::Cont cont) {
+	struct STM {
+		static esferixis::cps::Cont deleteItself(SELFCLASS *self) {
+			esferixis::cps::Cont cont = self->returnCont_m;
+
+			self->multigraphCViewMock_m->noteSegments_m.remove(&(self->containerNode_m));
+
+			delete self;
+
+			return cont;
+		}
+	};
+
 	this->multigraphCViewMock_m->referencedElement_m = this;
-	this->multigraphCViewMock_m->nextExternalActionCont_m = esferixis::cps::Cont(SELFCLASS::deleteItself, this);
+	this->multigraphCViewMock_m->nextExternalActionCont_m = esferixis::cps::Cont(STM::deleteItself, this);
 	this->returnCont_m = cont;
 
 	return this->multigraphCViewMock_m->onElementUnload_m;
-}
-
-esferixis::cps::Cont SELFCLASS::deleteItself(esferixis::daw::gui::test::MultigraphCHNoteSegmentMock *self) {
-	esferixis::daw::gui::test::MultigraphCViewMock *view = self->multigraphCViewMock_m;
-	esferixis::cps::Cont cont = self->returnCont_m;
-
-	view->noteSegments_m.remove(&(self->containerNode_m));
-
-	delete self;
-
-	return cont;
 }
 
 void SELFCLASS::setOnNewOffset(esferixis::cps::Cont cont) {
@@ -122,7 +125,7 @@ void SELFCLASS::setOnNewHeight(esferixis::cps::Cont cont) {
 }
 
 void SELFCLASS::setOnNewColor(esferixis::cps::Cont cont) {
-	// Do nothing
+	this->onNewColor_m = cont;
 }
 
 void SELFCLASS::setOnIsAContinuationChange(esferixis::cps::Cont cont) {

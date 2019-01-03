@@ -83,9 +83,6 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Multigraph.cpp">
-      <Filter>Source Files\Widgets</Filter>
-    </ClCompile>
     <ClCompile Include="Source.cpp">
       <Filter>Header Files\Widgets</Filter>
     </ClCompile>
@@ -97,6 +94,9 @@
     </ClCompile>
     <ClCompile Include="MultigraphCViewMock.cpp">
       <Filter>Source Files\Test\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="HNoteSegmentMultigraph.cpp">
+      <Filter>Source Files\Widgets</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

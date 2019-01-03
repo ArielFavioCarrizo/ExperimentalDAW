@@ -48,6 +48,8 @@ namespace esferixis {
 				struct ContextEssence {
 					esferixis::daw::gui::MultigraphCView<E, EEssence> **instance;
 
+					esferixis::cps::Cont onInitialized;
+
 					esferixis::cps::Cont onElementLoad;
 					esferixis::cps::Cont onElementUnload;
 				};
@@ -99,6 +101,7 @@ namespace esferixis {
 				virtual esferixis::cps::Cont close(esferixis::cps::Cont cont) =0;
 
 				/**
+				 * @pre It must be executed after a continuation callback
 				 * @post Do the next action
 				 */
 				virtual esferixis::cps::Cont doNextAction() =0;
