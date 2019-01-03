@@ -73,7 +73,7 @@ esferixis::cps::Cont SELFCLASS::toGuiThread(esferixis::cps::Cont cont) {
 }
 
 esferixis::cps::Cont SELFCLASS::lockGUI(esferixis::cps::Cont cont) {
-	SELFCLASS *self = SELFCLASS::instance()->checkIsTheGUIThread();
+	SELFCLASS *self = SELFCLASS::instance()->instanceFromGUIThread();
 
 	if (self->processGUIEvents_m) {
 		self->processGUIEvents_m = false;
@@ -92,18 +92,28 @@ esferixis::cps::Cont SELFCLASS::lockGUI(esferixis::cps::Cont cont) {
 }
 
 esferixis::cps::Cont SELFCLASS::unlockGUI(esferixis::cps::Cont cont) {
-	SELFCLASS::instance()->checkIsTheGUIThread()->processGUIEvents_m = true;
+	SELFCLASS::instance()->instanceFromGUIThread()->processGUIEvents_m = true;
 
 	return cont;
 }
 
 esferixis::cps::Cont SELFCLASS::quit() {
-	SELFCLASS *self = SELFCLASS::instance()->checkIsTheGUIThread();
+	SELFCLASS *self = SELFCLASS::instance()->instanceFromGUIThread();
 
 	self->quit_m = true;
 	self->qApp_m->quit();
 
 	return esferixis::cps::CPS_RET;
+}
+
+bool SELFCLASS::onGUIThread() {
+	return (QThread::currentThread() == SELFCLASS::instance()->qApp_m->thread());
+}
+
+void SELFCLASS::checkOnGUIThread() {
+	if ( !SELFCLASS::onGUIThread() ) {
+		throw std::runtime_error("It must be run on the GUI thread");
+	}
 }
 
 SELFCLASS::LocalSched::LocalSched(esferixis::Qt::Application *app) {
@@ -155,11 +165,8 @@ esferixis::Qt::Application * SELFCLASS::instance() {
 	}
 }
 
-esferixis::Qt::Application * SELFCLASS::checkIsTheGUIThread() {
-	if (QThread::currentThread() == this->qApp_m->thread()) {
-		return this;
-	}
-	else {
-		throw std::runtime_error("It must be run on the GUI thread");
-	}
+esferixis::Qt::Application * SELFCLASS::instanceFromGUIThread() {
+	SELFCLASS::checkOnGUIThread();
+	
+	return this;
 }

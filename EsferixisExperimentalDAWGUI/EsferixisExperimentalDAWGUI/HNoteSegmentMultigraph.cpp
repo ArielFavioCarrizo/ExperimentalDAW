@@ -51,13 +51,30 @@ esferixis::cps::Cont SELFCLASS::create(esferixis::daw::gui::HNoteSegmentMultigra
 		}
 
 		static esferixis::cps::Cont onElementLoad(esferixis::daw::gui::HNoteSegmentMultigraph *self) {
-			// FIXME: Implement this
-			throw std::runtime_error("Not implemented");
+			esferixis::daw::gui::HNoteSegmentMultigraph::ElementContext *elementContext = new esferixis::daw::gui::HNoteSegmentMultigraph::ElementContext();
+
+			elementContext->multigraph = self;
+			elementContext->noteSegment = self->view_m->getReferencedElement();
+
+			elementContext->noteSegment->setContext(static_cast<void *>(elementContext));
+
+			self->loadedElements_m.addLast(&elementContext->node_m);
+
+			return self->view_m->doNextAction();
 		}
 
 		static esferixis::cps::Cont onElementUnload(esferixis::daw::gui::HNoteSegmentMultigraph *self) {
-			// FIXME: Implement this
-			throw std::runtime_error("Not implemented");
+			esferixis::daw::gui::MultigraphCHNoteSegment *noteSegment = self->view_m->getReferencedElement();
+
+			esferixis::daw::gui::HNoteSegmentMultigraph::ElementContext *elementContext = static_cast<esferixis::daw::gui::HNoteSegmentMultigraph::ElementContext *>(noteSegment->getContext());
+
+			self->loadedElements_m.remove(&elementContext->node_m);
+
+			noteSegment->setContext(nullptr);
+
+			delete elementContext;
+
+			return self->view_m->doNextAction();
 		}
 	};
 
@@ -78,6 +95,14 @@ esferixis::cps::Cont SELFCLASS::create(esferixis::daw::gui::HNoteSegmentMultigra
 
 QWidget * SELFCLASS::widget() const {
 	return this->widget_m;
+}
+
+void SELFCLASS::setBackgroundColor(QColor color) {
+	this->backgroundColor_m = color;
+}
+
+void SELFCLASS::setForegroundColor(QColor color) {
+	this->gridColor_m = color;
 }
 
 esferixis::daw::gui::MultigraphCView<esferixis::daw::gui::MultigraphCHNoteSegment, esferixis::daw::gui::MultigraphCHNoteSegment::Essence>::ContextEssence SELFCLASS::viewContextEssence() const {

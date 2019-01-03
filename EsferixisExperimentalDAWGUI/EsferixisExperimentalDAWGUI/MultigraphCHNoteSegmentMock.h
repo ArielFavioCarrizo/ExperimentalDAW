@@ -46,7 +46,7 @@ namespace esferixis {
 					friend class MultigraphCViewMock;
 
 				public:
-					double getOffset() override;
+					double getTimeOffset() override;
 
 					double getHeight() override;
 
@@ -90,7 +90,7 @@ namespace esferixis {
 					esferixis::daw::gui::test::MultigraphCViewMock *multigraphCViewMock_m;
 					esferixis::LinkedList<esferixis::daw::gui::MultigraphCHNoteSegment *>::Node containerNode_m;
 
-					double offset_m;
+					double timeOffset_m;
 					double height_m;
 					bool isAContinuation_m;
 					bool isSelected_m;

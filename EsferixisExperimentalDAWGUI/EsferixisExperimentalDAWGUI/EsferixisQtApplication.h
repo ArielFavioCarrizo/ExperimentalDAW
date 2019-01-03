@@ -77,6 +77,17 @@ namespace esferixis {
 			 */
 			static esferixis::cps::Cont quit();
 
+			/**
+			 * @post Returns if the current thread is the GUI thread
+			 */
+			static bool onGUIThread();
+
+			/**
+			 * @post Checks if the current thread is the GUI thread.
+					 Throws an exception if it is called from another thread.
+			 */
+			static void checkOnGUIThread();
+
 		private:
 			class Esferixis_EXPORT LocalSched final : public esferixis::cps::Sched {
 			public:
@@ -115,9 +126,9 @@ namespace esferixis {
 			static esferixis::Qt::Application * instance();
 
 			/**
-			 * @post Checks that is the same thread as the GUI
+			 * @post Gets the instance checking that it is called from the GUI thread
 			 */
-			esferixis::Qt::Application * checkIsTheGUIThread();
+			esferixis::Qt::Application * instanceFromGUIThread();
 
 			static esferixis::Qt::Application *instance_m;
 

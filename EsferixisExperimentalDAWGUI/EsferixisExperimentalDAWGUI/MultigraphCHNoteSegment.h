@@ -52,9 +52,9 @@ namespace esferixis {
 				};
 
 				/**
-				 * @post Gets the offset
+				 * @post Gets the time offset
 				 */
-				virtual double getOffset() = 0;
+				virtual double getTimeOffset() = 0;
 
 				/*
 				 * @post Gets the height

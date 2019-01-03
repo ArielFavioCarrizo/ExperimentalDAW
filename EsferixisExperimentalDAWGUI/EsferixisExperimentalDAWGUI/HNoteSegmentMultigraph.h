@@ -36,6 +36,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "MultigraphCHNoteSegment.h"
 
 #include <esferixis/common/cps/cont.h>
+#include <esferixis/common/data/linkedlist.h>
 
 #include <qwidget.h>
 
@@ -55,6 +56,18 @@ namespace esferixis {
 				 * @post Gets the QT widget
 				 */
 				QWidget * widget() const;
+
+				/**
+				 * @pre It must be done from the GUI thread
+				 * @post Sets the background color
+				 */
+				void setBackgroundColor(QColor color);
+
+				/**
+				 * @pre It must be done from the GUI thread
+				 * @post Sets the grid color
+				 */
+				void setForegroundColor(QColor color);
 
 				/**
 				 * @post Returns the context essence of the view
@@ -87,10 +100,22 @@ namespace esferixis {
 					esferixis::daw::gui::HNoteSegmentMultigraph *multigraph_m;
 				};
 
+				struct ElementContext {
+					esferixis::daw::gui::MultigraphCHNoteSegment *noteSegment;
+					esferixis::daw::gui::HNoteSegmentMultigraph *multigraph;
+
+					esferixis::LinkedList<ElementContext *>::Node node_m;
+				};
+
 				esferixis::daw::gui::MultigraphCView<esferixis::daw::gui::MultigraphCHNoteSegment, esferixis::daw::gui::MultigraphCHNoteSegment::Essence>::ContextEssence contextEssence_m;
 
-				QWidget *widget_m;
+				LocalQWidget *widget_m;
+				QColor backgroundColor_m;
+				QColor gridColor_m;
+
 				esferixis::daw::gui::MultigraphCView<esferixis::daw::gui::MultigraphCHNoteSegment, esferixis::daw::gui::MultigraphCHNoteSegment::Essence> *view_m;
+				esferixis::LinkedList<ElementContext *> loadedElements_m;
+
 				esferixis::cps::Cont nextExternalCont_m;
 			};
 		}

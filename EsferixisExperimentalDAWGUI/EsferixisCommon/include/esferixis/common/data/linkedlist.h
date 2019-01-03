@@ -48,7 +48,7 @@ namespace esferixis {
 			inline Node() {
 				this->previousNode_m = nullptr;
 				this->nextNode_m = nullptr;
-				this->isInAList_m = false;
+				this->list_m = nullptr;
 			}
 
 			/**

@@ -42,7 +42,7 @@ SELFCLASS::MultigraphCHNoteSegmentMock(esferixis::daw::gui::MultigraphCHNoteSegm
 {
 	this->multigraphCViewMock_m->noteSegments_m.addLast(&(this->containerNode_m));
 
-	this->offset_m = essence.offset;
+	this->timeOffset_m = essence.offset;
 	this->height_m = essence.height;
 	this->isAContinuation_m = false;
 	this->isSelected_m = false;
@@ -53,8 +53,8 @@ SELFCLASS::~MultigraphCHNoteSegmentMock()
 {
 }
 
-double SELFCLASS::getOffset() {
-	return this->offset_m;
+double SELFCLASS::getTimeOffset() {
+	return this->timeOffset_m;
 }
 
 double SELFCLASS::getHeight() {
@@ -76,7 +76,7 @@ bool SELFCLASS::isSelected() {
 esferixis::cps::Cont SELFCLASS::setOffset(double offset, esferixis::cps::Cont cont) {
 	this->multigraphCViewMock_m->nextExternalActionCont_m = cont;
 
-	this->offset_m = offset;
+	this->timeOffset_m = offset;
 
 	return this->onNewOffset_m;
 }
