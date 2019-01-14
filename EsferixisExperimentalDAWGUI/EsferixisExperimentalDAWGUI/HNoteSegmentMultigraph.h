@@ -67,7 +67,7 @@ namespace esferixis {
 				 * @pre It must be done from the GUI thread
 				 * @post Sets the grid color
 				 */
-				void setForegroundColor(QColor color);
+				void setGridColor(QColor color);
 
 				/**
 				 * @post Returns the context essence of the view

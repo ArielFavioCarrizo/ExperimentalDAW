@@ -131,6 +131,7 @@
     <ClInclude Include="MultigraphCView.h" />
     <ClInclude Include="EsferixisQtApplication.h" />
     <ClInclude Include="MultigraphCViewMock.h" />
+    <ClInclude Include="MultigraphCViewMockTestWindow.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HNoteSegmentMultigraph.cpp" />
@@ -139,6 +140,7 @@
     <ClCompile Include="EsferixisQtApplication.cpp" />
     <ClCompile Include="MultigraphCHNoteSegmentMock.cpp" />
     <ClCompile Include="MultigraphCViewMock.cpp" />
+    <ClCompile Include="MultigraphCViewMockTestWindow.cpp" />
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -101,7 +101,7 @@ void SELFCLASS::setBackgroundColor(QColor color) {
 	this->backgroundColor_m = color;
 }
 
-void SELFCLASS::setForegroundColor(QColor color) {
+void SELFCLASS::setGridColor(QColor color) {
 	this->gridColor_m = color;
 }
 
