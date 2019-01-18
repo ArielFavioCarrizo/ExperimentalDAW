@@ -31,9 +31,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #pragma once
-#include <qwindow.h>
+#include <qwidget.h>
 
 #include <esferixis/common/cps/cont.h>
+
+#include "MultigraphCView.h"
+#include "HNoteSegmentMultigraph.h"
 
 namespace esferixis {
 	namespace daw {
@@ -43,17 +46,40 @@ namespace esferixis {
 				{
 				public:
 					/**
-					 * @post Creates a window of multigraphCView mock
+					 * @pre The GUI must be locked
+					 * @post Creates a multigraphCView window mock
 					 */
-					static esferixis::cps::Cont run(esferixis::cps::Cont cont);
+					static esferixis::cps::Cont create(esferixis::daw::gui::test::MultigraphCViewWindowMock **windowMock, esferixis::cps::Cont cont);
+
+					/**
+					 * @post Sets the continuation to execute after it has been closed
+					 *		 The continuation will be executed with the GUI locked
+					 */
+					void setOnClosed(esferixis::cps::Cont cont);
 
 				private:
+					class LocalWindow : QWidget {
+					public:
+						LocalWindow(esferixis::daw::gui::test::MultigraphCViewWindowMock *parent);
+
+					protected:
+						void closeEvent(QCloseEvent *event) override;
+
+					private:
+						esferixis::daw::gui::test::MultigraphCViewWindowMock *parent_m;
+					};
+
 					/**
-					 * @post Creates the test
+					 * @post Creates a window of multigraphCView window mock
 					 */
 					MultigraphCViewWindowMock();
 
-					QWindow *window_m;
+					esferixis::daw::gui::MultigraphCView<esferixis::daw::gui::MultigraphCHNoteSegment, esferixis::daw::gui::MultigraphCHNoteSegment::Essence>::ContextEssence viewContextEssence_m;
+					QWidget *window_m;
+					esferixis::daw::gui::HNoteSegmentMultigraph *multigraph_m;
+
+					esferixis::cps::Cont onNextExternalOp_m;
+					esferixis::cps::Cont onClosed_m;
 				};
 			}
 		}
