@@ -56,23 +56,23 @@ namespace esferixis {
 
 					bool isSelected() override;
 
-					esferixis::cps::Cont setOffset(double offset, esferixis::cps::Cont cont) override;
+					esferixis_cps_cont setOffset(double offset, esferixis_cps_cont cont) override;
 
-					esferixis::cps::Cont setHeight(double height, esferixis::cps::Cont cont) override;
+					esferixis_cps_cont setHeight(double height, esferixis_cps_cont cont) override;
 
-					esferixis::cps::Cont setIsAContinuation(bool isAContinuation, esferixis::cps::Cont cont) override;
+					esferixis_cps_cont setIsAContinuation(bool isAContinuation, esferixis_cps_cont cont) override;
 
-					esferixis::cps::Cont erase(esferixis::cps::Cont cont) override;
+					esferixis_cps_cont erase(esferixis_cps_cont cont) override;
 
-					void setOnNewOffset(esferixis::cps::Cont cont) override;
+					void setOnNewOffset(esferixis_cps_cont cont) override;
 
-					void setOnNewHeight(esferixis::cps::Cont cont) override;
+					void setOnNewHeight(esferixis_cps_cont cont) override;
 
-					void setOnNewColor(esferixis::cps::Cont cont) override;
+					void setOnNewColor(esferixis_cps_cont cont) override;
 
-					void setOnIsAContinuationChange(esferixis::cps::Cont cont) override;
+					void setOnIsAContinuationChange(esferixis_cps_cont cont) override;
 
-					void setOnNewSelectionState(esferixis::cps::Cont cont) override;
+					void setOnNewSelectionState(esferixis_cps_cont cont) override;
 
 				protected:
 					/**
@@ -95,13 +95,13 @@ namespace esferixis {
 					bool isAContinuation_m;
 					bool isSelected_m;
 
-					esferixis::cps::Cont onNewOffset_m;
-					esferixis::cps::Cont onNewHeight_m;
-					esferixis::cps::Cont onNewColor_m;
-					esferixis::cps::Cont onIsAContinuationChange_m;
-					esferixis::cps::Cont onNewSelectionState_m;
+					esferixis_cps_cont onNewOffset_m;
+					esferixis_cps_cont onNewHeight_m;
+					esferixis_cps_cont onNewColor_m;
+					esferixis_cps_cont onIsAContinuationChange_m;
+					esferixis_cps_cont onNewSelectionState_m;
 
-					esferixis::cps::Cont returnCont_m;
+					esferixis_cps_cont returnCont_m;
 				};
 			}
 		}

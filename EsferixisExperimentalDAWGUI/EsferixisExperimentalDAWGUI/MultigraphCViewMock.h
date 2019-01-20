@@ -51,25 +51,25 @@ namespace esferixis {
 					/**
 					 * @post Creates the view mock
 					 */
-					static esferixis::cps::Cont create(esferixis::daw::gui::MultigraphCView<esferixis::daw::gui::MultigraphCHNoteSegment, esferixis::daw::gui::MultigraphCHNoteSegment::Essence>::ContextEssence contextEssence);
+					static esferixis_cps_cont create(esferixis::daw::gui::MultigraphCView<esferixis::daw::gui::MultigraphCHNoteSegment, esferixis::daw::gui::MultigraphCHNoteSegment::Essence>::ContextEssence contextEssence);
 
 					esferixis::daw::gui::MultigraphCHNoteSegment * getReferencedElement() override;
 
-					esferixis::cps::Cont createElement(esferixis::daw::gui::MultigraphCHNoteSegment::Essence elementEssence, esferixis::cps::Cont cont) override;
+					esferixis_cps_cont createElement(esferixis::daw::gui::MultigraphCHNoteSegment::Essence elementEssence, esferixis_cps_cont cont) override;
 
-					void setOnElementLoad(esferixis::cps::Cont cont) override;
+					void setOnElementLoad(esferixis_cps_cont cont) override;
 
-					void setOnElementToUnload(esferixis::cps::Cont cont) override;
+					void setOnElementToUnload(esferixis_cps_cont cont) override;
 
-					esferixis::cps::Cont setTimeIntervalToView(double min, double max, esferixis::cps::Cont cont) override;
+					esferixis_cps_cont setTimeIntervalToView(double min, double max, esferixis_cps_cont cont) override;
 
-					esferixis::cps::Cont lockElement(esferixis::daw::gui::MultigraphCHNoteSegment *element, esferixis::cps::Cont cont) override;
+					esferixis_cps_cont lockElement(esferixis::daw::gui::MultigraphCHNoteSegment *element, esferixis_cps_cont cont) override;
 
-					esferixis::cps::Cont unlockElement(esferixis::daw::gui::MultigraphCHNoteSegment *element, esferixis::cps::Cont cont) override;
+					esferixis_cps_cont unlockElement(esferixis::daw::gui::MultigraphCHNoteSegment *element, esferixis_cps_cont cont) override;
 
-					esferixis::cps::Cont close(esferixis::cps::Cont cont) override;
+					esferixis_cps_cont close(esferixis_cps_cont cont) override;
 
-					esferixis::cps::Cont doNextAction() override;
+					esferixis_cps_cont doNextAction() override;
 
 				private:
 					/**
@@ -86,11 +86,11 @@ namespace esferixis {
 
 					esferixis::LinkedList<esferixis::daw::gui::MultigraphCHNoteSegment *> noteSegments_m;
 
-					esferixis::cps::Cont onElementLoad_m;
-					esferixis::cps::Cont onElementUnload_m;
-					esferixis::cps::Cont onClosed_m;
+					esferixis_cps_cont onElementLoad_m;
+					esferixis_cps_cont onElementUnload_m;
+					esferixis_cps_cont onClosed_m;
 
-					esferixis::cps::Cont nextExternalActionCont_m;
+					esferixis_cps_cont nextExternalActionCont_m;
 				};
 			}
 		}

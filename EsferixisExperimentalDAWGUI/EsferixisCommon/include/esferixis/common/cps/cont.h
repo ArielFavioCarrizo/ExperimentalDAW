@@ -32,60 +32,38 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #pragma once
 
-#include <stdexcept>
-
 #include <esferixis/common/common.h>
 
-namespace esferixis {
-	namespace cps {
-		class Cont final
-		{
-		public:
-			/**
-			 * @post Creates an invalid continuation
-			 */
-			inline Cont() {
-				this->funptr_m = esferixis::cps::Cont::invalidFun;
-			}
+struct esferixis_cps_cont {
+	esferixis_cps_cont(*funptr) (void *);
+	void *data;
+};
 
-			/**
-			 * @post Creates a continuation with the given function pointer and data
-			 */
-			template<typename T>
-			inline Cont(Cont(*funptr) (T *), T *data) {
-				this->funptr_m = reinterpret_cast<Cont(*) (void *)>(funptr);
-				this->data_m = reinterpret_cast<void *>(data);
-			}
+inline void esferixis_runcps(esferixis_cps_cont firstCont) {
+	esferixis_cps_cont currentCont = firstCont;
 
-			template<typename T>
-			static inline Cont create(Cont(*funptr) (T *), T *data) {
-				return Cont(funptr, data);
-			}
-
-			friend void runCPS(Cont firstContinuation);
-
-		private:
-			static Cont invalidFun(void *data) {
-				throw std::runtime_error("Invalid continuation");
-			}
-
-			Cont(*funptr_m) (void *);
-			void *data_m;
-		};
-
-		// Continuation for qutting the CPS loop (Trampoline)
-		const Cont CPS_RET = Cont::create<void *>(nullptr, nullptr);
-
-		/**
-		 * @post Run the given continuation and its successors until
-		         CPS_RET
-		 */
-		inline void runCPS(Cont firstContinuation) {
-			Cont currentCont = firstContinuation;
-
-			while (currentCont.funptr_m != nullptr) {
-				currentCont = currentCont.funptr_m(currentCont.data_m);
-			}
-		}
+	while (currentCont.funptr != nullptr) {
+		currentCont = currentCont.funptr(currentCont.data);
 	}
 }
+
+#ifdef __cplusplus
+namespace esferixis {
+	namespace cps {
+		/**
+		 * @post Creates a continuation with the given function pointer and data
+		 */
+		template<typename T>
+		inline esferixis_cps_cont mkCont(esferixis_cps_cont(*funptr) (T *), T *data) {
+			esferixis_cps_cont cont;
+			cont.funptr = reinterpret_cast<esferixis_cps_cont(*) (void *)>(funptr);
+			cont.data = reinterpret_cast<void *>(data);
+
+			return cont;
+		}
+
+		// Continuation for qutting the CPS loop (Trampoline)
+		const esferixis_cps_cont CPS_RET = mkCont<void *>(nullptr, nullptr);
+	}
+}
+#endif

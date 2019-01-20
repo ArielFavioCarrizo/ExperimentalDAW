@@ -34,6 +34,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <boost/noncopyable.hpp>
 #include <stdexcept>
 
+#ifdef __cplusplus
+
 namespace esferixis {
 	template<typename T>
 	class LinkedList final : private boost::noncopyable {
@@ -195,3 +197,5 @@ namespace esferixis {
 		esferixis::LinkedList<T>::Node *lastNode_m;
 	};
 }
+
+#endif

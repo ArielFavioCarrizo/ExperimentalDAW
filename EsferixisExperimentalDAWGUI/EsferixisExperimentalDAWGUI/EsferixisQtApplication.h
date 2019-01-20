@@ -55,27 +55,27 @@ namespace esferixis {
 
 					 Returns error code
 			 */
-			static int run(int &argc, char **argv, esferixis::cps::Cont cont);
+			static int run(int &argc, char **argv, esferixis_cps_cont cont);
 
 			/**
 			 * @post Executes continuation in the GUI thread
 			 */
-			static esferixis::cps::Cont toGuiThread(esferixis::cps::Cont cont);
+			static esferixis_cps_cont toGuiThread(esferixis_cps_cont cont);
 
 			/**
 			 * @post Lock GUI
 			 */
-			static esferixis::cps::Cont lockGUI(esferixis::cps::Cont cont);
+			static esferixis_cps_cont lockGUI(esferixis_cps_cont cont);
 
 			/**
 			 * @post Unlock GUI
 			 */
-			static esferixis::cps::Cont unlockGUI(esferixis::cps::Cont cont);
+			static esferixis_cps_cont unlockGUI(esferixis_cps_cont cont);
 
 			/**
 			 * @post Quits application
 			 */
-			static esferixis::cps::Cont quit();
+			static esferixis_cps_cont quit();
 
 			/**
 			 * @post Returns if the current thread is the GUI thread
@@ -89,26 +89,10 @@ namespace esferixis {
 			static void checkOnGUIThread();
 
 		private:
-			class Esferixis_EXPORT LocalSched final : public esferixis::cps::Sched {
-			public:
-				/**
-				 * @post Creates a QT scheduler wrapper
-				 */
-				LocalSched(esferixis::Qt::Application *app);
-
-				/**
-				 * @post Destroys the scheduler wrapper
-				 */
-				~LocalSched();
-
-			protected:
-				esferixis::cps::Cont yield_impl(esferixis::cps::Cont cont) override;
-				esferixis::cps::Cont fork_impl(esferixis::cps::Cont cont1, esferixis::cps::Cont cont2) override;
-				esferixis::cps::Cont waitFor_impl(std::chrono::nanoseconds duration, esferixis::cps::Cont cont) override;
-				esferixis::cps::Cont exit_impl() override;
-			private:
-				esferixis::Qt::Application *app_m;
-			};
+			static esferixis_cps_cont sched_yield(void *schedData, esferixis_cps_cont cont);
+			static esferixis_cps_cont sched_fork(void *schedData, esferixis_cps_cont cont1, esferixis_cps_cont cont2);
+			static esferixis_cps_cont sched_waitFor(void *schedData, int64_t duration, esferixis_cps_cont cont);
+			static esferixis_cps_cont sched_exit(void *schedData);
 
 			/**
 			 * @post Creates an QApplication wrapped in a CPS style manager

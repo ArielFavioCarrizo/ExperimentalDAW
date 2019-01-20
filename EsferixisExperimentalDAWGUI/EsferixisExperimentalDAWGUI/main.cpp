@@ -41,17 +41,17 @@ struct Context {
 	QWindow *window;
 };
 
-esferixis::cps::Cont setup(Context *context);
+esferixis_cps_cont setup(Context *context);
 
 int main(int argc, char *argv[])
 {
-	esferixis::Qt::Application::run(argc, argv, esferixis::cps::Cont(setup, new Context()));
+	esferixis::Qt::Application::run(argc, argv, esferixis::cps::mkCont(setup, new Context()));
 }
 
-esferixis::cps::Cont setup(Context *context) {
+esferixis_cps_cont setup(Context *context) {
 	struct STM {
-		static esferixis::cps::Cont onGUIUnlocked(Context *context) {
-			return esferixis::cps::Sched::exit();
+		static esferixis_cps_cont onGUIUnlocked(Context *context) {
+			return esferixis_cps_sched_exit();
 		}
 	};
 
@@ -69,7 +69,7 @@ esferixis::cps::Cont setup(Context *context) {
 				return true;
 			}
 			else {
-				QWindow::event(event);
+				return QWindow::event(event);
 			}
 		}
 
@@ -86,10 +86,10 @@ esferixis::cps::Cont setup(Context *context) {
 	window->setTitle("Test");
 
 	QObject::connect(window, &QWindow::destroyed, []() {
-		runCPS( esferixis::Qt::Application::quit() );
+		esferixis_runcps( esferixis::Qt::Application::quit() );
 	});
 
-	return esferixis::Qt::Application::unlockGUI( esferixis::cps::Cont(STM::onGUIUnlocked, context) );
+	return esferixis::Qt::Application::unlockGUI( esferixis::cps::mkCont(STM::onGUIUnlocked, context) );
 }
 
 /*

@@ -34,8 +34,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <esferixis/common/common.h>
 
+#ifdef __cplusplus
+
 namespace esferixis {
-	class EsferixisCommon_API Contextualized
+	class EsferixisCommon_CPP_API Contextualized
 	{
 	public:
 		/**
@@ -63,3 +65,4 @@ namespace esferixis {
 	};
 }
 
+#endif

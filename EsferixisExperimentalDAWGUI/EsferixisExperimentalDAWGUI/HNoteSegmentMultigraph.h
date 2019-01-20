@@ -50,7 +50,7 @@ namespace esferixis {
 				 * @post Creates an editable multigraph based on horizontal note segments
 				         with the specified continuation
 				 */
-				static esferixis::cps::Cont create(esferixis::daw::gui::HNoteSegmentMultigraph **instance, esferixis::cps::Cont cont);
+				static esferixis_cps_cont create(esferixis::daw::gui::HNoteSegmentMultigraph **instance, esferixis_cps_cont cont);
 
 				/*
 				 * @post Gets the QT widget
@@ -82,12 +82,12 @@ namespace esferixis {
 				 *		 This continuation will be executed after a view is created using the view context essence of
 				 *		 this multigraph
 				 */
-				void setOnOpened(esferixis::cps::Cont cont);
+				void setOnOpened(esferixis_cps_cont cont);
 
 				/**
 				 * @post Closes the multiview without destroying it
 				 */
-				esferixis::cps::Cont close(esferixis::cps::Cont cont);
+				esferixis_cps_cont close(esferixis_cps_cont cont);
 
 			private:
 				class LocalQWidget final : public QWidget {
@@ -116,7 +116,7 @@ namespace esferixis {
 				esferixis::daw::gui::MultigraphCView<esferixis::daw::gui::MultigraphCHNoteSegment, esferixis::daw::gui::MultigraphCHNoteSegment::Essence> *view_m;
 				esferixis::LinkedList<ElementContext *> loadedElements_m;
 
-				esferixis::cps::Cont nextExternalCont_m;
+				esferixis_cps_cont nextExternalCont_m;
 			};
 		}
 	}

@@ -38,7 +38,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 esferixis::Qt::Application * SELFCLASS::instance_m = nullptr;
 
-int SELFCLASS::run(int &argc, char **argv, esferixis::cps::Cont cont) {
+int SELFCLASS::run(int &argc, char **argv, esferixis_cps_cont cont) {
 	SELFCLASS *instance = new SELFCLASS();
 
 	SELFCLASS::instance_m = instance;
@@ -49,36 +49,48 @@ int SELFCLASS::run(int &argc, char **argv, esferixis::cps::Cont cont) {
 	instance->processGUIEvents_m = true;
 	instance->quit_m = false;
 
-	SELFCLASS::LocalSched localSched(instance);
+	// Define and attach the CPS scheduler
+	esferixis_cps_sched sched;
+	{
+		esferixis_cps_sched_vtable sched_vtable;
 
-	localSched.attachToCurrentThread();
+		sched_vtable.yield = SELFCLASS::sched_yield;
+		sched_vtable.waitFor = SELFCLASS::sched_waitFor;
+		sched_vtable.fork = SELFCLASS::sched_fork;
+		sched_vtable.exit = SELFCLASS::sched_exit;
 
-	runCPS( SELFCLASS::lockGUI( cont ) );
+		sched.data = static_cast<void *>(instance);
+		sched.vtable = sched_vtable;
+
+		esferixis_cps_sched_attach(sched);
+	}
+
+	esferixis_runcps( SELFCLASS::lockGUI( cont ) );
 
 	int retCode = instance->qApp_m->exec();
 
-	localSched.detachFromCurrentThread();
+	esferixis_cps_sched_detach(sched);
 
 	return retCode;
 }
 
-esferixis::cps::Cont SELFCLASS::toGuiThread(esferixis::cps::Cont cont) {
+esferixis_cps_cont SELFCLASS::toGuiThread(esferixis_cps_cont cont) {
 	SELFCLASS *instance = SELFCLASS::instance();
 
 	QObject *obj = SELFCLASS::instance()->qApp_m->thread()->eventDispatcher();
 
-	QMetaObject::invokeMethod(obj, [cont]() { runCPS(cont); }, ::Qt::QueuedConnection);
+	QMetaObject::invokeMethod(obj, [cont]() { esferixis_runcps(cont); }, ::Qt::QueuedConnection);
 
-	return esferixis::cps::Sched::exit();
+	return esferixis_cps_sched_exit();
 }
 
-esferixis::cps::Cont SELFCLASS::lockGUI(esferixis::cps::Cont cont) {
+esferixis_cps_cont SELFCLASS::lockGUI(esferixis_cps_cont cont) {
 	SELFCLASS *self = SELFCLASS::instance()->instanceFromGUIThread();
 
 	if (self->processGUIEvents_m) {
 		self->processGUIEvents_m = false;
 
-		runCPS(cont);
+		esferixis_runcps(cont);
 
 		while (!self->processGUIEvents_m && (!self->quit_m)) {
 			self->qApp_m->processEvents(QEventLoop::ExcludeUserInputEvents | QEventLoop::WaitForMoreEvents);
@@ -91,13 +103,13 @@ esferixis::cps::Cont SELFCLASS::lockGUI(esferixis::cps::Cont cont) {
 	}
 }
 
-esferixis::cps::Cont SELFCLASS::unlockGUI(esferixis::cps::Cont cont) {
+esferixis_cps_cont SELFCLASS::unlockGUI(esferixis_cps_cont cont) {
 	SELFCLASS::instance()->instanceFromGUIThread()->processGUIEvents_m = true;
 
 	return cont;
 }
 
-esferixis::cps::Cont SELFCLASS::quit() {
+esferixis_cps_cont SELFCLASS::quit() {
 	SELFCLASS *self = SELFCLASS::instance()->instanceFromGUIThread();
 
 	self->quit_m = true;
@@ -116,35 +128,27 @@ void SELFCLASS::checkOnGUIThread() {
 	}
 }
 
-SELFCLASS::LocalSched::LocalSched(esferixis::Qt::Application *app) {
-	this->app_m = app;
-}
-
-SELFCLASS::LocalSched::~LocalSched() {
-
-}
-
-esferixis::cps::Cont SELFCLASS::LocalSched::yield_impl(esferixis::cps::Cont cont) {
+esferixis_cps_cont SELFCLASS::sched_yield(void *schedData, esferixis_cps_cont cont) {
 	QObject *obj = QThread::currentThread()->eventDispatcher();
-	QMetaObject::invokeMethod(obj, [cont]() { runCPS(cont); }, ::Qt::QueuedConnection);
+	QMetaObject::invokeMethod(obj, [cont]() { esferixis_runcps(cont); }, ::Qt::QueuedConnection);
 
 	return esferixis::cps::CPS_RET;
 }
 
-esferixis::cps::Cont SELFCLASS::LocalSched::fork_impl(esferixis::cps::Cont cont1, esferixis::cps::Cont cont2) {
+esferixis_cps_cont SELFCLASS::sched_fork(void *schedData, esferixis_cps_cont cont1, esferixis_cps_cont cont2) {
 	QObject *obj = QThread::currentThread()->eventDispatcher();
-	QMetaObject::invokeMethod(obj, [cont2]() { runCPS(cont2); }, ::Qt::QueuedConnection );
+	QMetaObject::invokeMethod(obj, [cont2]() { esferixis_runcps(cont2); }, ::Qt::QueuedConnection);
 
 	return cont1;
 }
 
-esferixis::cps::Cont SELFCLASS::LocalSched::waitFor_impl(std::chrono::nanoseconds duration, esferixis::cps::Cont cont) {
-	QTimer::singleShot(std::chrono::duration_cast<std::chrono::milliseconds>(duration), [cont]() { runCPS(cont); });
+esferixis_cps_cont SELFCLASS::sched_waitFor(void *schedData, int64_t duration, esferixis_cps_cont cont) {
+	QTimer::singleShot(std::chrono::duration_cast<std::chrono::milliseconds>( std::chrono::nanoseconds( duration ) ), [cont]() { esferixis_runcps(cont); });
 
 	return esferixis::cps::CPS_RET;
 }
 
-esferixis::cps::Cont SELFCLASS::LocalSched::exit_impl() {
+esferixis_cps_cont SELFCLASS::sched_exit(void *schedData) {
 	return esferixis::cps::CPS_RET;
 }
 

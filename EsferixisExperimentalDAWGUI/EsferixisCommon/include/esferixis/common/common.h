@@ -32,10 +32,34 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #pragma once
 
+#ifdef __cplusplus
+
 #ifdef EsferixisCommon_EXPORTS
-	#define EsferixisCommon_API __declspec(dllexport)
+#define EsferixisCommon_C_API extern "C" __declspec(dllexport)
 #else
-	#define EsferixisCommon_API __declspec(dllimport)
+#define EsferixisCommon_C_API extern "C" __declspec(dllimport)
 #endif
 
-#define Esferixis_EXPORT __declspec(dllexport)
+#define Esferixis_C_EXPORT extern "C" __declspec(dllexport)
+
+#else
+
+#ifdef EsferixisCommon_EXPORTS
+#define EsferixisCommon_C_API __declspec(dllexport)
+#else
+#define EsferixisCommon_C_API __declspec(dllimport)
+#endif
+
+#define Esferixis_C_EXPORT __declspec(dllexport)
+
+#endif
+
+#ifdef __cplusplus
+#ifdef EsferixisCommon_EXPORTS
+#define EsferixisCommon_CPP_API __declspec(dllexport)
+#else
+#define EsferixisCommon_CPP_API __declspec(dllimport)
+#endif
+
+#define Esferixis_CPP_EXPORT __declspec(dllexport)
+#endif

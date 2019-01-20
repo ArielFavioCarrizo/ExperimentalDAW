@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define SELFCLASS esferixis::daw::gui::test::MultigraphCViewMock
 
-esferixis::cps::Cont SELFCLASS::create(esferixis::daw::gui::MultigraphCView<esferixis::daw::gui::MultigraphCHNoteSegment, esferixis::daw::gui::MultigraphCHNoteSegment::Essence>::ContextEssence contextEssence) {
+esferixis_cps_cont SELFCLASS::create(esferixis::daw::gui::MultigraphCView<esferixis::daw::gui::MultigraphCHNoteSegment, esferixis::daw::gui::MultigraphCHNoteSegment::Essence>::ContextEssence contextEssence) {
 	SELFCLASS *self = new SELFCLASS();
 
 	*contextEssence.instance = self;
@@ -60,7 +60,7 @@ esferixis::daw::gui::MultigraphCHNoteSegment * SELFCLASS::getReferencedElement()
 	return this->referencedElement_m;
 }
 
-esferixis::cps::Cont SELFCLASS::createElement(esferixis::daw::gui::MultigraphCHNoteSegment::Essence elementEssence, esferixis::cps::Cont cont) {
+esferixis_cps_cont SELFCLASS::createElement(esferixis::daw::gui::MultigraphCHNoteSegment::Essence elementEssence, esferixis_cps_cont cont) {
 	esferixis::daw::gui::test::MultigraphCHNoteSegmentMock *element = new esferixis::daw::gui::test::MultigraphCHNoteSegmentMock(elementEssence, this);
 
 	this->referencedElement_m = element;
@@ -70,34 +70,34 @@ esferixis::cps::Cont SELFCLASS::createElement(esferixis::daw::gui::MultigraphCHN
 	return this->onElementLoad_m;
 }
 
-void SELFCLASS::setOnElementLoad(esferixis::cps::Cont cont) {
+void SELFCLASS::setOnElementLoad(esferixis_cps_cont cont) {
 	this->onElementLoad_m = cont;
 }
 
-void SELFCLASS::setOnElementToUnload(esferixis::cps::Cont cont) {
+void SELFCLASS::setOnElementToUnload(esferixis_cps_cont cont) {
 	this->onElementUnload_m = cont;
 }
 
-esferixis::cps::Cont SELFCLASS::setTimeIntervalToView(double min, double max, esferixis::cps::Cont cont) {
+esferixis_cps_cont SELFCLASS::setTimeIntervalToView(double min, double max, esferixis_cps_cont cont) {
 	return cont; // Do nothing
 }
 
-esferixis::cps::Cont SELFCLASS::lockElement(esferixis::daw::gui::MultigraphCHNoteSegment *element, esferixis::cps::Cont cont) {
+esferixis_cps_cont SELFCLASS::lockElement(esferixis::daw::gui::MultigraphCHNoteSegment *element, esferixis_cps_cont cont) {
 	return cont; // Do nothing
 }
 
-esferixis::cps::Cont SELFCLASS::unlockElement(esferixis::daw::gui::MultigraphCHNoteSegment *element, esferixis::cps::Cont cont) {
+esferixis_cps_cont SELFCLASS::unlockElement(esferixis::daw::gui::MultigraphCHNoteSegment *element, esferixis_cps_cont cont) {
 	return cont; // Do nothing
 }
 
-esferixis::cps::Cont SELFCLASS::close(esferixis::cps::Cont cont) {
+esferixis_cps_cont SELFCLASS::close(esferixis_cps_cont cont) {
 	struct STM {
-		static esferixis::cps::Cont loop(SELFCLASS *self) {
+		static esferixis_cps_cont loop(SELFCLASS *self) {
 			if (!self->noteSegments_m.isEmpty()) {
-				return self->noteSegments_m.first()->get()->erase(esferixis::cps::Cont(loop, self));
+				return self->noteSegments_m.first()->get()->erase(esferixis::cps::mkCont(loop, self));
 			}
 			else {
-				esferixis::cps::Cont cont = self->onClosed_m;
+				esferixis_cps_cont cont = self->onClosed_m;
 
 				delete self;
 
@@ -108,9 +108,9 @@ esferixis::cps::Cont SELFCLASS::close(esferixis::cps::Cont cont) {
 
 	this->onClosed_m = cont;
 
-	return esferixis::cps::Cont(STM::loop, this);
+	return esferixis::cps::mkCont(STM::loop, this);
 }
 
-esferixis::cps::Cont SELFCLASS::doNextAction() {
+esferixis_cps_cont SELFCLASS::doNextAction() {
 	return this->nextExternalActionCont_m;
 }

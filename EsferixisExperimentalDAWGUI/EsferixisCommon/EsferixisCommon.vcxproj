@@ -164,7 +164,6 @@
     <ClInclude Include="include\esferixis\common\cps\asyncforker.h" />
     <ClInclude Include="include\esferixis\common\cps\cont.h" />
     <ClInclude Include="include\esferixis\common\cps\sched.h" />
-    <ClInclude Include="include\esferixis\common\cps\schedpool.h" />
     <ClInclude Include="include\esferixis\common\data\linkedlist.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -175,7 +174,6 @@
     <ClCompile Include="src\EsferixisContextualized.cpp" />
     <ClCompile Include="src\EsferixisCPSAsyncForker.cpp" />
     <ClCompile Include="src\EsferixisCPSSched.cpp" />
-    <ClCompile Include="src\EsferixisCPSSchedPool.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

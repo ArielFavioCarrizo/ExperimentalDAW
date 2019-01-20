@@ -42,9 +42,6 @@
     <ClInclude Include="include\esferixis\common\cps\sched.h">
       <Filter>Header Files\Esferixis\CPS</Filter>
     </ClInclude>
-    <ClInclude Include="include\esferixis\common\cps\schedpool.h">
-      <Filter>Header Files\Esferixis\CPS</Filter>
-    </ClInclude>
     <ClInclude Include="include\esferixis\common\common.h">
       <Filter>Header Files\Esferixis</Filter>
     </ClInclude>
@@ -69,9 +66,6 @@
       <Filter>Source Files\Esferixis</Filter>
     </ClCompile>
     <ClCompile Include="src\EsferixisCPSSched.cpp">
-      <Filter>Source Files\Esferixis</Filter>
-    </ClCompile>
-    <ClCompile Include="src\EsferixisCPSSchedPool.cpp">
       <Filter>Source Files\Esferixis</Filter>
     </ClCompile>
     <ClCompile Include="src\EsferixisContextualized.cpp">

@@ -41,21 +41,21 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define SELFCLASS esferixis::daw::gui::test::MultigraphCViewWindowMock
 
-esferixis::cps::Cont SELFCLASS::create(esferixis::daw::gui::test::MultigraphCViewWindowMock **windowMock, esferixis::cps::Cont cont) {
+esferixis_cps_cont SELFCLASS::create(esferixis::daw::gui::test::MultigraphCViewWindowMock **windowMock, esferixis_cps_cont cont) {
 	struct STM {
-		static esferixis::cps::Cont onCreateWindow(SELFCLASS *self) {
+		static esferixis_cps_cont onCreateWindow(SELFCLASS *self) {
 			self->window_m = new QWidget();
 			self->window_m->setWindowTitle("MultigraphCViewWindow test");
 			self->window_m->setAttribute(::Qt::WA_DeleteOnClose, false);
 
-			return esferixis::daw::gui::HNoteSegmentMultigraph::create(&self->multigraph_m, esferixis::cps::Cont(onCreateView, self));
+			return esferixis::daw::gui::HNoteSegmentMultigraph::create(&self->multigraph_m, esferixis::cps::mkCont(onCreateView, self));
 		}
 
-		static esferixis::cps::Cont onCreateView(SELFCLASS *self) {
-			return esferixis::Qt::Application::toGuiThread(esferixis::cps::Cont(onAddMultigraphWidget, self));
+		static esferixis_cps_cont onCreateView(SELFCLASS *self) {
+			return esferixis::Qt::Application::toGuiThread(esferixis::cps::mkCont(onAddMultigraphWidget, self));
 		}
 
-		static esferixis::cps::Cont onAddMultigraphWidget(SELFCLASS *self) {
+		static esferixis_cps_cont onAddMultigraphWidget(SELFCLASS *self) {
 			QHBoxLayout *layout = new QHBoxLayout();
 
 			self->multigraph_m->setBackgroundColor(::Qt::GlobalColor::white);
@@ -75,10 +75,10 @@ esferixis::cps::Cont SELFCLASS::create(esferixis::daw::gui::test::MultigraphCVie
 
 	self->onNextExternalOp_m = cont;
 
-	return esferixis::Qt::Application::toGuiThread(esferixis::cps::Cont(STM::onCreateWindow, self));
+	return esferixis::Qt::Application::toGuiThread(esferixis::cps::mkCont(STM::onCreateWindow, self));
 }
 
-void SELFCLASS::setOnClosed(esferixis::cps::Cont cont) {
+void SELFCLASS::setOnClosed(esferixis_cps_cont cont) {
 	this->onClosed_m = cont;
 }
 
@@ -88,16 +88,16 @@ SELFCLASS::LocalWindow::LocalWindow(esferixis::daw::gui::test::MultigraphCViewWi
 
 void SELFCLASS::LocalWindow::closeEvent(QCloseEvent *event) {
 	struct STM {
-		static esferixis::cps::Cont onLockedGUI(esferixis::daw::gui::test::MultigraphCViewWindowMock *self) {
-			return self->multigraph_m->close( esferixis::cps::Cont(onToGUIThread, self) );
+		static esferixis_cps_cont onLockedGUI(esferixis::daw::gui::test::MultigraphCViewWindowMock *self) {
+			return self->multigraph_m->close( esferixis::cps::mkCont(onToGUIThread, self) );
 		}
 
-		static esferixis::cps::Cont onToGUIThread(esferixis::daw::gui::test::MultigraphCViewWindowMock *self) {
-			return esferixis::Qt::Application::toGuiThread( esferixis::cps::Cont(onDeleteAll, self) );
+		static esferixis_cps_cont onToGUIThread(esferixis::daw::gui::test::MultigraphCViewWindowMock *self) {
+			return esferixis::Qt::Application::toGuiThread( esferixis::cps::mkCont(onDeleteAll, self) );
 		}
 
-		static esferixis::cps::Cont onDeleteAll(esferixis::daw::gui::test::MultigraphCViewWindowMock *self) {
-			esferixis::cps::Cont nextCont = self->onClosed_m;
+		static esferixis_cps_cont onDeleteAll(esferixis::daw::gui::test::MultigraphCViewWindowMock *self) {
+			esferixis_cps_cont nextCont = self->onClosed_m;
 			
 			self->window_m->deleteLater();
 
@@ -109,7 +109,7 @@ void SELFCLASS::LocalWindow::closeEvent(QCloseEvent *event) {
 	};
 
 	event->accept();
-	runCPS( esferixis::Qt::Application::lockGUI(esferixis::cps::Cont(STM::onLockedGUI, this->parent_m)) );
+	esferixis_runcps( esferixis::Qt::Application::lockGUI(esferixis::cps::mkCont(STM::onLockedGUI, this->parent_m)) );
 }
 
 SELFCLASS::MultigraphCViewWindowMock() {

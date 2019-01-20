@@ -31,67 +31,70 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include "stdafx.h"
-#include <stdexcept>
-
 #include <esferixis/common/cps/sched.h>
 
+#include <chrono>
+#include <stdexcept>
 #include <iostream>
 
-#define SELFCLASS esferixis::cps::Sched
+#include <boost/optional.hpp>
 
-static thread_local SELFCLASS * currentCPSSched = nullptr;
+static thread_local boost::optional<esferixis_cps_sched> currentSched;
 
-SELFCLASS::Sched() {
-	
-}
-
-SELFCLASS::~Sched() {
-	
-}
-
-bool SELFCLASS::currentThreadHasAScheduler() {
-	return (currentCPSSched != nullptr);
-}
-
-void SELFCLASS::attachToCurrentThread() {
-	if (currentCPSSched == nullptr) {
-		currentCPSSched = this;
+static inline esferixis_cps_sched getCurrentSched() {
+	if ( currentSched.is_initialized() ) {
+		return *currentSched;
 	}
 	else {
-		throw std::runtime_error("The current OS thread already has a green threads scheduler!");
+		std::cerr << "The current OS thread doesn't have a green threads scheduler!";
+		std::terminate();
 	}
 }
 
-void SELFCLASS::detachFromCurrentThread() {
-	if (currentCPSSched == this) {
-		currentCPSSched = nullptr;
-	}
-	else {
-		throw std::runtime_error("Attemped to remove an scheduler that isn't assigned to the current OS thread!");
-	}
+bool esferixis_cps_sched_isPresent() {
+	return currentSched.is_initialized();
 }
 
-esferixis::cps::Cont SELFCLASS::yield(esferixis::cps::Cont cont) {
-	return SELFCLASS::currentSched()->yield_impl(cont);
-}
-
-esferixis::cps::Cont SELFCLASS::fork(esferixis::cps::Cont cont1, esferixis::cps::Cont cont2) {
-	return SELFCLASS::currentSched()->fork_impl(cont1, cont2);
-}
-
-esferixis::cps::Cont SELFCLASS::waitFor(std::chrono::nanoseconds duration, esferixis::cps::Cont cont) {
-	return SELFCLASS::currentSched()->waitFor_impl(duration, cont);
-}
-
-esferixis::cps::Cont SELFCLASS::exit() {
-	return SELFCLASS::currentSched()->exit_impl();
-}
-
-esferixis::cps::Sched * SELFCLASS::currentSched() {
-	if (currentCPSSched != nullptr) {
-		return currentCPSSched;
+void esferixis_cps_sched_attach(esferixis_cps_sched sched) {
+	if (!currentSched.is_initialized() ) {
+		currentSched = boost::optional<esferixis_cps_sched>(sched);
 	}
 	else {
-		throw std::runtime_error("The current OS thread doesn't have a green threads scheduler!");
+		std::cerr << "The current OS thread already has a green threads scheduler!";
+		std::terminate();
 	}
+}
+
+void esferixis_cps_sched_detach(esferixis_cps_sched sched) {
+	if (currentSched.is_initialized() && (currentSched->data == sched.data)) {
+		currentSched = boost::optional<esferixis_cps_sched>();
+	}
+	else {
+		std::cerr << "Attemped to remove an scheduler that isn't assigned to the current OS thread!";
+		std::terminate();
+	}
+}
+
+esferixis_cps_cont esferixis_cps_sched_yield(esferixis_cps_cont cont) {
+	esferixis_cps_sched sched = getCurrentSched();
+
+	return sched.vtable.yield(sched.data, cont);
+}
+
+esferixis_cps_cont esferixis_cps_sched_fork(esferixis_cps_cont cont1, esferixis_cps_cont cont2) {
+	esferixis_cps_sched sched = getCurrentSched();
+
+	return sched.vtable.fork(sched.vtable.fork, cont1, cont2);
+}
+
+esferixis_cps_cont esferixis_cps_sched_waitFor(int64_t duration, esferixis_cps_cont cont) {
+	esferixis_cps_sched sched = getCurrentSched();
+
+	return sched.vtable.waitFor(sched.vtable.fork, duration, cont);
+}
+
+esferixis_cps_cont esferixis_cps_sched_exit() {
+	esferixis_cps_sched sched = getCurrentSched();
+
+	return sched.vtable.exit(sched.data);
 }

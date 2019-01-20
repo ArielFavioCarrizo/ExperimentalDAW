@@ -37,62 +37,54 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <atomic>
 #include <stdexcept>
+#include <iostream>
 
-#define SELFCLASS esferixis::cps::AsyncForker
-
-struct esferixis::cps::AsyncForker::Impl {
-	Cont onJoin;
-
+struct _esferixis_cps_asyncforker {
 	std::atomic<int> remainingJoins;
+	esferixis_cps_asyncforker_cfg config;
 };
 
-SELFCLASS::AsyncForker() {
-	this->impl_m = new SELFCLASS::Impl();
+esferixis_cps_asyncforker * esferixis_cps_asyncforker_new() {
+	esferixis_cps_asyncforker *forker = new esferixis_cps_asyncforker();
 
-	this->impl_m->remainingJoins = 0;
+	forker->remainingJoins = 0;
+
+	return forker;
 }
 
-SELFCLASS::~AsyncForker() {
-	delete this->impl_m;
+void esferixis_cps_asyncforker_delete(esferixis_cps_asyncforker *asyncForker) {
+	delete asyncForker;
 }
 
-esferixis::cps::Cont SELFCLASS::fork(Cont onFork1, Cont onFork2) {
-	if (this->impl_m->remainingJoins == 0) {
-		this->impl_m->remainingJoins = 2;
+esferixis_cps_asyncforker_cfg * esferixis_cps_asyncforker_config(esferixis_cps_asyncforker *asyncForker) {
+	return &(asyncForker->config);
+}
 
-		return esferixis::cps::Sched::fork(onFork1, onFork2);
+esferixis_cps_cont esferixis_cps_asyncforker_fork(esferixis_cps_asyncforker *asyncForker) {
+	if (asyncForker->remainingJoins == 0) {
+		esferixis_cps_asyncforker_cfg config = asyncForker->config;
+
+		asyncForker->remainingJoins = 2;
+
+		return esferixis_cps_sched_fork(config.onFork1, config.onFork2);
 	}
 	else {
-		throw std::runtime_error("Unexpected forked state");
+		std::cerr << "Unexpected forked state";
+		std::terminate();
 	}
 }
 
-esferixis::cps::Cont SELFCLASS::fork(Cont onFork1, Cont onFork2, Cont onJoin) {
-	if (this->impl_m->remainingJoins == 0) {
-		this->impl_m->onJoin = onJoin;
-		this->impl_m->remainingJoins = 2;
+esferixis_cps_cont esferixis_cps_asyncforker_join(esferixis_cps_asyncforker *asyncForker) {
+	const int remainingJoins_old = asyncForker->remainingJoins--;
 
-		return esferixis::cps::Sched::fork(onFork1, onFork2);
+	if (remainingJoins_old == 2) {
+		return esferixis_cps_sched_exit();
+	}
+	else if (remainingJoins_old == 1) {
+		return esferixis_cps_sched_exit();
 	}
 	else {
-		throw std::runtime_error("Unexpected forked state");
+		std::cerr << "Unexpected joined state";
+		std::terminate();
 	}
-}
-
-esferixis::cps::Cont SELFCLASS::join() {
-	const int remainingJoins_old = this->impl_m->remainingJoins--;
-
-	if ( remainingJoins_old == 2 ) {
-		return esferixis::cps::Sched::exit();
-	}
-	else if ( remainingJoins_old == 1 ) {
-		return esferixis::cps::Sched::exit();
-	}
-	else {
-		throw std::runtime_error("Unexpected joined state");
-	}
-}
-
-void SELFCLASS::setOnJoin(Cont onJoin) {
-	this->impl_m->onJoin = onJoin;
 }

@@ -49,13 +49,13 @@ namespace esferixis {
 					 * @pre The GUI must be locked
 					 * @post Creates a multigraphCView window mock
 					 */
-					static esferixis::cps::Cont create(esferixis::daw::gui::test::MultigraphCViewWindowMock **windowMock, esferixis::cps::Cont cont);
+					static esferixis_cps_cont create(esferixis::daw::gui::test::MultigraphCViewWindowMock **windowMock, esferixis_cps_cont cont);
 
 					/**
 					 * @post Sets the continuation to execute after it has been closed
 					 *		 The continuation will be executed with the GUI locked
 					 */
-					void setOnClosed(esferixis::cps::Cont cont);
+					void setOnClosed(esferixis_cps_cont cont);
 
 				private:
 					class LocalWindow : QWidget {
@@ -78,8 +78,8 @@ namespace esferixis {
 					QWidget *window_m;
 					esferixis::daw::gui::HNoteSegmentMultigraph *multigraph_m;
 
-					esferixis::cps::Cont onNextExternalOp_m;
-					esferixis::cps::Cont onClosed_m;
+					esferixis_cps_cont onNextExternalOp_m;
+					esferixis_cps_cont onClosed_m;
 				};
 			}
 		}

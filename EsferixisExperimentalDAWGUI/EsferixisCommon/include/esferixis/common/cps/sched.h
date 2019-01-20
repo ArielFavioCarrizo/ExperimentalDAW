@@ -32,96 +32,57 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #pragma once
 
-#include <chrono>
-#include <boost/noncopyable.hpp>
-
 #include <esferixis/common/common.h>
 #include <esferixis/common/cps/cont.h>
 
-namespace esferixis {
-	namespace cps {
-		class EsferixisCommon_API Sched : private boost::noncopyable
-		{
-		public:
-			/**
-			 * @post Creates an scheduler of stackless green threads for an OS thread
-			 */
-			Sched();
+#include <cstdint>
 
-			/**
-			 * @pre The scheduler mustn't be attached to any OS thread
-			 * @post Destroys the scheduler
-			 */
-			virtual ~Sched();
+typedef struct esferixis_cps_sched_vtable {
+	esferixis_cps_cont(*yield) (void *schedData, esferixis_cps_cont cont);
+	esferixis_cps_cont(*fork) (void *schedData, esferixis_cps_cont cont1, esferixis_cps_cont cont2);
+	esferixis_cps_cont(*waitFor)(void *schedData, int64_t duration, esferixis_cps_cont cont);
+	esferixis_cps_cont(*exit)(void *schedData);
+} esferixis_cps_sched_vtable;
 
-			/**
-			 * @post Shows if the current os thread has a scheduler
-			 */
-			static bool currentThreadHasAScheduler();
+typedef struct esferixis_cps_sched {
+	esferixis_cps_sched_vtable vtable;
+	void *data;
+} esferixis_cps_sched;
 
-			/**
-			 * @pre Expects that the current OS thread doesn't have a scheduler and the scheduler isn't attached to any OS thread.
-			 * @post Adds an scheduler in the current OS thread.
-			         If the scheduler exists it throws an exception.
-			 */
-			void attachToCurrentThread();
+/**
+ * @post Shows if the current os thread has a scheduler
+ */
+EsferixisCommon_C_API bool esferixis_cps_sched_isPresent();
 
-			/**
-			 * @pre Expects that the current OS thread does have the given scheduler
-			   @post Removes the scheduler from the current OS thread
-			 */
-			void detachFromCurrentThread();
+/**
+ * @pre Expects that the current OS thread doesn't have a scheduler and the scheduler isn't attached to any OS thread.
+ * @post Adds an scheduler in the current OS thread.
+ */
+EsferixisCommon_C_API void esferixis_cps_sched_attach(esferixis_cps_sched sched);
 
-			/**
-			 * @post Yields to another tasks with the given continuation
-			 */
-			static Cont yield(Cont cont);
+/**
+ * @pre Expects that the current OS thread does have the given scheduler
+   @post Removes the scheduler from the current OS thread
+ */
+EsferixisCommon_C_API void esferixis_cps_sched_detach(esferixis_cps_sched sched);
 
-			/**
-			  * @post Forks the current green thread into two threads with the
-					  given continuations
-			 */
-			static Cont fork(Cont cont1, Cont cont2);
+/**
+ * @post Yields to another tasks with the given continuation
+ */
+EsferixisCommon_C_API esferixis_cps_cont esferixis_cps_sched_yield(esferixis_cps_cont cont);
 
-			/**
-			 * @post Waits the given duration and executes the given continuation in nanoseconds
-			 */
-			static Cont waitFor(std::chrono::nanoseconds duration, Cont cont);
+/**
+  * @post Forks the current green thread into two threads with the
+		  given continuations
+ */
+EsferixisCommon_C_API esferixis_cps_cont esferixis_cps_sched_fork(esferixis_cps_cont cont1, esferixis_cps_cont cont2);
 
-			/**
-			 * @post Terminates the current green thread
-			 */
-			static Cont exit();
+/**
+ * @post Waits the given duration and executes the given continuation in nanoseconds
+ */
+EsferixisCommon_C_API esferixis_cps_cont esferixis_cps_sched_waitFor(int64_t duration, esferixis_cps_cont cont);
 
-		protected:
-			/**
-			 * @post Yields to another tasks with the given continuation (Implementation)
-			 */
-			virtual Cont yield_impl(Cont cont) = 0;
-
-			 /**
-			  * @post Forks the current green thread into two threads with the
-			          given continuations (Implementation)
-			  */
-			virtual Cont fork_impl(Cont cont1, Cont cont2) =0;
-
-			/**
-			 * @post Waits the given duration an executes the given continuation (Implementation)
-			 */
-			virtual Cont waitFor_impl(std::chrono::nanoseconds duration, Cont cont) =0;
-
-			/**
-			 * @post Terminates the current green thread (Implementation)
-			 */
-			virtual Cont exit_impl() =0;
-
-		private:
-			/**
-			 * @pre Expects that the current OS thread does have a scheduler
-			 * @post Gets the current OS thread scheduler
-			 */
-			static esferixis::cps::Sched * currentSched();
-		};
-	}
-}
-
+/**
+ * @post Terminates the current green thread
+ */
+EsferixisCommon_C_API esferixis_cps_cont esferixis_cps_sched_exit();

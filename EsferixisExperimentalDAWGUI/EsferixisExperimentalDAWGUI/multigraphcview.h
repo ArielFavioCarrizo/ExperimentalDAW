@@ -48,10 +48,10 @@ namespace esferixis {
 				struct ContextEssence {
 					esferixis::daw::gui::MultigraphCView<E, EEssence> **instance;
 
-					esferixis::cps::Cont onInitialized;
+					esferixis_cps_cont onInitialized;
 
-					esferixis::cps::Cont onElementLoad;
-					esferixis::cps::Cont onElementUnload;
+					esferixis_cps_cont onElementLoad;
+					esferixis_cps_cont onElementUnload;
 				};
 
 				/**
@@ -62,34 +62,34 @@ namespace esferixis {
 				/**
 				 * @post Creates an element with the given essence and continuation
 				 */
-				virtual esferixis::cps::Cont createElement(EEssence elementEssence, esferixis::cps::Cont cont) =0;
+				virtual esferixis_cps_cont createElement(EEssence elementEssence, esferixis_cps_cont cont) =0;
 
 				/**
 				 * @post Sets the continuation to notify a new loaded element
 				 */
-				virtual void setOnElementLoad(esferixis::cps::Cont cont) =0;
+				virtual void setOnElementLoad(esferixis_cps_cont cont) =0;
 
 				/**
 				 * @post Sets the continuation to notify a element that will be unloaded
 				 *      
 				 *		 Warning: The element will be invalidated by the next action
 				 */
-				virtual void setOnElementToUnload(esferixis::cps::Cont cont) =0;
+				virtual void setOnElementToUnload(esferixis_cps_cont cont) =0;
 
 				/**
 				 * @post Locks the reference to element to preserve it
 				 */
-				virtual esferixis::cps::Cont lockElement(E *element, esferixis::cps::Cont cont) = 0;
+				virtual esferixis_cps_cont lockElement(E *element, esferixis_cps_cont cont) = 0;
 
 				/**
 				 * @post Unlocks the reference to element to allow to delete it
 				 */
-				virtual esferixis::cps::Cont unlockElement(E *element, esferixis::cps::Cont cont) = 0;
+				virtual esferixis_cps_cont unlockElement(E *element, esferixis_cps_cont cont) = 0;
 
 				/**
 				 * @post Sets a time interval to view
 				 */
-				virtual esferixis::cps::Cont setTimeIntervalToView(double min, double max, esferixis::cps::Cont cont) =0;
+				virtual esferixis_cps_cont setTimeIntervalToView(double min, double max, esferixis_cps_cont cont) =0;
 
 				/**
 				 * @post Closes the view
@@ -98,13 +98,13 @@ namespace esferixis {
 				 *		 close the view.
 				 *		 The view will be invalidated.
 				 */
-				virtual esferixis::cps::Cont close(esferixis::cps::Cont cont) =0;
+				virtual esferixis_cps_cont close(esferixis_cps_cont cont) =0;
 
 				/**
 				 * @pre It must be executed after a continuation callback
 				 * @post Do the next action
 				 */
-				virtual esferixis::cps::Cont doNextAction() =0;
+				virtual esferixis_cps_cont doNextAction() =0;
 
 			protected:
 				/**

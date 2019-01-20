@@ -79,47 +79,47 @@ namespace esferixis {
 				/**
 				 * @post Sets the offset
 				 */
-				virtual esferixis::cps::Cont setOffset(double offset, esferixis::cps::Cont cont) = 0;
+				virtual esferixis_cps_cont setOffset(double offset, esferixis_cps_cont cont) = 0;
 
 				/**
 				 * @post Sets the height
 				 */
-				virtual esferixis::cps::Cont setHeight(double height, esferixis::cps::Cont cont) = 0;
+				virtual esferixis_cps_cont setHeight(double height, esferixis_cps_cont cont) = 0;
 
 				/**
 				 * @post Sets a boolean indicating if is a continuation
 				 */
-				virtual esferixis::cps::Cont setIsAContinuation(bool isAContinuation, esferixis::cps::Cont cont) = 0;
+				virtual esferixis_cps_cont setIsAContinuation(bool isAContinuation, esferixis_cps_cont cont) = 0;
 
 				/**
 				 * @post Erases the note segment
 				 */
-				virtual esferixis::cps::Cont erase(esferixis::cps::Cont cont) =0;
+				virtual esferixis_cps_cont erase(esferixis_cps_cont cont) =0;
 
 				/**
 				 * @post Sets the continuation to notify a new offset
 				 */
-				virtual void setOnNewOffset(esferixis::cps::Cont cont) = 0;
+				virtual void setOnNewOffset(esferixis_cps_cont cont) = 0;
 
 				/**
 				 * @post Sets the continuation to notify a new height
 				 */
-				virtual void setOnNewHeight(esferixis::cps::Cont cont) = 0;
+				virtual void setOnNewHeight(esferixis_cps_cont cont) = 0;
 
 				/**
 				 * @post Sets the continuation to notify a new color
 				 */
-				virtual void setOnNewColor(esferixis::cps::Cont cont) =0;
+				virtual void setOnNewColor(esferixis_cps_cont cont) =0;
 
 				/**
 				 * @post Sets the continuation to notify a change in the 'isAContinuation' property
 				 */
-				virtual void setOnIsAContinuationChange(esferixis::cps::Cont cont) =0;
+				virtual void setOnIsAContinuationChange(esferixis_cps_cont cont) =0;
 
 				/**
 				 * @post Sets the continuation to notify a new selection state
 				 */
-				virtual void setOnNewSelectionState(esferixis::cps::Cont cont) = 0;
+				virtual void setOnNewSelectionState(esferixis_cps_cont cont) = 0;
 
 			protected:
 				/**

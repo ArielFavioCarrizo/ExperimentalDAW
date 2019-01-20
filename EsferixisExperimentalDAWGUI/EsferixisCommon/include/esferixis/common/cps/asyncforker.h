@@ -32,56 +32,38 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #pragma once
 
-#include <boost/noncopyable.hpp>
-
 #include <esferixis/common/common.h>
 #include <esferixis/common/cps/cont.h>
 
-namespace esferixis {
-	namespace cps {
-		class EsferixisCommon_API AsyncForker final : private boost::noncopyable
-		{
-		public:
-			/**
-			 * @post Creates an async forker
-			 */
-			AsyncForker();
+typedef struct _esferixis_cps_asyncforker esferixis_cps_asyncforker;
 
-			/**
-			 * @post Destroys the async forker
-			 */
-			~AsyncForker();
+struct esferixis_cps_asyncforker_cfg {
+	esferixis_cps_cont onFork1;
+	esferixis_cps_cont onFork2;
+	esferixis_cps_cont onJoin;
+};
 
-			/**
-			 * @post Forks the green thread with the given
-					 continuations to execute after forking and the
-					 set continuation to execute after join
-			 */
-			Cont fork(Cont onFork1, Cont onFork2);
+/**
+ * @post Creates an async forker
+ */
+EsferixisCommon_C_API esferixis_cps_asyncforker * esferixis_cps_asyncforker_new();
 
-			/**
-			 * @post Forks the green thread with the given
-			         continuations to execute after forking and the
-					 given continuation to execute after join
-			 */
-			Cont fork(Cont onFork1, Cont onFork2, Cont onJoin);
+/**
+ * @post Destroys the given async forker
+ */
+EsferixisCommon_C_API void esferixis_cps_asyncforker_delete(esferixis_cps_asyncforker *asyncForker);
 
-			/**
-			 * @post Joins the thread
-			 */
-			Cont join();
+/**
+ * @post Returns a pointer to the given async forker's config
+ */
+EsferixisCommon_C_API esferixis_cps_asyncforker_cfg * esferixis_cps_asyncforker_config(esferixis_cps_asyncforker *asyncForker);
 
-			/**
-			 * @post Sets the continuation to execute after join
-			 */
-			void setOnJoin(Cont onJoin);
+/**
+ * @post Forks the green thread with the given forker
+ */
+EsferixisCommon_C_API esferixis_cps_cont esferixis_cps_asyncforker_fork(esferixis_cps_asyncforker *asyncForker);
 
-		private:
-			struct Impl;
-
-			Impl *impl_m;
-		};
-
-	}
-}
-
+/**
+ * @post Joins the green thread with the given forker
+ */
+EsferixisCommon_C_API esferixis_cps_cont esferixis_cps_asyncforker_join(esferixis_cps_asyncforker *asyncForker);

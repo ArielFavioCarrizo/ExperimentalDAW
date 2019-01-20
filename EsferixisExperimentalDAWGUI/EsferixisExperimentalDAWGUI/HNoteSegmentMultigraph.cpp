@@ -38,19 +38,19 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define SELFCLASS esferixis::daw::gui::HNoteSegmentMultigraph
 
-esferixis::cps::Cont SELFCLASS::create(esferixis::daw::gui::HNoteSegmentMultigraph **instance, esferixis::cps::Cont cont) {
+esferixis_cps_cont SELFCLASS::create(esferixis::daw::gui::HNoteSegmentMultigraph **instance, esferixis_cps_cont cont) {
 	struct STM {
-		static esferixis::cps::Cont onCreateWidget(esferixis::daw::gui::HNoteSegmentMultigraph *self) {
+		static esferixis_cps_cont onCreateWidget(esferixis::daw::gui::HNoteSegmentMultigraph *self) {
 			self->widget_m = new SELFCLASS::LocalQWidget(self);
 
 			return self->nextExternalCont_m;
 		}
 
-		static esferixis::cps::Cont onInitializedView(esferixis::daw::gui::HNoteSegmentMultigraph *self) {
+		static esferixis_cps_cont onInitializedView(esferixis::daw::gui::HNoteSegmentMultigraph *self) {
 			return self->nextExternalCont_m;
 		}
 
-		static esferixis::cps::Cont onElementLoad(esferixis::daw::gui::HNoteSegmentMultigraph *self) {
+		static esferixis_cps_cont onElementLoad(esferixis::daw::gui::HNoteSegmentMultigraph *self) {
 			esferixis::daw::gui::HNoteSegmentMultigraph::ElementContext *elementContext = new esferixis::daw::gui::HNoteSegmentMultigraph::ElementContext();
 
 			elementContext->multigraph = self;
@@ -63,7 +63,7 @@ esferixis::cps::Cont SELFCLASS::create(esferixis::daw::gui::HNoteSegmentMultigra
 			return self->view_m->doNextAction();
 		}
 
-		static esferixis::cps::Cont onElementUnload(esferixis::daw::gui::HNoteSegmentMultigraph *self) {
+		static esferixis_cps_cont onElementUnload(esferixis::daw::gui::HNoteSegmentMultigraph *self) {
 			esferixis::daw::gui::MultigraphCHNoteSegment *noteSegment = self->view_m->getReferencedElement();
 
 			esferixis::daw::gui::HNoteSegmentMultigraph::ElementContext *elementContext = static_cast<esferixis::daw::gui::HNoteSegmentMultigraph::ElementContext *>(noteSegment->getContext());
@@ -81,16 +81,16 @@ esferixis::cps::Cont SELFCLASS::create(esferixis::daw::gui::HNoteSegmentMultigra
 	esferixis::daw::gui::HNoteSegmentMultigraph *self = new esferixis::daw::gui::HNoteSegmentMultigraph();
 
 	self->contextEssence_m.instance = &self->view_m;
-	self->contextEssence_m.onElementLoad = esferixis::cps::Cont(STM::onElementLoad, self);
-	self->contextEssence_m.onElementUnload = esferixis::cps::Cont(STM::onElementUnload, self);
-	self->contextEssence_m.onInitialized = esferixis::cps::Cont(STM::onInitializedView, self);
+	self->contextEssence_m.onElementLoad = esferixis::cps::mkCont(STM::onElementLoad, self);
+	self->contextEssence_m.onElementUnload = esferixis::cps::mkCont(STM::onElementUnload, self);
+	self->contextEssence_m.onInitialized = esferixis::cps::mkCont(STM::onInitializedView, self);
 	self->widget_m = nullptr;
 	self->view_m = nullptr;
 	self->nextExternalCont_m = cont;
 
 	*instance = self;
 
-	return esferixis::Qt::Application::toGuiThread(esferixis::cps::Cont(STM::onCreateWidget, self));
+	return esferixis::Qt::Application::toGuiThread(esferixis::cps::mkCont(STM::onCreateWidget, self));
 }
 
 QWidget * SELFCLASS::widget() const {
@@ -109,11 +109,11 @@ esferixis::daw::gui::MultigraphCView<esferixis::daw::gui::MultigraphCHNoteSegmen
 	return this->contextEssence_m;
 }
 
-void SELFCLASS::setOnOpened(esferixis::cps::Cont cont) {
+void SELFCLASS::setOnOpened(esferixis_cps_cont cont) {
 	this->nextExternalCont_m = cont;
 }
 
-esferixis::cps::Cont SELFCLASS::close(esferixis::cps::Cont cont) {
+esferixis_cps_cont SELFCLASS::close(esferixis_cps_cont cont) {
 	return this->view_m->close(cont);
 }
 
