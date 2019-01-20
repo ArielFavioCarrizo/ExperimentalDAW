@@ -73,9 +73,9 @@ namespace esferixis {
 			static esferixis_cps_cont unlockGUI(esferixis_cps_cont cont);
 
 			/**
-			 * @post Quits application
+			 * @post Exits application with the specified return code
 			 */
-			static esferixis_cps_cont quit();
+			static esferixis_cps_cont exit(int returnCode = 0);
 
 			/**
 			 * @post Returns if the current thread is the GUI thread

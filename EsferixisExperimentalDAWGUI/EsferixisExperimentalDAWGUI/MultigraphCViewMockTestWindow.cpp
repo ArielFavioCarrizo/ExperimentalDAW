@@ -41,12 +41,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define SELFCLASS esferixis::daw::gui::test::MultigraphCViewWindowMock
 
-esferixis_cps_cont SELFCLASS::create(esferixis::daw::gui::test::MultigraphCViewWindowMock **windowMock, esferixis_cps_cont cont) {
+esferixis_cps_cont SELFCLASS::create(ContextEssence essence) {
 	struct STM {
 		static esferixis_cps_cont onCreateWindow(SELFCLASS *self) {
-			self->window_m = new QWidget();
+			self->window_m = new SELFCLASS::LocalWindow(self);
 			self->window_m->setWindowTitle("MultigraphCViewWindow test");
 			self->window_m->setAttribute(::Qt::WA_DeleteOnClose, false);
+			self->window_m->show();
 
 			return esferixis::daw::gui::HNoteSegmentMultigraph::create(&self->multigraph_m, esferixis::cps::mkCont(onCreateView, self));
 		}
@@ -71,9 +72,10 @@ esferixis_cps_cont SELFCLASS::create(esferixis::daw::gui::test::MultigraphCViewW
 	};
 
 	SELFCLASS *self = new SELFCLASS();
-	*windowMock = self;
+	*essence.windowMock = self;
+	self->onClosed_m = essence.onClosed;
 
-	self->onNextExternalOp_m = cont;
+	self->onNextExternalOp_m = essence.onCreated;
 
 	return esferixis::Qt::Application::toGuiThread(esferixis::cps::mkCont(STM::onCreateWindow, self));
 }

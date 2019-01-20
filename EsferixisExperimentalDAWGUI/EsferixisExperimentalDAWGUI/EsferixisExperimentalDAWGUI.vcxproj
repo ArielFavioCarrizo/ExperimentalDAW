@@ -141,7 +141,6 @@
     <ClCompile Include="MultigraphCHNoteSegmentMock.cpp" />
     <ClCompile Include="MultigraphCViewMock.cpp" />
     <ClCompile Include="MultigraphCViewMockTestWindow.cpp" />
-    <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

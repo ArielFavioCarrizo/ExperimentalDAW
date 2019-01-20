@@ -51,6 +51,9 @@
     <ClInclude Include="include\esferixis\common\data\linkedlist.h">
       <Filter>Header Files\Esferixis\Data</Filter>
     </ClInclude>
+    <ClInclude Include="include\esferixis\common\cps\exception.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -73,6 +76,9 @@
     </ClCompile>
     <ClCompile Include="src\EsferixisCPSCont.cpp">
       <Filter>Source Files\Esferixis</Filter>
+    </ClCompile>
+    <ClCompile Include="src\EsferixisCPSException.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

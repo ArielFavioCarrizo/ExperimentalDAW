@@ -30,32 +30,22 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#pragma once
+#include <stdafx.h>
 
-#include <boost/noncopyable.hpp>
-#include <esferixis/common/cps/cont.h>
+#include <esferixis/common/cps/exception.h>
 
-namespace esferixis {
-	namespace cps {
-		template<typename T>
-		class Readable final {
-		public:
-			/**
-			 * @post Creates an readable with
-			         the given pointer to data
-			 */
-			Readable(T *dataPtr) {
+inline void esferixis_cps_exception_destroy_allocatedWithMalloc(void *implData) {
+	free(implData);
+}
 
-			}
+esferixis_cps_exception esferixis_cps_exception_create(size_t descriptionSize) {
+	esferixis_cps_exception exception;
 
-			/**
-			 * @post Gets the value
-			 */
-			T value() {
+	void *data = malloc(descriptionSize);
 
-			}
+	exception.message = (char *)data;
+	exception.destroy = esferixis_cps_exception_destroy_allocatedWithMalloc;
+	exception.implData = data;
 
-			/**/
-		};
-	}
+	return exception;
 }

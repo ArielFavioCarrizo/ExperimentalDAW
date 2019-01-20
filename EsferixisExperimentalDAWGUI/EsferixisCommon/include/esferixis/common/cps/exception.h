@@ -31,64 +31,54 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #pragma once
-#include <qwidget.h>
 
 #include <esferixis/common/cps/cont.h>
 
-#include "MultigraphCView.h"
-#include "HNoteSegmentMultigraph.h"
+#ifdef __cplusplus
+#include <string>
+#endif
 
+struct esferixis_cps_exception {
+	const char *message;
+	void(*destroy) (void *implData);
+
+	void *implData;
+};
+
+struct esferixis_cps_exception_handler {
+	esferixis_cps_exception *exception;
+
+	esferixis_cps_cont onSuccess;
+	esferixis_cps_cont onFailure;
+};
+
+/**
+ * @post Destroys the specified exception
+ */
+inline void esferixis_cps_exception_destroy(esferixis_cps_exception exception) {
+	exception.destroy(exception.implData);
+}
+
+/**
+ * @post Creates an exception with the specified description size
+ */
+EsferixisCommon_C_API esferixis_cps_exception esferixis_cps_exception_create(size_t descriptionSize);
+
+#ifdef __cplusplus
 namespace esferixis {
-	namespace daw {
-		namespace gui {
-			namespace test {
-				class MultigraphCViewWindowMock
-				{
-				public:
-					struct ContextEssence {
-						esferixis::daw::gui::test::MultigraphCViewWindowMock **windowMock;
+	namespace cps {
+		/**
+		 * @post Creates an exception with the specified message
+		 */
+		inline esferixis_cps_exception createException(std::string message) {
+			size_t messageLength = message.length() + sizeof(char);
 
-						esferixis_cps_cont onCreated;
-						esferixis_cps_cont onClosed;
-					};
+			esferixis_cps_exception exception = esferixis_cps_exception_create(messageLength);
 
-					/**
-					 * @pre The GUI must be locked
-					 * @post Creates a multigraphCView window mock
-					 */
-					static esferixis_cps_cont create(ContextEssence essence);
+			memcpy((void *)exception.message, (void *)message.c_str(), messageLength);
 
-					/**
-					 * @post Sets the continuation to execute after it has been closed
-					 *		 The continuation will be executed with the GUI locked
-					 */
-					void setOnClosed(esferixis_cps_cont cont);
-
-				private:
-					class LocalWindow : public QWidget {
-					public:
-						LocalWindow(esferixis::daw::gui::test::MultigraphCViewWindowMock *parent);
-
-					protected:
-						void closeEvent(QCloseEvent *event) override;
-
-					private:
-						esferixis::daw::gui::test::MultigraphCViewWindowMock *parent_m;
-					};
-
-					/**
-					 * @post Creates a window of multigraphCView window mock
-					 */
-					MultigraphCViewWindowMock();
-
-					esferixis::daw::gui::MultigraphCView<esferixis::daw::gui::MultigraphCHNoteSegment, esferixis::daw::gui::MultigraphCHNoteSegment::Essence>::ContextEssence viewContextEssence_m;
-					QWidget *window_m;
-					esferixis::daw::gui::HNoteSegmentMultigraph *multigraph_m;
-
-					esferixis_cps_cont onNextExternalOp_m;
-					esferixis_cps_cont onClosed_m;
-				};
-			}
+			return exception;
 		}
 	}
 }
+#endif

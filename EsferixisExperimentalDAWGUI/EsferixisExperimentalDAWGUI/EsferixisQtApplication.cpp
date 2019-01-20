@@ -109,11 +109,11 @@ esferixis_cps_cont SELFCLASS::unlockGUI(esferixis_cps_cont cont) {
 	return cont;
 }
 
-esferixis_cps_cont SELFCLASS::quit() {
+esferixis_cps_cont SELFCLASS::exit(int returnCode) {
 	SELFCLASS *self = SELFCLASS::instance()->instanceFromGUIThread();
 
 	self->quit_m = true;
-	self->qApp_m->quit();
+	self->qApp_m->exit(returnCode);
 
 	return esferixis::cps::CPS_RET;
 }
