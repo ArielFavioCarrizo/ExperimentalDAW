@@ -71,6 +71,9 @@
     <ClCompile Include="src\EsferixisContextualized.cpp">
       <Filter>Source Files\Esferixis</Filter>
     </ClCompile>
+    <ClCompile Include="src\EsferixisCPSCont.cpp">
+      <Filter>Source Files\Esferixis</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

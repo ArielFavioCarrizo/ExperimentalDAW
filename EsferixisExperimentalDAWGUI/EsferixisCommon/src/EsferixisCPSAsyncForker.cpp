@@ -47,6 +47,10 @@ struct _esferixis_cps_asyncforker {
 esferixis_cps_asyncforker * esferixis_cps_asyncforker_new() {
 	esferixis_cps_asyncforker *forker = new esferixis_cps_asyncforker();
 
+	forker->config.onFork1 = esferixis_cps_mkInvalidCont();
+	forker->config.onFork2 = esferixis_cps_mkInvalidCont();
+	forker->config.onJoin = esferixis_cps_mkInvalidCont();
+
 	forker->remainingJoins = 0;
 
 	return forker;

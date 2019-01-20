@@ -173,6 +173,7 @@
     <ClCompile Include="src\EsferixisCommon.cpp" />
     <ClCompile Include="src\EsferixisContextualized.cpp" />
     <ClCompile Include="src\EsferixisCPSAsyncForker.cpp" />
+    <ClCompile Include="src\EsferixisCPSCont.cpp" />
     <ClCompile Include="src\EsferixisCPSSched.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

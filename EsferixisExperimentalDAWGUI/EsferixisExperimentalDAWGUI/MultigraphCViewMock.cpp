@@ -42,6 +42,8 @@ esferixis_cps_cont SELFCLASS::create(esferixis::daw::gui::MultigraphCView<esferi
 
 	self->onElementLoad_m = contextEssence.onElementLoad;
 	self->onElementUnload_m = contextEssence.onElementUnload;
+	self->onClosed_m = esferixis_cps_mkInvalidCont();
+	self->nextExternalActionCont_m = esferixis_cps_mkInvalidCont();
 
 	return contextEssence.onInitialized;
 }
