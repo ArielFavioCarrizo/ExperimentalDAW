@@ -46,11 +46,21 @@ namespace esferixis {
 			class HNoteSegmentMultigraph final : private boost::noncopyable
 			{
 			public:
+				struct Essence {
+					esferixis::daw::gui::HNoteSegmentMultigraph **instance;
+					esferixis::daw::gui::MultigraphCView<esferixis::daw::gui::MultigraphCHNoteSegment, esferixis::daw::gui::MultigraphCHNoteSegment::Essence>::ContextEssence *viewContextEssence;
+
+					QColor backgroundColor;
+					QColor gridColor;
+
+					esferixis_cps_cont onWaitingViewCreation;
+					esferixis_cps_cont onInitialized;
+				};
+
 				/**
-				 * @post Creates an editable multigraph based on horizontal note segments
-				         with the specified continuation
+				 * @post Creates an editable multigraph based on horizontal with the specified essence
 				 */
-				static esferixis_cps_cont create(esferixis::daw::gui::HNoteSegmentMultigraph **instance, esferixis_cps_cont cont);
+				static esferixis_cps_cont create(Essence essence);
 
 				/*
 				 * @post Gets the QT widget
@@ -70,24 +80,9 @@ namespace esferixis {
 				void setGridColor(QColor color);
 
 				/**
-				 * @post Returns the context essence of the view
-			     *		 
-				 *		 Warning: Use of this essence must be preceeded by the setting of the 'on opened' continuation
+				 * @post Destroys the multiview without destroying the widget
 				 */
-				esferixis::daw::gui::MultigraphCView<esferixis::daw::gui::MultigraphCHNoteSegment, esferixis::daw::gui::MultigraphCHNoteSegment::Essence>::ContextEssence viewContextEssence() const;
-
-				/**
-				 * @post Sets the continuation on opened
-				 * 
-				 *		 This continuation will be executed after a view is created using the view context essence of
-				 *		 this multigraph
-				 */
-				void setOnOpened(esferixis_cps_cont cont);
-
-				/**
-				 * @post Closes the multiview without destroying it
-				 */
-				esferixis_cps_cont close(esferixis_cps_cont cont);
+				esferixis_cps_cont destroy(esferixis_cps_cont cont);
 
 			private:
 				class LocalQWidget final : public QWidget {
@@ -95,6 +90,8 @@ namespace esferixis {
 					LocalQWidget(esferixis::daw::gui::HNoteSegmentMultigraph *multigraph);
 
 					void paintEvent(QPaintEvent *event) override;
+
+					void detachFromMultigraph();
 
 				private:
 					esferixis::daw::gui::HNoteSegmentMultigraph *multigraph_m;
@@ -107,7 +104,7 @@ namespace esferixis {
 					esferixis::LinkedList<ElementContext *>::Node node_m;
 				};
 
-				esferixis::daw::gui::MultigraphCView<esferixis::daw::gui::MultigraphCHNoteSegment, esferixis::daw::gui::MultigraphCHNoteSegment::Essence>::ContextEssence contextEssence_m;
+				Essence essence_m;
 
 				LocalQWidget *widget_m;
 				QColor backgroundColor_m;

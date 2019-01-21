@@ -75,7 +75,7 @@ esferixis_cps_cont setup_multigraphcCViewMockTestWindow(void *dummy) {
 
 	LocalContext *localContext = new LocalContext();
 
-	esferixis::daw::gui::test::MultigraphCViewWindowMock::ContextEssence windowContext;
+	esferixis::daw::gui::test::MultigraphCViewWindowMock::Essence windowContext;
 
 	windowContext.windowMock = &(localContext->windowMock);
 	windowContext.onCreated = esferixis::cps::mkCont(STM::onWindowCreated, localContext);

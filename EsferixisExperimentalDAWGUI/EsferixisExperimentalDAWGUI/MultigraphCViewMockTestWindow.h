@@ -45,7 +45,7 @@ namespace esferixis {
 				class MultigraphCViewWindowMock
 				{
 				public:
-					struct ContextEssence {
+					struct Essence {
 						esferixis::daw::gui::test::MultigraphCViewWindowMock **windowMock;
 
 						esferixis_cps_cont onCreated;
@@ -56,13 +56,7 @@ namespace esferixis {
 					 * @pre The GUI must be locked
 					 * @post Creates a multigraphCView window mock
 					 */
-					static esferixis_cps_cont create(ContextEssence essence);
-
-					/**
-					 * @post Sets the continuation to execute after it has been closed
-					 *		 The continuation will be executed with the GUI locked
-					 */
-					void setOnClosed(esferixis_cps_cont cont);
+					static esferixis_cps_cont create(Essence essence);
 
 				private:
 					class LocalWindow : public QWidget {
@@ -80,6 +74,8 @@ namespace esferixis {
 					 * @post Creates a window of multigraphCView window mock
 					 */
 					MultigraphCViewWindowMock();
+
+					Essence essence_m;
 
 					esferixis::daw::gui::MultigraphCView<esferixis::daw::gui::MultigraphCHNoteSegment, esferixis::daw::gui::MultigraphCHNoteSegment::Essence>::ContextEssence viewContextEssence_m;
 					QWidget *window_m;
