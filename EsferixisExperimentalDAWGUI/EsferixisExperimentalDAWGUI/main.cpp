@@ -35,6 +35,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "MultigraphCViewMockTestWindow.h"
 
+#include <stdexcept>
+
 #include <QWindow>
 #include <QObject>
 #include <QCloseEvent>
@@ -51,9 +53,14 @@ int main(int argc, char *argv[])
 esferixis_cps_cont setup_multigraphcCViewMockTestWindow(void *dummy) {
 	struct LocalContext {
 		esferixis::daw::gui::test::MultigraphCViewWindowMock *windowMock;
+		esferixis_cps_exception windowInstException;
 	};
 
 	struct STM {
+		static esferixis_cps_cont onWindowInstFailure(LocalContext *context) {
+			throw esferixis::cps::destructivelyConvertToStdException(context->windowInstException);
+		}
+
 		static esferixis_cps_cont onWindowCreated(LocalContext *context) {
 			return esferixis::Qt::Application::unlockGUI(esferixis::cps::mkCont(onGUIUnlocked_1, context));
 		}
@@ -78,7 +85,9 @@ esferixis_cps_cont setup_multigraphcCViewMockTestWindow(void *dummy) {
 	esferixis::daw::gui::test::MultigraphCViewWindowMock::Essence windowContext;
 
 	windowContext.windowMock = &(localContext->windowMock);
-	windowContext.onCreated = esferixis::cps::mkCont(STM::onWindowCreated, localContext);
+	windowContext.onCreated.exception = &(localContext->windowInstException);
+	windowContext.onCreated.onFailure = esferixis::cps::mkCont(STM::onWindowInstFailure, localContext);
+	windowContext.onCreated.onSuccess = esferixis::cps::mkCont(STM::onWindowCreated, localContext);
 	windowContext.onClosed = esferixis::cps::mkCont(STM::onWindowClosed, localContext);
 
 	return esferixis::daw::gui::test::MultigraphCViewWindowMock::create(windowContext);

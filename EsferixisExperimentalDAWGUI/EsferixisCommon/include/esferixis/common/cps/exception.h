@@ -36,21 +36,22 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifdef __cplusplus
 #include <string>
+#include <stdexcept>
 #endif
 
-struct esferixis_cps_exception {
+typedef struct _esferixis_cps_exception {
 	const char *message;
 	void(*destroy) (void *implData);
 
 	void *implData;
-};
+} esferixis_cps_exception;
 
-struct esferixis_cps_exception_handler {
+typedef struct _esferixis_cps_unsafecont {
 	esferixis_cps_exception *exception;
 
 	esferixis_cps_cont onSuccess;
 	esferixis_cps_cont onFailure;
-};
+} esferixis_cps_unsafecont;
 
 /**
  * @post Destroys the specified exception
@@ -78,6 +79,26 @@ namespace esferixis {
 			memcpy((void *)exception.message, (void *)message.c_str(), messageLength);
 
 			return exception;
+		}
+
+		/**
+		 * @post Copies the exception description destroying the original
+				 exception in the process
+		 */
+		inline std::string destructiveExceptMsgCopy(esferixis_cps_exception exception) {
+			std::string message(exception.message);
+			esferixis_cps_exception_destroy(exception);
+
+			return message;
+		}
+
+		/**
+		 * @post Destructively converts the given exception to std exception
+		 */
+		inline std::runtime_error destructivelyConvertToStdException(esferixis_cps_exception exception) {
+			std::string message = esferixis::cps::destructiveExceptMsgCopy(exception);
+
+			return std::runtime_error(message);
 		}
 	}
 }

@@ -36,6 +36,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define SELFCLASS esferixis::daw::gui::test::MultigraphCViewMock
 
 esferixis_cps_cont SELFCLASS::create(esferixis::daw::gui::MultigraphCView<esferixis::daw::gui::MultigraphCHNoteSegment, esferixis::daw::gui::MultigraphCHNoteSegment::Essence>::ContextEssence contextEssence) {
+	/*
+	*(contextEssence.onInitialized.exception) = esferixis::cps::createException("Mock failure");
+
+	return contextEssence.onInitialized.onFailure;
+	*/
+
 	SELFCLASS *self = new SELFCLASS();
 
 	*contextEssence.instance = self;
@@ -45,7 +51,7 @@ esferixis_cps_cont SELFCLASS::create(esferixis::daw::gui::MultigraphCView<esferi
 	self->onClosed_m = esferixis_cps_mkInvalidCont();
 	self->nextExternalActionCont_m = esferixis_cps_mkInvalidCont();
 
-	return contextEssence.onInitialized;
+	return contextEssence.onInitialized.onSuccess;
 }
 
 SELFCLASS::MultigraphCViewMock()

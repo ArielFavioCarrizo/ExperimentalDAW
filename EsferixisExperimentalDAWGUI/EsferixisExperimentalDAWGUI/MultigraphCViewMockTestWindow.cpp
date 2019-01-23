@@ -54,11 +54,21 @@ esferixis_cps_cont SELFCLASS::create(SELFCLASS::Essence essence) {
 			multigraphEssence.backgroundColor = ::Qt::GlobalColor::white;
 			multigraphEssence.gridColor = ::Qt::GlobalColor::lightGray;
 			multigraphEssence.instance = &(self->multigraph_m);
-			multigraphEssence.onInitialized = esferixis::cps::mkCont(onAddMultigraphWidget_goToGUIThread, self);
+
+			multigraphEssence.onInitialized.exception = &(self->multigraphInstException_m);
+			multigraphEssence.onInitialized.onFailure = esferixis::cps::mkCont(onMultigraphInstException, self);
+			multigraphEssence.onInitialized.onSuccess = esferixis::cps::mkCont(onAddMultigraphWidget_goToGUIThread, self);
+
 			multigraphEssence.onWaitingViewCreation = esferixis::cps::mkCont(onCreateView, self);
 			multigraphEssence.viewContextEssence = &(self->viewContextEssence_m);
 
 			return esferixis::daw::gui::HNoteSegmentMultigraph::create(multigraphEssence);
+		}
+
+		static esferixis_cps_cont onMultigraphInstException(SELFCLASS *self) {
+			*(self->essence_m.onCreated.exception) = esferixis::cps::createException("Cannot create window because multigraph instantiation has failed -> " + esferixis::cps::destructiveExceptMsgCopy(self->multigraphInstException_m));
+
+			return self->essence_m.onCreated.onFailure;
 		}
 
 		static esferixis_cps_cont onCreateView(SELFCLASS *self) {
@@ -80,7 +90,7 @@ esferixis_cps_cont SELFCLASS::create(SELFCLASS::Essence essence) {
 
 			*(self->essence_m.windowMock) = self;
 
-			return self->essence_m.onCreated;
+			return self->essence_m.onCreated.onSuccess;
 		}
 	};
 

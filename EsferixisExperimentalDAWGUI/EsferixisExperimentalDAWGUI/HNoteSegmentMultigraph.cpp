@@ -46,10 +46,20 @@ esferixis_cps_cont SELFCLASS::create(esferixis::daw::gui::HNoteSegmentMultigraph
 			return self->essence_m.onWaitingViewCreation;
 		}
 
+		static esferixis_cps_cont onFailure(esferixis::daw::gui::HNoteSegmentMultigraph *self) {
+			*(self->essence_m.onInitialized.exception) = esferixis::cps::createException("Cannot create multigraph because instantion of the view has failed -> " + esferixis::cps::destructiveExceptMsgCopy(self->viewInstException_m));
+
+			esferixis_cps_cont cont = self->essence_m.onInitialized.onFailure;
+
+			delete self;
+
+			return cont;
+		}
+
 		static esferixis_cps_cont onInitialized(esferixis::daw::gui::HNoteSegmentMultigraph *self) {
 			*(self->essence_m.instance) = self;
 
-			return self->essence_m.onInitialized;
+			return self->essence_m.onInitialized.onSuccess;
 		}
 
 		static esferixis_cps_cont onElementLoad(esferixis::daw::gui::HNoteSegmentMultigraph *self) {
@@ -88,7 +98,9 @@ esferixis_cps_cont SELFCLASS::create(esferixis::daw::gui::HNoteSegmentMultigraph
 		e->instance = &self->view_m;
 		e->onElementLoad = esferixis::cps::mkCont(STM::onElementLoad, self);
 		e->onElementUnload = esferixis::cps::mkCont(STM::onElementUnload, self);
-		e->onInitialized = esferixis::cps::mkCont(STM::onInitialized, self);
+		e->onInitialized.exception = &(self->viewInstException_m);
+		e->onInitialized.onFailure = esferixis::cps::mkCont(STM::onFailure, self);
+		e->onInitialized.onSuccess = esferixis::cps::mkCont(STM::onInitialized, self);
 	}
 
 	self->widget_m = nullptr;

@@ -37,6 +37,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <esferixis/common/contextualized.h>
 
 #include <esferixis/common/cps/cont.h>
+#include <esferixis/common/cps/exception.h>
 
 namespace esferixis {
 	namespace daw {
@@ -48,7 +49,7 @@ namespace esferixis {
 				struct ContextEssence {
 					esferixis::daw::gui::MultigraphCView<E, EEssence> **instance;
 
-					esferixis_cps_cont onInitialized;
+					esferixis_cps_unsafecont onCreated;
 
 					esferixis_cps_cont onElementLoad;
 					esferixis_cps_cont onElementUnload;

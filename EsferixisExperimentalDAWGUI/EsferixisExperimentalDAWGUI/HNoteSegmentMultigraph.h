@@ -36,6 +36,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "MultigraphCHNoteSegment.h"
 
 #include <esferixis/common/cps/cont.h>
+#include <esferixis/common/cps/exception.h>
 #include <esferixis/common/data/linkedlist.h>
 
 #include <qwidget.h>
@@ -54,7 +55,8 @@ namespace esferixis {
 					QColor gridColor;
 
 					esferixis_cps_cont onWaitingViewCreation;
-					esferixis_cps_cont onInitialized;
+
+					esferixis_cps_unsafecont onInitialized;
 				};
 
 				/**
@@ -111,6 +113,8 @@ namespace esferixis {
 				QColor gridColor_m;
 
 				esferixis::daw::gui::MultigraphCView<esferixis::daw::gui::MultigraphCHNoteSegment, esferixis::daw::gui::MultigraphCHNoteSegment::Essence> *view_m;
+				esferixis_cps_exception viewInstException_m;
+
 				esferixis::LinkedList<ElementContext *> loadedElements_m;
 
 				esferixis_cps_cont nextExternalCont_m;
