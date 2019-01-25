@@ -34,6 +34,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <boost/noncopyable.hpp>
 #include <esferixis/common/cps/cont.h>
+#include <esferixis/common/cps/exception.h>
+
 #include <esferixis/common/contextualized.h>
 #include <QtGui/qcolor.h>
 
@@ -43,6 +45,16 @@ namespace esferixis {
 			class MultigraphCHNoteSegment : public esferixis::Contextualized, private boost::noncopyable
 			{
 			public:
+				struct StateFeedback {
+					esferixis_cps_cont onNewOffset;
+					esferixis_cps_cont onNewHeight;
+					esferixis_cps_cont onNewColor;
+					esferixis_cps_cont onNewIsAContinuationValue;
+					esferixis_cps_cont onNewSelectionState;
+
+					esferixis_cps_unsafecont *onUpdated;
+				};
+
 				struct Essence {
 					double offset;
 					double height;
@@ -79,47 +91,22 @@ namespace esferixis {
 				/**
 				 * @post Sets the offset
 				 */
-				virtual esferixis_cps_cont setOffset(double offset, esferixis_cps_cont cont) = 0;
+				virtual esferixis_cps_cont setOffset(double offset, esferixis_cps_unsafecont cont) = 0;
 
 				/**
 				 * @post Sets the height
 				 */
-				virtual esferixis_cps_cont setHeight(double height, esferixis_cps_cont cont) = 0;
+				virtual esferixis_cps_cont setHeight(double height, esferixis_cps_unsafecont cont) = 0;
 
 				/**
 				 * @post Sets a boolean indicating if is a continuation
 				 */
-				virtual esferixis_cps_cont setIsAContinuation(bool isAContinuation, esferixis_cps_cont cont) = 0;
+				virtual esferixis_cps_cont setIsAContinuation(bool isAContinuation, esferixis_cps_unsafecont cont) = 0;
 
 				/**
 				 * @post Erases the note segment
 				 */
-				virtual esferixis_cps_cont erase(esferixis_cps_cont cont) =0;
-
-				/**
-				 * @post Sets the continuation to notify a new offset
-				 */
-				virtual void setOnNewOffset(esferixis_cps_cont cont) = 0;
-
-				/**
-				 * @post Sets the continuation to notify a new height
-				 */
-				virtual void setOnNewHeight(esferixis_cps_cont cont) = 0;
-
-				/**
-				 * @post Sets the continuation to notify a new color
-				 */
-				virtual void setOnNewColor(esferixis_cps_cont cont) =0;
-
-				/**
-				 * @post Sets the continuation to notify a change in the 'isAContinuation' property
-				 */
-				virtual void setOnIsAContinuationChange(esferixis_cps_cont cont) =0;
-
-				/**
-				 * @post Sets the continuation to notify a new selection state
-				 */
-				virtual void setOnNewSelectionState(esferixis_cps_cont cont) = 0;
+				virtual esferixis_cps_cont erase(esferixis_cps_unsafecont cont) =0;
 
 			protected:
 				/**

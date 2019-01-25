@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define SELFCLASS esferixis::daw::gui::test::MultigraphCViewMock
 
-esferixis_cps_cont SELFCLASS::create(esferixis::daw::gui::MultigraphCView<esferixis::daw::gui::MultigraphCHNoteSegment, esferixis::daw::gui::MultigraphCHNoteSegment::Essence>::ContextEssence contextEssence) {
+esferixis_cps_cont SELFCLASS::create(esferixis::daw::gui::MultigraphCView<esferixis::daw::gui::MultigraphCHNoteSegment, esferixis::daw::gui::MultigraphCHNoteSegment::Essence, esferixis::daw::gui::MultigraphCHNoteSegment::StateFeedback>::ContextEssence contextEssence) {
 	/*
 	*(contextEssence.onInitialized.exception) = esferixis::cps::createException("Mock failure");
 
@@ -46,12 +46,15 @@ esferixis_cps_cont SELFCLASS::create(esferixis::daw::gui::MultigraphCView<esferi
 
 	*contextEssence.instance = self;
 
-	self->onElementLoad_m = contextEssence.onElementLoad;
-	self->onElementUnload_m = contextEssence.onElementUnload;
-	self->onClosed_m = esferixis_cps_mkInvalidCont();
-	self->nextExternalActionCont_m = esferixis_cps_mkInvalidCont();
+	self->stateFeedback_m = contextEssence.stateFeedback;
 
-	return contextEssence.onInitialized.onSuccess;
+	*(self->stateFeedback_m.element) = nullptr;
+	*(self->stateFeedback_m.elementStateFeedback) = nullptr;
+	*(self->stateFeedback_m.onUpdated) = esferixis_cps_mkInvalidUnsafeCont();
+
+	self->onClosed_m = esferixis_cps_mkInvalidCont();
+
+	return contextEssence.onCreated.onSuccess;
 }
 
 SELFCLASS::MultigraphCViewMock()
@@ -64,30 +67,12 @@ SELFCLASS::~MultigraphCViewMock()
 {
 }
 
-esferixis::daw::gui::MultigraphCHNoteSegment * SELFCLASS::getReferencedElement() {
-	return this->referencedElement_m;
-}
-
-esferixis_cps_cont SELFCLASS::createElement(esferixis::daw::gui::MultigraphCHNoteSegment::Essence elementEssence, esferixis_cps_cont cont) {
+esferixis_cps_cont SELFCLASS::createElement(esferixis::daw::gui::MultigraphCHNoteSegment::Essence elementEssence, esferixis_cps_unsafecont cont) {
 	esferixis::daw::gui::test::MultigraphCHNoteSegmentMock *element = new esferixis::daw::gui::test::MultigraphCHNoteSegmentMock(elementEssence, this);
 
-	this->referencedElement_m = element;
+	*(this->stateFeedback_m.elementStateFeedback) = &(element->stateFeedback);
 
-	this->nextExternalActionCont_m = cont;
-
-	return this->onElementLoad_m;
-}
-
-void SELFCLASS::setOnElementLoad(esferixis_cps_cont cont) {
-	this->onElementLoad_m = cont;
-}
-
-void SELFCLASS::setOnElementToUnload(esferixis_cps_cont cont) {
-	this->onElementUnload_m = cont;
-}
-
-esferixis_cps_cont SELFCLASS::setTimeIntervalToView(double min, double max, esferixis_cps_cont cont) {
-	return cont; // Do nothing
+	return this->stateFeedback_m.onElementToLoad;
 }
 
 esferixis_cps_cont SELFCLASS::lockElement(esferixis::daw::gui::MultigraphCHNoteSegment *element, esferixis_cps_cont cont) {
@@ -98,27 +83,35 @@ esferixis_cps_cont SELFCLASS::unlockElement(esferixis::daw::gui::MultigraphCHNot
 	return cont; // Do nothing
 }
 
-esferixis_cps_cont SELFCLASS::close(esferixis_cps_cont cont) {
+esferixis_cps_cont SELFCLASS::close(esferixis_cps_unsafecont cont) {
 	struct STM {
-		static esferixis_cps_cont loop(SELFCLASS *self) {
+		static esferixis_cps_cont findElement(SELFCLASS *self) {
 			if (!self->noteSegments_m.isEmpty()) {
-				return self->noteSegments_m.first()->get()->erase(esferixis::cps::mkCont(loop, self));
+				esferixis_cps_unsafecont cont;
+
+				cont.exception = &(self->exception_m);
+				cont.onSuccess = esferixis::cps::mkCont(findElement, self);
+				cont.onFailure = esferixis::cps::mkCont(onFailure, self);
+
+				return self->noteSegments_m.first()->get()->erase(cont);
 			}
 			else {
-				esferixis_cps_cont cont = self->onClosed_m;
+				esferixis_cps_cont cont = self->onClosed_m.onSuccess;
 
 				delete self;
 
 				return cont;
 			}
 		}
+
+		static esferixis_cps_cont onFailure(SELFCLASS *self) {
+			*(self->onClosed_m.exception) = esferixis::cps::createException("Cannot destroy element" + esferixis::cps::destructiveExceptMsgCopy(self->exception_m));
+
+			return self->onClosed_m.onFailure;
+		}
 	};
 
 	this->onClosed_m = cont;
 
-	return esferixis::cps::mkCont(STM::loop, this);
-}
-
-esferixis_cps_cont SELFCLASS::doNextAction() {
-	return this->nextExternalActionCont_m;
+	return esferixis::cps::mkCont(STM::findElement, this);
 }

@@ -65,6 +65,16 @@ inline void esferixis_cps_exception_destroy(esferixis_cps_exception exception) {
  */
 EsferixisCommon_C_API esferixis_cps_exception esferixis_cps_exception_create(size_t descriptionSize);
 
+/**
+ * @post Creates an invalid 'unsafecont'
+ */
+inline esferixis_cps_unsafecont esferixis_cps_mkInvalidUnsafeCont() {
+	esferixis_cps_unsafecont unsafeCont;
+
+	unsafeCont.onFailure = esferixis_cps_mkInvalidCont();
+	unsafeCont.onSuccess = esferixis_cps_mkInvalidCont();
+}
+
 #ifdef __cplusplus
 namespace esferixis {
 	namespace cps {

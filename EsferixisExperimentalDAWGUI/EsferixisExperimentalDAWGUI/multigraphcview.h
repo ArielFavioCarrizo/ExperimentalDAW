@@ -42,40 +42,33 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace esferixis {
 	namespace daw {
 		namespace gui {
-			template<typename E, typename EEssence>
+			template<typename E, typename EEssence, typename EStateFeedback>
 			class MultigraphCView : public esferixis::Contextualized, private boost::noncopyable
 			{
 			public:
+				struct StateFeedback {
+					E **element;
+					EStateFeedback **elementStateFeedback;
+
+					esferixis_cps_cont onElementToLoad;
+					esferixis_cps_cont onLoadedElement;
+
+					esferixis_cps_cont onElementUnload;
+
+					esferixis_cps_unsafecont *onUpdated;
+				};
+
 				struct ContextEssence {
 					esferixis::daw::gui::MultigraphCView<E, EEssence> **instance;
 
+					StateFeedback stateFeedback;
 					esferixis_cps_unsafecont onCreated;
-
-					esferixis_cps_cont onElementLoad;
-					esferixis_cps_cont onElementUnload;
 				};
-
-				/**
-				 * @post Gets the referenced element on the current state
-				 */
-				virtual E * getReferencedElement() = 0;
 
 				/**
 				 * @post Creates an element with the given essence and continuation
 				 */
-				virtual esferixis_cps_cont createElement(EEssence elementEssence, esferixis_cps_cont cont) =0;
-
-				/**
-				 * @post Sets the continuation to notify a new loaded element
-				 */
-				virtual void setOnElementLoad(esferixis_cps_cont cont) =0;
-
-				/**
-				 * @post Sets the continuation to notify a element that will be unloaded
-				 *      
-				 *		 Warning: The element will be invalidated by the next action
-				 */
-				virtual void setOnElementToUnload(esferixis_cps_cont cont) =0;
+				virtual esferixis_cps_cont createElement(EEssence elementEssence, esferixis_cps_unsafecont cont) =0;
 
 				/**
 				 * @post Locks the reference to element to preserve it
@@ -90,7 +83,7 @@ namespace esferixis {
 				/**
 				 * @post Sets a time interval to view
 				 */
-				virtual esferixis_cps_cont setTimeIntervalToView(double min, double max, esferixis_cps_cont cont) =0;
+				virtual esferixis_cps_cont setTimeIntervalToView(double min, double max, esferixis_cps_unsafecont cont) =0;
 
 				/**
 				 * @post Closes the view
@@ -99,13 +92,7 @@ namespace esferixis {
 				 *		 close the view.
 				 *		 The view will be invalidated.
 				 */
-				virtual esferixis_cps_cont close(esferixis_cps_cont cont) =0;
-
-				/**
-				 * @pre It must be executed after a continuation callback
-				 * @post Do the next action
-				 */
-				virtual esferixis_cps_cont doNextAction() =0;
+				virtual esferixis_cps_cont close(esferixis_cps_unsafecont cont) =0;
 
 			protected:
 				/**

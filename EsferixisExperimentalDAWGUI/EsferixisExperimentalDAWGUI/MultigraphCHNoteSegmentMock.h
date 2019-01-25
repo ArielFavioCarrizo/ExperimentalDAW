@@ -56,23 +56,13 @@ namespace esferixis {
 
 					bool isSelected() override;
 
-					esferixis_cps_cont setOffset(double offset, esferixis_cps_cont cont) override;
+					esferixis_cps_cont setOffset(double offset, esferixis_cps_unsafecont cont) override;
 
-					esferixis_cps_cont setHeight(double height, esferixis_cps_cont cont) override;
+					esferixis_cps_cont setHeight(double height, esferixis_cps_unsafecont cont) override;
 
-					esferixis_cps_cont setIsAContinuation(bool isAContinuation, esferixis_cps_cont cont) override;
+					esferixis_cps_cont setIsAContinuation(bool isAContinuation, esferixis_cps_unsafecont cont) override;
 
-					esferixis_cps_cont erase(esferixis_cps_cont cont) override;
-
-					void setOnNewOffset(esferixis_cps_cont cont) override;
-
-					void setOnNewHeight(esferixis_cps_cont cont) override;
-
-					void setOnNewColor(esferixis_cps_cont cont) override;
-
-					void setOnIsAContinuationChange(esferixis_cps_cont cont) override;
-
-					void setOnNewSelectionState(esferixis_cps_cont cont) override;
+					esferixis_cps_cont erase(esferixis_cps_unsafecont cont) override;
 
 				protected:
 					/**
@@ -87,6 +77,8 @@ namespace esferixis {
 					 */
 					MultigraphCHNoteSegmentMock(esferixis::daw::gui::MultigraphCHNoteSegment::Essence essence, esferixis::daw::gui::test::MultigraphCViewMock *multigraphCViewMock);
 
+					esferixis::daw::gui::MultigraphCHNoteSegment::StateFeedback stateFeedback;
+
 					esferixis::daw::gui::test::MultigraphCViewMock *multigraphCViewMock_m;
 					esferixis::LinkedList<esferixis::daw::gui::MultigraphCHNoteSegment *>::Node containerNode_m;
 
@@ -94,14 +86,6 @@ namespace esferixis {
 					double height_m;
 					bool isAContinuation_m;
 					bool isSelected_m;
-
-					esferixis_cps_cont onNewOffset_m;
-					esferixis_cps_cont onNewHeight_m;
-					esferixis_cps_cont onNewColor_m;
-					esferixis_cps_cont onIsAContinuationChange_m;
-					esferixis_cps_cont onNewSelectionState_m;
-
-					esferixis_cps_cont returnCont_m;
 				};
 			}
 		}
