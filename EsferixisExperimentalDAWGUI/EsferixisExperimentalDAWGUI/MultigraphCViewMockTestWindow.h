@@ -78,7 +78,7 @@ namespace esferixis {
 
 					Essence essence_m;
 
-					esferixis::daw::gui::MultigraphCView<esferixis::daw::gui::MultigraphCHNoteSegment, esferixis::daw::gui::MultigraphCHNoteSegment::Essence>::ContextEssence viewContextEssence_m;
+					esferixis::daw::gui::MultigraphCView<esferixis::daw::gui::MultigraphCHNoteSegment, esferixis::daw::gui::MultigraphCHNoteSegment::Essence, esferixis::daw::gui::MultigraphCHNoteSegment::StateFeedback>::ContextEssence viewContextEssence_m;
 
 					QWidget *window_m;
 					esferixis::daw::gui::HNoteSegmentMultigraph *multigraph_m;

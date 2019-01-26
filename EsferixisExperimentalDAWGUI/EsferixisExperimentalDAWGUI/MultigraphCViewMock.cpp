@@ -52,7 +52,7 @@ esferixis_cps_cont SELFCLASS::create(esferixis::daw::gui::MultigraphCView<esferi
 	*(self->stateFeedback_m.elementStateFeedback) = nullptr;
 	*(self->stateFeedback_m.onUpdated) = esferixis_cps_mkInvalidUnsafeCont();
 
-	self->onClosed_m = esferixis_cps_mkInvalidCont();
+	self->onClosed_m = esferixis_cps_mkInvalidUnsafeCont();
 
 	return contextEssence.onCreated.onSuccess;
 }
@@ -70,9 +70,10 @@ SELFCLASS::~MultigraphCViewMock()
 esferixis_cps_cont SELFCLASS::createElement(esferixis::daw::gui::MultigraphCHNoteSegment::Essence elementEssence, esferixis_cps_unsafecont cont) {
 	esferixis::daw::gui::test::MultigraphCHNoteSegmentMock *element = new esferixis::daw::gui::test::MultigraphCHNoteSegmentMock(elementEssence, this);
 
+	*(this->stateFeedback_m.element) = element;
 	*(this->stateFeedback_m.elementStateFeedback) = &(element->stateFeedback);
 
-	return this->stateFeedback_m.onElementToLoad;
+	return this->stateFeedback_m.onElementLoad;
 }
 
 esferixis_cps_cont SELFCLASS::lockElement(esferixis::daw::gui::MultigraphCHNoteSegment *element, esferixis_cps_cont cont) {

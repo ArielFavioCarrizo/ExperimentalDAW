@@ -73,6 +73,8 @@ inline esferixis_cps_unsafecont esferixis_cps_mkInvalidUnsafeCont() {
 
 	unsafeCont.onFailure = esferixis_cps_mkInvalidCont();
 	unsafeCont.onSuccess = esferixis_cps_mkInvalidCont();
+
+	return unsafeCont;
 }
 
 #ifdef __cplusplus

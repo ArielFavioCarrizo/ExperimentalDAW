@@ -50,16 +50,14 @@ namespace esferixis {
 					E **element;
 					EStateFeedback **elementStateFeedback;
 
-					esferixis_cps_cont onElementToLoad;
-					esferixis_cps_cont onLoadedElement;
-
+					esferixis_cps_cont onElementLoad;
 					esferixis_cps_cont onElementUnload;
 
 					esferixis_cps_unsafecont *onUpdated;
 				};
 
 				struct ContextEssence {
-					esferixis::daw::gui::MultigraphCView<E, EEssence> **instance;
+					esferixis::daw::gui::MultigraphCView<E, EEssence, EStateFeedback> **instance;
 
 					StateFeedback stateFeedback;
 					esferixis_cps_unsafecont onCreated;

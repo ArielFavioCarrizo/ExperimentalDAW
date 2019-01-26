@@ -73,33 +73,33 @@ bool SELFCLASS::isSelected() {
 	return this->isSelected_m;
 }
 
-esferixis_cps_cont SELFCLASS::setOffset(double offset, esferixis_cps_cont cont) {
-	this->multigraphCViewMock_m->nextExternalActionCont_m = cont;
+esferixis_cps_cont SELFCLASS::setOffset(double offset, esferixis_cps_unsafecont cont) {
+	*(this->multigraphCViewMock_m->stateFeedback_m.onUpdated) = cont;
 
 	this->timeOffset_m = offset;
 
-	return this->onNewOffset_m;
+	return this->stateFeedback.onNewOffset;
 }
 
-esferixis_cps_cont SELFCLASS::setHeight(double height, esferixis_cps_cont cont) {
-	this->multigraphCViewMock_m->nextExternalActionCont_m = cont;
+esferixis_cps_cont SELFCLASS::setHeight(double height, esferixis_cps_unsafecont cont) {
+	*(this->multigraphCViewMock_m->stateFeedback_m.onUpdated) = cont;
 
 	this->height_m = height;
 
-	return this->onNewHeight_m;
+	return this->stateFeedback.onNewHeight;
 }
 
-esferixis_cps_cont SELFCLASS::setIsAContinuation(bool isAContinuation, esferixis_cps_cont cont) {
-	this->multigraphCViewMock_m->nextExternalActionCont_m = cont;
+esferixis_cps_cont SELFCLASS::setIsAContinuation(bool isAContinuation, esferixis_cps_unsafecont cont) {
+	*(this->multigraphCViewMock_m->stateFeedback_m.onUpdated) = cont;
 
 	this->isAContinuation_m = isAContinuation;
-	return this->onIsAContinuationChange_m;
+	return this->stateFeedback.onNewIsAContinuationValue;
 }
 
-esferixis_cps_cont SELFCLASS::erase(esferixis_cps_cont cont) {
+esferixis_cps_cont SELFCLASS::erase(esferixis_cps_unsafecont cont) {
 	struct STM {
 		static esferixis_cps_cont deleteItself(SELFCLASS *self) {
-			esferixis_cps_cont cont = self->returnCont_m;
+			esferixis_cps_cont cont = self->returnCont_m.onSuccess;
 
 			self->multigraphCViewMock_m->noteSegments_m.remove(&(self->containerNode_m));
 
@@ -107,31 +107,21 @@ esferixis_cps_cont SELFCLASS::erase(esferixis_cps_cont cont) {
 
 			return cont;
 		}
+
+		static esferixis_cps_cont onFailure(SELFCLASS *self) {
+			*(self->returnCont_m.exception) = esferixis::cps::createException("Cannot remove element because notification has failed -> " + esferixis::cps::destructiveExceptMsgCopy(self->externalException_m));
+
+			return self->returnCont_m.onFailure;
+		}
 	};
 
-	this->multigraphCViewMock_m->referencedElement_m = this;
-	this->multigraphCViewMock_m->nextExternalActionCont_m = esferixis::cps::mkCont(STM::deleteItself, this);
 	this->returnCont_m = cont;
 
-	return this->multigraphCViewMock_m->onElementUnload_m;
-}
+	*(this->multigraphCViewMock_m->stateFeedback_m.element) = this;
 
-void SELFCLASS::setOnNewOffset(esferixis_cps_cont cont) {
-	this->onNewOffset_m = cont;
-}
+	this->multigraphCViewMock_m->stateFeedback_m.onUpdated->exception = &(this->externalException_m);
+	this->multigraphCViewMock_m->stateFeedback_m.onUpdated->onFailure = esferixis::cps::mkCont(STM::onFailure, this);
+	this->multigraphCViewMock_m->stateFeedback_m.onUpdated->onSuccess = esferixis::cps::mkCont(STM::deleteItself, this);
 
-void SELFCLASS::setOnNewHeight(esferixis_cps_cont cont) {
-	this->onNewHeight_m = cont;
-}
-
-void SELFCLASS::setOnNewColor(esferixis_cps_cont cont) {
-	this->onNewColor_m = cont;
-}
-
-void SELFCLASS::setOnIsAContinuationChange(esferixis_cps_cont cont) {
-	this->onIsAContinuationChange_m = cont;
-}
-
-void SELFCLASS::setOnNewSelectionState(esferixis_cps_cont cont) {
-	this->onNewSelectionState_m = cont;
+	return this->multigraphCViewMock_m->stateFeedback_m.onElementUnload;
 }

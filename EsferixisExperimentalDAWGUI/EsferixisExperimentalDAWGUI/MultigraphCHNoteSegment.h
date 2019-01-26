@@ -51,8 +51,6 @@ namespace esferixis {
 					esferixis_cps_cont onNewColor;
 					esferixis_cps_cont onNewIsAContinuationValue;
 					esferixis_cps_cont onNewSelectionState;
-
-					esferixis_cps_unsafecont *onUpdated;
 				};
 
 				struct Essence {

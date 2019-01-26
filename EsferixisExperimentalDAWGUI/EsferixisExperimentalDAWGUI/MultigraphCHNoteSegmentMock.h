@@ -82,6 +82,9 @@ namespace esferixis {
 					esferixis::daw::gui::test::MultigraphCViewMock *multigraphCViewMock_m;
 					esferixis::LinkedList<esferixis::daw::gui::MultigraphCHNoteSegment *>::Node containerNode_m;
 
+					esferixis_cps_exception externalException_m;
+					esferixis_cps_unsafecont returnCont_m;
+
 					double timeOffset_m;
 					double height_m;
 					bool isAContinuation_m;

@@ -49,7 +49,7 @@ namespace esferixis {
 			public:
 				struct Essence {
 					esferixis::daw::gui::HNoteSegmentMultigraph **instance;
-					esferixis::daw::gui::MultigraphCView<esferixis::daw::gui::MultigraphCHNoteSegment, esferixis::daw::gui::MultigraphCHNoteSegment::Essence>::ContextEssence *viewContextEssence;
+					esferixis::daw::gui::MultigraphCView<esferixis::daw::gui::MultigraphCHNoteSegment, esferixis::daw::gui::MultigraphCHNoteSegment::Essence, esferixis::daw::gui::MultigraphCHNoteSegment::StateFeedback>::ContextEssence *viewContextEssence;
 
 					QColor backgroundColor;
 					QColor gridColor;
@@ -112,7 +112,7 @@ namespace esferixis {
 				QColor backgroundColor_m;
 				QColor gridColor_m;
 
-				esferixis::daw::gui::MultigraphCView<esferixis::daw::gui::MultigraphCHNoteSegment, esferixis::daw::gui::MultigraphCHNoteSegment::Essence> *view_m;
+				esferixis::daw::gui::MultigraphCView<esferixis::daw::gui::MultigraphCHNoteSegment, esferixis::daw::gui::MultigraphCHNoteSegment::Essence, esferixis::daw::gui::MultigraphCHNoteSegment::StateFeedback> *view_m;
 				esferixis_cps_exception viewInstException_m;
 
 				esferixis::LinkedList<ElementContext *> loadedElements_m;
