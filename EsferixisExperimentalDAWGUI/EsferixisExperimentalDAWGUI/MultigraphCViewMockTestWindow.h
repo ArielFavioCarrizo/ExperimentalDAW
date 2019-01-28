@@ -50,7 +50,7 @@ namespace esferixis {
 						esferixis::daw::gui::test::MultigraphCViewWindowMock **windowMock;
 
 						esferixis_cps_unsafecont onCreated;
-						esferixis_cps_cont onClosed;
+						esferixis_cps_unsafecont onClosed;
 					};
 
 					/**
@@ -79,10 +79,14 @@ namespace esferixis {
 					Essence essence_m;
 
 					esferixis::daw::gui::MultigraphCView<esferixis::daw::gui::MultigraphCHNoteSegment, esferixis::daw::gui::MultigraphCHNoteSegment::Essence, esferixis::daw::gui::MultigraphCHNoteSegment::StateFeedback>::ContextEssence viewContextEssence_m;
+					struct ViewState {
+						esferixis::daw::gui::MultigraphCHNoteSegment::StateFeedback *elementStateFeedback;
+					};
+					ViewState viewState_m;
 
 					QWidget *window_m;
 					esferixis::daw::gui::HNoteSegmentMultigraph *multigraph_m;
-					esferixis_cps_exception multigraphInstException_m;
+					esferixis_cps_exception multigraphException_m;
 
 					esferixis_cps_cont onNextExternalOp_m;
 					esferixis_cps_cont onClosed_m;

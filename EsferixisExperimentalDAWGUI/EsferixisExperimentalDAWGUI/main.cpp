@@ -53,12 +53,12 @@ int main(int argc, char *argv[])
 esferixis_cps_cont setup_multigraphcCViewMockTestWindow(void *dummy) {
 	struct LocalContext {
 		esferixis::daw::gui::test::MultigraphCViewWindowMock *windowMock;
-		esferixis_cps_exception windowInstException;
+		esferixis_cps_exception windowException;
 	};
 
 	struct STM {
 		static esferixis_cps_cont onWindowInstFailure(LocalContext *context) {
-			throw esferixis::cps::destructivelyConvertToStdException(context->windowInstException);
+			throw esferixis::cps::destructivelyConvertToStdException(context->windowException);
 		}
 
 		static esferixis_cps_cont onWindowCreated(LocalContext *context) {
@@ -69,11 +69,15 @@ esferixis_cps_cont setup_multigraphcCViewMockTestWindow(void *dummy) {
 			return esferixis_cps_sched_exit();
 		}
 
-		static esferixis_cps_cont onWindowClosed(LocalContext *context) {
-			return esferixis::Qt::Application::unlockGUI(esferixis::cps::mkCont(onGUIUnlocked_2, context));
+		static esferixis_cps_cont onWindowClosed_success(LocalContext *context) {
+			return esferixis::Qt::Application::unlockGUI(esferixis::cps::mkCont(onDestroyContext, context));
 		}
 
-		static esferixis_cps_cont onGUIUnlocked_2(LocalContext *context) {
+		static esferixis_cps_cont onWindowClosed_failure(LocalContext *context) {
+			throw esferixis::cps::destructivelyConvertToStdException(context->windowException);
+		}
+
+		static esferixis_cps_cont onDestroyContext(LocalContext *context) {
 			delete context;
 
 			return esferixis::Qt::Application::exit();
@@ -85,10 +89,13 @@ esferixis_cps_cont setup_multigraphcCViewMockTestWindow(void *dummy) {
 	esferixis::daw::gui::test::MultigraphCViewWindowMock::Essence windowContext;
 
 	windowContext.windowMock = &(localContext->windowMock);
-	windowContext.onCreated.exception = &(localContext->windowInstException);
+	windowContext.onCreated.exception = &(localContext->windowException);
 	windowContext.onCreated.onFailure = esferixis::cps::mkCont(STM::onWindowInstFailure, localContext);
 	windowContext.onCreated.onSuccess = esferixis::cps::mkCont(STM::onWindowCreated, localContext);
-	windowContext.onClosed = esferixis::cps::mkCont(STM::onWindowClosed, localContext);
+
+	windowContext.onClosed.exception = &(localContext->windowException);
+	windowContext.onClosed.onFailure = esferixis::cps::mkCont(STM::onWindowClosed_failure, localContext);
+	windowContext.onClosed.onSuccess = esferixis::cps::mkCont(STM::onWindowClosed_success, localContext);
 
 	return esferixis::daw::gui::test::MultigraphCViewWindowMock::create(windowContext);
 }

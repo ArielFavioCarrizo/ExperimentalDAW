@@ -84,7 +84,7 @@ namespace esferixis {
 				/**
 				 * @post Destroys the multiview without destroying the widget
 				 */
-				esferixis_cps_cont destroy(esferixis_cps_cont cont);
+				esferixis_cps_cont destroy(esferixis_cps_unsafecont cont);
 
 			private:
 				class LocalQWidget final : public QWidget {
@@ -113,11 +113,20 @@ namespace esferixis {
 				QColor gridColor_m;
 
 				esferixis::daw::gui::MultigraphCView<esferixis::daw::gui::MultigraphCHNoteSegment, esferixis::daw::gui::MultigraphCHNoteSegment::Essence, esferixis::daw::gui::MultigraphCHNoteSegment::StateFeedback> *view_m;
-				esferixis_cps_exception viewInstException_m;
+
+				struct ViewState {
+					esferixis::daw::gui::MultigraphCHNoteSegment *referencedElement_m;
+					esferixis::daw::gui::MultigraphCHNoteSegment::StateFeedback *elementStateFeedback_m;
+
+					esferixis_cps_unsafecont onUpdated;
+				};
+				esferixis_cps_exception viewException_m;
+
+				ViewState viewState_m;
 
 				esferixis::LinkedList<ElementContext *> loadedElements_m;
 
-				esferixis_cps_cont nextExternalCont_m;
+				esferixis_cps_unsafecont nextExternalCont_m;
 			};
 		}
 	}

@@ -76,6 +76,10 @@ esferixis_cps_cont SELFCLASS::createElement(esferixis::daw::gui::MultigraphCHNot
 	return this->stateFeedback_m.onElementLoad;
 }
 
+esferixis_cps_cont SELFCLASS::setTimeIntervalToView(double min, double max, esferixis_cps_unsafecont cont) {
+	return cont.onSuccess; // Do nothing
+}
+
 esferixis_cps_cont SELFCLASS::lockElement(esferixis::daw::gui::MultigraphCHNoteSegment *element, esferixis_cps_cont cont) {
 	return cont; // Do nothing
 }
