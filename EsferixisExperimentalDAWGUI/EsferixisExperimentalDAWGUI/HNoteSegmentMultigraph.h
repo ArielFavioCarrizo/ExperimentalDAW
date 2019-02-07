@@ -47,12 +47,20 @@ namespace esferixis {
 			class HNoteSegmentMultigraph final : private boost::noncopyable
 			{
 			public:
+				struct GridCfg {
+					QColor gridColor;
+					QSizeF gridSize;
+					QPointF gridOffset;
+				};
+
 				struct Essence {
 					esferixis::daw::gui::HNoteSegmentMultigraph **instance;
 					esferixis::daw::gui::MultigraphCView<esferixis::daw::gui::MultigraphCHNoteSegment, esferixis::daw::gui::MultigraphCHNoteSegment::Essence, esferixis::daw::gui::MultigraphCHNoteSegment::StateFeedback>::ContextEssence *viewContextEssence;
 
+					QRectF viewArea;
+
 					QColor backgroundColor;
-					QColor gridColor;
+					GridCfg gridCfg;
 
 					esferixis_cps_cont onWaitingViewCreation;
 
@@ -77,9 +85,9 @@ namespace esferixis {
 
 				/**
 				 * @pre It must be done from the GUI thread
-				 * @post Sets the grid color
+				 * @post Sets the grid config
 				 */
-				void setGridColor(QColor color);
+				void setGridCfg(GridCfg gridCfg);
 
 				/**
 				 * @post Destroys the multiview without destroying the widget
@@ -109,8 +117,9 @@ namespace esferixis {
 				Essence essence_m;
 
 				LocalQWidget *widget_m;
+
 				QColor backgroundColor_m;
-				QColor gridColor_m;
+				GridCfg gridCfg_m;
 
 				esferixis::daw::gui::MultigraphCView<esferixis::daw::gui::MultigraphCHNoteSegment, esferixis::daw::gui::MultigraphCHNoteSegment::Essence, esferixis::daw::gui::MultigraphCHNoteSegment::StateFeedback> *view_m;
 

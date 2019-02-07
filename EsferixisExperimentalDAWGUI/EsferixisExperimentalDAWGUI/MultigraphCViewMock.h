@@ -55,7 +55,7 @@ namespace esferixis {
 
 					esferixis_cps_cont createElement(esferixis::daw::gui::MultigraphCHNoteSegment::Essence elementEssence, esferixis_cps_unsafecont cont) override;
 
-					esferixis_cps_cont setTimeIntervalToView(double min, double max, esferixis_cps_unsafecont cont) override;
+					esferixis_cps_cont setViewArea(QRectF viewArea, esferixis_cps_unsafecont cont) override;
 
 					esferixis_cps_cont lockElement(esferixis::daw::gui::MultigraphCHNoteSegment *element, esferixis_cps_cont cont) override;
 

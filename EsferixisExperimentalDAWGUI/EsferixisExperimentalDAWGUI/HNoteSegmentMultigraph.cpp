@@ -36,6 +36,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <stdexcept>
 
+#include <Qt>
+#include <qpainter.h>
+#include <QPaintEvent>
+
 #define SELFCLASS esferixis::daw::gui::HNoteSegmentMultigraph
 
 esferixis_cps_cont SELFCLASS::create(esferixis::daw::gui::HNoteSegmentMultigraph::Essence essence) {
@@ -96,6 +100,8 @@ esferixis_cps_cont SELFCLASS::create(esferixis::daw::gui::HNoteSegmentMultigraph
 		auto e = essence.viewContextEssence;
 
 		e->instance = &self->view_m;
+		e->viewArea = essence.viewArea;
+
 		e->onCreated.exception = &(self->viewException_m);
 		e->onCreated.onFailure = esferixis::cps::mkCont(STM::onCreatedView_failure, self);
 		e->onCreated.onSuccess = esferixis::cps::mkCont(STM::onCreatedView_success, self);
@@ -112,7 +118,7 @@ esferixis_cps_cont SELFCLASS::create(esferixis::daw::gui::HNoteSegmentMultigraph
 	self->essence_m = essence;
 
 	self->backgroundColor_m = essence.backgroundColor;
-	self->gridColor_m = essence.gridColor;
+	self->gridCfg_m = essence.gridCfg;
 
 	return esferixis::Qt::Application::toGuiThread(esferixis::cps::mkCont(STM::onCreateWidget, self));
 }
@@ -125,8 +131,8 @@ void SELFCLASS::setBackgroundColor(QColor color) {
 	this->backgroundColor_m = color;
 }
 
-void SELFCLASS::setGridColor(QColor color) {
-	this->gridColor_m = color;
+void SELFCLASS::setGridCfg(SELFCLASS::GridCfg gridCfg) {
+	this->gridCfg_m = gridCfg;
 }
 
 esferixis_cps_cont SELFCLASS::destroy(const esferixis_cps_unsafecont cont) {
@@ -164,6 +170,13 @@ SELFCLASS::LocalQWidget::LocalQWidget(esferixis::daw::gui::HNoteSegmentMultigrap
 
 void SELFCLASS::LocalQWidget::paintEvent(QPaintEvent *event) {
 	if (this->multigraph_m != nullptr) {
+		QPainter painter(this);
+
+		painter.setRenderHint(QPainter::Antialiasing, false);
+		painter.fillRect(event->rect(), this->multigraph_m->backgroundColor_m);
+
+		painter.save();
+
 		// FIXME: Implement this
 	}
 }

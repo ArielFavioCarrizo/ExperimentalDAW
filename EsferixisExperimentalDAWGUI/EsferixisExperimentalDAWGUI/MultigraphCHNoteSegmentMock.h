@@ -52,15 +52,11 @@ namespace esferixis {
 
 					QColor getColor() override;
 
-					bool isAContinuation() override;
-
 					bool isSelected() override;
 
 					esferixis_cps_cont setOffset(double offset, esferixis_cps_unsafecont cont) override;
 
 					esferixis_cps_cont setHeight(double height, esferixis_cps_unsafecont cont) override;
-
-					esferixis_cps_cont setIsAContinuation(bool isAContinuation, esferixis_cps_unsafecont cont) override;
 
 					esferixis_cps_cont erase(esferixis_cps_unsafecont cont) override;
 
@@ -87,7 +83,6 @@ namespace esferixis {
 
 					double timeOffset_m;
 					double height_m;
-					bool isAContinuation_m;
 					bool isSelected_m;
 				};
 			}

@@ -49,7 +49,6 @@ namespace esferixis {
 					esferixis_cps_cont onNewOffset;
 					esferixis_cps_cont onNewHeight;
 					esferixis_cps_cont onNewColor;
-					esferixis_cps_cont onNewIsAContinuationValue;
 					esferixis_cps_cont onNewSelectionState;
 				};
 
@@ -77,11 +76,6 @@ namespace esferixis {
 				virtual QColor getColor() = 0;
 
 				/**
-				 * @post Gets a boolean indicating if the segment is a continuation of the previous note
-				 */
-				virtual bool isAContinuation() = 0;
-
-				/**
 				 * @post Gets a boolean indicating if it is selected
 				 */
 				virtual bool isSelected() = 0;
@@ -95,11 +89,6 @@ namespace esferixis {
 				 * @post Sets the height
 				 */
 				virtual esferixis_cps_cont setHeight(double height, esferixis_cps_unsafecont cont) = 0;
-
-				/**
-				 * @post Sets a boolean indicating if is a continuation
-				 */
-				virtual esferixis_cps_cont setIsAContinuation(bool isAContinuation, esferixis_cps_unsafecont cont) = 0;
 
 				/**
 				 * @post Erases the note segment

@@ -76,7 +76,7 @@ esferixis_cps_cont SELFCLASS::createElement(esferixis::daw::gui::MultigraphCHNot
 	return this->stateFeedback_m.onElementLoad;
 }
 
-esferixis_cps_cont SELFCLASS::setTimeIntervalToView(double min, double max, esferixis_cps_unsafecont cont) {
+esferixis_cps_cont SELFCLASS::setViewArea(QRectF viewArea, esferixis_cps_unsafecont cont) {
 	return cont.onSuccess; // Do nothing
 }
 

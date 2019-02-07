@@ -44,7 +44,6 @@ SELFCLASS::MultigraphCHNoteSegmentMock(esferixis::daw::gui::MultigraphCHNoteSegm
 
 	this->timeOffset_m = essence.offset;
 	this->height_m = essence.height;
-	this->isAContinuation_m = false;
 	this->isSelected_m = false;
 }
 
@@ -65,10 +64,6 @@ QColor SELFCLASS::getColor() {
 	return Qt::GlobalColor::red;
 }
 
-bool SELFCLASS::isAContinuation() {
-	return this->isAContinuation_m;
-}
-
 bool SELFCLASS::isSelected() {
 	return this->isSelected_m;
 }
@@ -87,13 +82,6 @@ esferixis_cps_cont SELFCLASS::setHeight(double height, esferixis_cps_unsafecont 
 	this->height_m = height;
 
 	return this->stateFeedback.onNewHeight;
-}
-
-esferixis_cps_cont SELFCLASS::setIsAContinuation(bool isAContinuation, esferixis_cps_unsafecont cont) {
-	*(this->multigraphCViewMock_m->stateFeedback_m.onUpdated) = cont;
-
-	this->isAContinuation_m = isAContinuation;
-	return this->stateFeedback.onNewIsAContinuationValue;
 }
 
 esferixis_cps_cont SELFCLASS::erase(esferixis_cps_unsafecont cont) {

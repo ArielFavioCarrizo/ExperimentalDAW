@@ -52,7 +52,7 @@ esferixis_cps_cont SELFCLASS::create(SELFCLASS::Essence essence) {
 			esferixis::daw::gui::HNoteSegmentMultigraph::Essence multigraphEssence;
 
 			multigraphEssence.backgroundColor = ::Qt::GlobalColor::white;
-			multigraphEssence.gridColor = ::Qt::GlobalColor::lightGray;
+			multigraphEssence.gridCfg.gridColor = ::Qt::GlobalColor::lightGray;
 			multigraphEssence.instance = &(self->multigraph_m);
 
 			multigraphEssence.onInitialized.exception = &(self->multigraphException_m);
@@ -81,9 +81,6 @@ esferixis_cps_cont SELFCLASS::create(SELFCLASS::Essence essence) {
 
 		static esferixis_cps_cont onAddMultigraphWidget_onGUIThread(SELFCLASS *self) {
 			QHBoxLayout *layout = new QHBoxLayout();
-
-			self->multigraph_m->setBackgroundColor(::Qt::GlobalColor::white);
-			self->multigraph_m->setGridColor(::Qt::GlobalColor::lightGray);
 
 			layout->addWidget(self->multigraph_m->widget());
 			self->window_m->setLayout(layout);

@@ -39,6 +39,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <esferixis/common/cps/cont.h>
 #include <esferixis/common/cps/exception.h>
 
+#include <qrect.h>
+
 namespace esferixis {
 	namespace daw {
 		namespace gui {
@@ -59,6 +61,8 @@ namespace esferixis {
 				struct ContextEssence {
 					esferixis::daw::gui::MultigraphCView<E, EEssence, EStateFeedback> **instance;
 
+					QRectF viewArea;
+					
 					StateFeedback stateFeedback;
 					esferixis_cps_unsafecont onCreated;
 				};
@@ -79,9 +83,9 @@ namespace esferixis {
 				virtual esferixis_cps_cont unlockElement(E *element, esferixis_cps_cont cont) = 0;
 
 				/**
-				 * @post Sets a time interval to view
+				 * @post Sets an area to view
 				 */
-				virtual esferixis_cps_cont setTimeIntervalToView(double min, double max, esferixis_cps_unsafecont cont) =0;
+				virtual esferixis_cps_cont setViewArea(QRectF viewArea, esferixis_cps_unsafecont cont) =0;
 
 				/**
 				 * @post Closes the view
