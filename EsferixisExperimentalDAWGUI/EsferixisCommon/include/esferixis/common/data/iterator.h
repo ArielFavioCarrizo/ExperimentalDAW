@@ -46,10 +46,15 @@ typedef struct _esferixis_cps_iterator_next_feedback {
 
 typedef struct _esferixis_cps_iterator {
 	esferixis_cps_cont(*next) (void *implData, esferixis_cps_iterator_next_feedback feedback);
+	esferixis_cps_cont(*destroy) (void *implData, esferixis_cps_unsafecont cont);
 
 	void *implData;
 } esferixis_cps_iterator;
 
 inline esferixis_cps_cont esferixis_cps_iterator_next(esferixis_cps_iterator iterator, esferixis_cps_iterator_next_feedback feedback) {
 	return iterator.next(iterator.implData, feedback);
+}
+
+inline esferixis_cps_cont esferixis_cps_iterator_destroy(esferixis_cps_iterator iterator, esferixis_cps_unsafecont cont) {
+	return iterator.destroy(iterator.implData, cont);
 }
