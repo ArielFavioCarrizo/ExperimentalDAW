@@ -35,6 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define SELFCLASS esferixis::Qt::Application
 
 #include <utility>
+#include <limits>
 
 esferixis::Qt::Application * SELFCLASS::instance_m = nullptr;
 
@@ -46,7 +47,7 @@ int SELFCLASS::run(int &argc, char **argv, esferixis_cps_cont cont) {
 	instance->qApp_m = std::make_unique<QApplication>(argc, argv, QCoreApplication::ApplicationFlags);
 	instance->qApp_m->setQuitOnLastWindowClosed(false);
 
-	instance->processGUIEvents_m = true;
+	instance->guiLocks_m = 0;
 	instance->quit_m = false;
 
 	// Define and attach the CPS scheduler
@@ -87,12 +88,19 @@ esferixis_cps_cont SELFCLASS::toGuiThread(esferixis_cps_cont cont) {
 esferixis_cps_cont SELFCLASS::lockGUI(esferixis_cps_cont cont) {
 	SELFCLASS *self = SELFCLASS::instance()->instanceFromGUIThread();
 
-	if (self->processGUIEvents_m) {
-		self->processGUIEvents_m = false;
+	bool processGUIEvents_old = self->processGUIEvents();
 
+	if (self->guiLocks_m != std::numeric_limits<unsigned int>::max() ) {
+		self->guiLocks_m++;
+	}
+	else {
+		throw std::runtime_error("GUI lock count overflow");
+	}
+
+	if ( processGUIEvents_old ) {
 		esferixis_runcps(cont);
 
-		while (!self->processGUIEvents_m && (!self->quit_m)) {
+		while (!self->processGUIEvents() && (!self->quit_m)) {
 			self->qApp_m->processEvents(QEventLoop::ExcludeUserInputEvents | QEventLoop::WaitForMoreEvents);
 		}
 
@@ -104,7 +112,14 @@ esferixis_cps_cont SELFCLASS::lockGUI(esferixis_cps_cont cont) {
 }
 
 esferixis_cps_cont SELFCLASS::unlockGUI(esferixis_cps_cont cont) {
-	SELFCLASS::instance()->instanceFromGUIThread()->processGUIEvents_m = true;
+	unsigned int& guiLocks = SELFCLASS::instance()->instanceFromGUIThread()->guiLocks_m;
+
+	if (guiLocks != 0) {
+		guiLocks--;
+	}
+	else {
+		throw std::runtime_error("GUI lock count underflow");
+	}
 
 	return cont;
 }
@@ -173,4 +188,8 @@ esferixis::Qt::Application * SELFCLASS::instanceFromGUIThread() {
 	SELFCLASS::checkOnGUIThread();
 	
 	return this;
+}
+
+bool SELFCLASS::processGUIEvents() {
+	return (this->guiLocks_m == 0);
 }

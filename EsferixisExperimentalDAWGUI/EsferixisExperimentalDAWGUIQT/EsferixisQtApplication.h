@@ -114,11 +114,16 @@ namespace esferixis {
 			 */
 			esferixis::Qt::Application * instanceFromGUIThread();
 
+			/**
+			 * @post Returns a boolean value indicating if the GUI events are enabled
+			 */
+			bool processGUIEvents();
+
 			static esferixis::Qt::Application *instance_m;
 
 			std::unique_ptr<QApplication> qApp_m;
 
-			bool processGUIEvents_m;
+			unsigned int guiLocks_m;
 			bool quit_m;
 		};
 	}

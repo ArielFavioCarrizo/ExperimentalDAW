@@ -52,7 +52,7 @@ esferixis_cps_cont SELFCLASS::create(SELFCLASS::Essence essence) {
 			esferixis::daw::gui::HNoteSegmentMultigraph::Essence multigraphEssence;
 
 			multigraphEssence.backgroundColor = ::Qt::GlobalColor::white;
-			multigraphEssence.gridCfg.gridColor = ::Qt::GlobalColor::lightGray;
+			multigraphEssence.grid = esferixis::daw::gui::Grid(esferixis::daw::gui::RGBColor(255, 0, 0), esferixis::math::Vec2f(0.0f, 0.0f), esferixis::math::Vec2f(30.0f, 30.0f));
 			multigraphEssence.instance = &(self->multigraph_m);
 
 			multigraphEssence.onInitialized.exception = &(self->multigraphException_m);

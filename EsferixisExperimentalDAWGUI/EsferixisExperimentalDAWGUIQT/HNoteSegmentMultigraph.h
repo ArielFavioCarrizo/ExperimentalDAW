@@ -38,6 +38,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <esferixis/common/cps/cont.h>
 #include <esferixis/common/cps/exception.h>
 #include <esferixis/common/data/linkedlist.h>
+#include <esferixis/daw/gui/common/grid.h>
 
 #include <qwidget.h>
 
@@ -47,12 +48,6 @@ namespace esferixis {
 			class HNoteSegmentMultigraph final : private boost::noncopyable
 			{
 			public:
-				struct GridCfg {
-					QColor gridColor;
-					QSizeF gridSize;
-					QPointF gridOffset;
-				};
-
 				struct Essence {
 					esferixis::daw::gui::HNoteSegmentMultigraph **instance;
 					esferixis::daw::gui::MultigraphCView<esferixis::daw::gui::MultigraphCHNoteSegment, esferixis::daw::gui::MultigraphCHNoteSegment::Essence, esferixis::daw::gui::MultigraphCHNoteSegment::StateFeedback>::ContextEssence *viewContextEssence;
@@ -60,7 +55,7 @@ namespace esferixis {
 					QRectF viewArea;
 
 					QColor backgroundColor;
-					GridCfg gridCfg;
+					esferixis::daw::gui::Grid grid;
 
 					esferixis_cps_cont onWaitingViewCreation;
 
@@ -85,9 +80,9 @@ namespace esferixis {
 
 				/**
 				 * @pre It must be done from the GUI thread
-				 * @post Sets the grid config
+				 * @post Sets the grid
 				 */
-				void setGridCfg(GridCfg gridCfg);
+				void setGrid(esferixis::daw::gui::Grid grid);
 
 				/**
 				 * @post Destroys the multiview without destroying the widget
@@ -119,7 +114,7 @@ namespace esferixis {
 				LocalQWidget *widget_m;
 
 				QColor backgroundColor_m;
-				GridCfg gridCfg_m;
+				esferixis::daw::gui::Grid grid_m;
 
 				esferixis::daw::gui::MultigraphCView<esferixis::daw::gui::MultigraphCHNoteSegment, esferixis::daw::gui::MultigraphCHNoteSegment::Essence, esferixis::daw::gui::MultigraphCHNoteSegment::StateFeedback> *view_m;
 

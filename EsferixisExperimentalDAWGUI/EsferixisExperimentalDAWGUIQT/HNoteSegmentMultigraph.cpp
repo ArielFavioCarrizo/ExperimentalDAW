@@ -39,6 +39,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <Qt>
 #include <qpainter.h>
 #include <QPaintEvent>
+#include "esferixis/daw/gui/common/grid.h"
+#include "EsferixisQtPainterAux.h"
 
 #define SELFCLASS esferixis::daw::gui::HNoteSegmentMultigraph
 
@@ -118,7 +120,7 @@ esferixis_cps_cont SELFCLASS::create(esferixis::daw::gui::HNoteSegmentMultigraph
 	self->essence_m = essence;
 
 	self->backgroundColor_m = essence.backgroundColor;
-	self->gridCfg_m = essence.gridCfg;
+	self->grid_m = essence.grid;
 
 	return esferixis::Qt::Application::toGuiThread(esferixis::cps::mkCont(STM::onCreateWidget, self));
 }
@@ -131,8 +133,8 @@ void SELFCLASS::setBackgroundColor(QColor color) {
 	this->backgroundColor_m = color;
 }
 
-void SELFCLASS::setGridCfg(SELFCLASS::GridCfg gridCfg) {
-	this->gridCfg_m = gridCfg;
+void SELFCLASS::setGrid(esferixis::daw::gui::Grid grid) {
+	this->grid_m = grid;
 }
 
 esferixis_cps_cont SELFCLASS::destroy(const esferixis_cps_unsafecont cont) {
@@ -171,11 +173,14 @@ SELFCLASS::LocalQWidget::LocalQWidget(esferixis::daw::gui::HNoteSegmentMultigrap
 void SELFCLASS::LocalQWidget::paintEvent(QPaintEvent *event) {
 	if (this->multigraph_m != nullptr) {
 		QPainter painter(this);
+		esferixis::Qt::PainterAux painterAux(painter);
 
 		painter.setRenderHint(QPainter::Antialiasing, false);
 		painter.fillRect(event->rect(), this->multigraph_m->backgroundColor_m);
 
 		painter.save();
+
+		painterAux.draw(this->multigraph_m->grid_m, event->rect());
 
 		// FIXME: Implement this
 	}

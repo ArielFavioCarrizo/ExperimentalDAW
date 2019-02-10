@@ -66,6 +66,34 @@ inline esferixis_cps_cont esferixis_cps_mkInvalidCont() {
 #ifdef __cplusplus
 namespace esferixis {
 	namespace cps {
+		class Cont {
+		public:
+			/**
+			 * @post Creates a invalid continuation
+			 */
+			Cont() {
+				this->cCont_m = esferixis_cps_mkInvalidCont();
+			}
+
+			/**
+			 * @post Creates a continuation with the given function pointer and data
+			 */
+			template<typename T>
+			inline Cont(esferixis_cps_cont(*funptr) (T *), T *data) {
+				this->cCont_m = esferixis::cps::mkCont(funptr, data);
+			}
+
+			/**
+			 * @post Gets the C continuation
+			 */
+			inline esferixis_cps_cont cCont() const {
+				return this->cCont_m;
+			}
+
+		private:
+			esferixis_cps_cont cCont_m;
+		};
+
 		/**
 		 * @post Creates a continuation with the given function pointer and data
 		 */

@@ -78,6 +78,15 @@
     <ClInclude Include="MultigraphCViewMockTestWindow.h">
       <Filter>Header Files\Test\Widgets</Filter>
     </ClInclude>
+    <ClInclude Include="EsferixisQtPainterAux.h">
+      <Filter>Header Files\QT</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EsferixisQtMisc.h">
+      <Filter>Header Files\QT</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="EsferixisQtApplication.cpp">
@@ -101,5 +110,11 @@
     <ClCompile Include="MultigraphCViewMockTestWindow.cpp">
       <Filter>Source Files\Test\Widgets</Filter>
     </ClCompile>
+    <ClCompile Include="EsferixisQtPainterAux.cpp">
+      <Filter>Source Files\QT</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="EsferixisExperimentalDAWGUIQT.rc" />
   </ItemGroup>
 </Project>

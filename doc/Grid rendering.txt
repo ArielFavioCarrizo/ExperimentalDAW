@@ -1,0 +1,18 @@
+x(k) = xg0 + wg * k
+y(k) = yg0 + hg * k
+
+x(k_x) >= xmin
+xg0 + wg * k_x >= xmin
+wg * k_x >= xmin - xg0
+
+k_x >= (xmin - xg0) / wg
+
+x(k_x) <= xmax
+
+xg0 + wg * k_x <= xmax
+
+wg * k_x <= xmax - xg0
+k_x <= (xmax - xg0) / wg
+
+k_y >= (ymin - yg0) / hg
+k_y <= (ymax - yg0) / hg
