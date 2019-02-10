@@ -46,7 +46,7 @@ SELFCLASS::~PainterAux()
 {
 }
 
-void SELFCLASS::draw(esferixis::daw::gui::Grid grid, QRect area) {
+void SELFCLASS::render(esferixis::daw::gui::Grid grid, QRect area) {
 	const float min_x = area.x();
 	const float min_y = area.y();
 	const float max_x = area.x() + area.width();

@@ -46,6 +46,12 @@ typedef struct _esferixis_cps_exception {
 	void *implData;
 } esferixis_cps_exception;
 
+typedef struct _esferixis_cps_failurecont {
+	esferixis_cps_exception *exception;
+
+	esferixis_cps_cont cont;
+} esferixis_cps_failurecont;
+
 typedef struct _esferixis_cps_unsafecont {
 	esferixis_cps_exception *exception;
 

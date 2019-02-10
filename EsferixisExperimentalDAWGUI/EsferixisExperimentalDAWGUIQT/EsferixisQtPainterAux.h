@@ -51,9 +51,9 @@ namespace esferixis {
 			~PainterAux();
 
 			/**
-			 * @post Draws a grid in the specified area
+			 * @post Render a grid in the specified area
 			 */
-			void draw(esferixis::daw::gui::Grid grid, QRect area);
+			void render(esferixis::daw::gui::Grid grid, QRect area);
 
 		private:
 			QPainter& painter_m;

@@ -165,6 +165,7 @@
     <ClInclude Include="include\esferixis\common\cps\cont.h" />
     <ClInclude Include="include\esferixis\common\cps\exception.h" />
     <ClInclude Include="include\esferixis\common\cps\sched.h" />
+    <ClInclude Include="include\esferixis\common\data\iterator.h" />
     <ClInclude Include="include\esferixis\common\data\linkedlist.h" />
     <ClInclude Include="include\esferixis\common\math\vec2f.h" />
     <ClInclude Include="stdafx.h" />

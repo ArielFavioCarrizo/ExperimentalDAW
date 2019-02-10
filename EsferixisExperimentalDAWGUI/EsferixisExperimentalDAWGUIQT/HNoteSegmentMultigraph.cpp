@@ -180,7 +180,7 @@ void SELFCLASS::LocalQWidget::paintEvent(QPaintEvent *event) {
 
 		painter.save();
 
-		painterAux.draw(this->multigraph_m->grid_m, event->rect());
+		painterAux.render(this->multigraph_m->grid_m, event->rect());
 
 		// FIXME: Implement this
 	}

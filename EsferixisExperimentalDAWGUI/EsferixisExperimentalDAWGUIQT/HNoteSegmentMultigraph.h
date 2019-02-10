@@ -63,7 +63,7 @@ namespace esferixis {
 				};
 
 				/**
-				 * @post Creates an editable multigraph based on horizontal with the specified essence
+				 * @post Creates an editable multigraph based on horizontal notes with the specified essence
 				 */
 				static esferixis_cps_cont create(Essence essence);
 

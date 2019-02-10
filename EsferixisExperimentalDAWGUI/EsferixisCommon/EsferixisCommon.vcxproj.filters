@@ -57,6 +57,9 @@
     <ClInclude Include="include\esferixis\common\math\vec2f.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\esferixis\common\data\iterator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
