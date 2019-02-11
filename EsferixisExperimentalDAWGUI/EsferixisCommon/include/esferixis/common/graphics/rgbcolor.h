@@ -32,57 +32,89 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #pragma once
 
+#include <esferixis/common/common.h>
+
+#ifdef __cplusplus
 #include <cstdint>
+#else
+#include "stdint.h"
+#endif
 
-namespace esferixis {
-	namespace daw {
-		namespace gui {
-			class RGBColor final {
-			public:
-				/**
-				 * @post Creates a black RGB Color
-				 */
-				inline RGBColor() {
-					this->red_m = 0.0f;
-					this->green_m = 0.0f;
-					this->blue_m = 0.0f;
-				}
+EsferixisCommon_C_BEGIN
 
-				/**
-				 * @post Creates a RGB color
-				 */
-				inline RGBColor(uint8_t red, uint8_t green, uint8_t blue) {
-					this->red_m = red;
-					this->green_m = green;
-					this->blue_m = blue;
-				}
+typedef struct _esferixis_rgbcolor {
+	uint8_t red;
+	uint8_t green;
+	uint8_t blue;
+} esferixis_rgbcolor;
 
-				/**
-				 * @post Gets the red component
-				 */
-				inline uint8_t red() {
-					return this->red_m;
-				}
+inline esferixis_rgbcolor esferixis_rgbcolor_new(uint8_t red, uint8_t green, uint8_t blue) {
+	esferixis_rgbcolor result;
 
-				/**
-				 * @post Gets the green component
-				 */
-				inline uint8_t green() {
-					return this->green_m;
-				}
+	result.red = red;
+	result.green = green;
+	result.blue = blue;
 
-				/**
-				 * @post Gets the blue component
-				 */
-				inline uint8_t blue() {
-					return this->blue_m;
-				}
-
-			private:
-				uint8_t red_m;
-				uint8_t green_m;
-				uint8_t blue_m;
-			};
-		}
-	}
+	return result;
 }
+
+EsferixisCommon_C_END
+
+#ifdef __cplusplus
+namespace esferixis {
+	class RGBColor final {
+	public:
+		/**
+			* @post Creates a black RGB Color
+			*/
+		inline RGBColor() {
+			this->cColor_m = esferixis_rgbcolor_new(0, 0, 0);
+		}
+
+		/**
+			* @post Creates a RGB color
+			*/
+		inline RGBColor(uint8_t red, uint8_t green, uint8_t blue) {
+			this->cColor_m = esferixis_rgbcolor_new(red, green, blue);
+		}
+
+		/**
+			* @post Creates a RGB color from C struct
+			*/
+		inline RGBColor(esferixis_rgbcolor cColor) {
+			this->cColor_m = cColor;
+		}
+
+		/**
+			* @post Gets the red component
+			*/
+		inline uint8_t red() const {
+			return this->cColor_m.red;
+		}
+
+		/**
+			* @post Gets the green component
+			*/
+		inline uint8_t green() const {
+			return this->cColor_m.green;
+		}
+
+		/**
+			* @post Gets the blue component
+			*/
+		inline uint8_t blue() const {
+			return this->cColor_m.blue;
+		}
+
+		/**
+		* @post Gets the C struct version
+		*/
+		inline esferixis_rgbcolor cColor() const {
+			return this->cColor_m;
+		}
+
+	private:
+		esferixis_rgbcolor cColor_m;
+	};
+}
+#endif

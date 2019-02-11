@@ -63,3 +63,15 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define Esferixis_CPP_EXPORT __declspec(dllexport)
 #endif
+
+#ifdef __cplusplus
+#define EsferixisCommon_C_BEGIN extern "C" {
+#else
+#define EsferixisCommon_C_BEGIN
+#endif
+
+#ifdef __cplusplus
+#define EsferixisCommon_C_END }
+#else
+#define EsferixisCommon_C_END
+#endif

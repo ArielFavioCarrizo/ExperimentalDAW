@@ -31,10 +31,21 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #pragma once
-#include <boost/noncopyable.hpp>
-#include <stdexcept>
+EsferixisCommon_C_BEGIN
+
+typedef struct _esferixis_linkedlist_node {
+	void *data;
+
+	_esferixis_linkedlist_node *previous;
+	_esferixis_linkedlist_node *next;
+} esferixis_linkedlist_node;
+
+EsferixisCommon_C_END
 
 #ifdef __cplusplus
+
+#include <boost/noncopyable.hpp>
+#include <stdexcept>
 
 namespace esferixis {
 	template<typename T>

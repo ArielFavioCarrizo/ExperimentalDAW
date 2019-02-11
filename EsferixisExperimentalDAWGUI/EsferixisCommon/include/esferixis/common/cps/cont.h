@@ -35,6 +35,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <esferixis/common/common.h>
 #include <cstdlib>
 
+EsferixisCommon_C_BEGIN
+
 typedef struct _esferixis_cps_cont {
 	_esferixis_cps_cont(*funptr) (void *);
 	void *data;
@@ -62,6 +64,8 @@ EsferixisCommon_C_API esferixis_cps_cont esferixis_cps_invalidContFun(void *data
 inline esferixis_cps_cont esferixis_cps_mkInvalidCont() {
 	return esferixis_cps_mkCont(esferixis_cps_invalidContFun, nullptr);
 }
+
+EsferixisCommon_C_END
 
 #ifdef __cplusplus
 namespace esferixis {

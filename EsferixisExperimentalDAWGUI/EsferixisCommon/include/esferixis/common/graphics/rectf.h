@@ -32,66 +32,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #pragma once
 
+#include <esferixis/common/common.h>
 #include <esferixis/common/math/vec2f.h>
-#include <esferixis/daw/gui/common/color.h>
 
-namespace esferixis {
-	namespace daw {
-		namespace gui {
-			class Grid final {
-			public:
-				/**
-				 * @post Creates a default grid
-				 */
-				inline Grid() {
-					this->color_m = esferixis::daw::gui::RGBColor(255, 0, 0);
-					this->offset_m = esferixis::math::Vec2f(0.0f, 0.0f);
-					this->size_m = esferixis::math::Vec2f(1.0f, 1.0f);
-				}
+EsferixisCommon_C_BEGIN
 
-				/**
-				 * @post Creates an grid with the specified color,
-						 offset and grid size
-				 */
-				inline Grid(esferixis::daw::gui::RGBColor color, esferixis::math::Vec2f offset, esferixis::math::Vec2f size) {
-					this->color_m = color;
-					this->offset_m = offset;
-					this->size_m = size;
-				}
+struct esferixis_rectf {
+	esferixis_vec2f topLeft;
+	esferixis_vec2f bottomRight;
+};
 
-				/**
-				 * @post Returns the color
-				 */
-				inline esferixis::daw::gui::RGBColor color() const {
-					return this->color_m;
-				}
-
-				/**
-				 * @post Returns the offset
-				 */
-				inline esferixis::math::Vec2f offset() const {
-					return this->offset_m;
-				}
-
-				/**
-				 * @post Returns the size
-				 */
-				inline esferixis::math::Vec2f size() const {
-					return this->size_m;
-				}
-
-				/**
-				 * @post Translates the grid
-				 */
-				inline esferixis::daw::gui::Grid translate(esferixis::math::Vec2f vec) {
-					return esferixis::daw::gui::Grid(this->color_m, this->offset_m + vec, this->size_m);
-				}
-
-			private:
-				esferixis::daw::gui::RGBColor color_m;
-				esferixis::math::Vec2f offset_m;
-				esferixis::math::Vec2f size_m;
-			};
-		}
-	}
-}
+EsferixisCommon_C_END

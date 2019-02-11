@@ -33,14 +33,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #pragma once
 
 #include <qcolor.h>
-#include <esferixis/daw/gui/common/color.h>
+#include <esferixis/common/graphics/rgbcolor.h>
 
 namespace esferixis {
 	namespace Qt {
 		/**
 		 * @post Converts to QColor
 		 */
-		inline QColor toQColor(esferixis::daw::gui::RGBColor rgbColor) {
+		inline QColor toQColor(esferixis::RGBColor rgbColor) {
 			return QColor::fromRgb(rgbColor.red(), rgbColor.green(), rgbColor.blue());
 		}
 	}

@@ -32,97 +32,77 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #pragma once
 
-#include <esferixis/common/common.h>
+#include <esferixis/common/cps/cont.h>
+#include <esferixis/common/cps/exception.h>
 
 EsferixisCommon_C_BEGIN
 
-typedef struct _esferixis_vec2f {
-	float x;
-	float y;
-} esferixis_vec2f;
+typedef struct _esferixis_cps_iterator_next_feedback {
+	void *element;
 
-inline esferixis_vec2f esferixis_vec2f_new(float x, float y) {
-	esferixis_vec2f result;
+	esferixis_cps_cont onNextElement;
+	esferixis_cps_cont onEnd;
 
-	result.x = x;
-	result.y = y;
+	esferixis_cps_failurecont onFailure;
+} esferixis_cps_iterator_next_feedback;
 
-	return result;
-}
+typedef struct _esferixis_cps_iterator {
+	esferixis_cps_cont(*next) (void *implData, esferixis_cps_iterator_next_feedback feedback);
 
-inline esferixis_vec2f esferixis_vec2f_add(esferixis_vec2f a, esferixis_vec2f b) {
-	esferixis_vec2f result;
+	void *implData;
+} esferixis_cps_iterator;
 
-	result.x = a.x + b.x;
-	result.y = a.y + b.y;
-
-	return result;
-}
-
-inline esferixis_vec2f esferixis_vec2f_scale(esferixis_vec2f a, float scalar) {
-	esferixis_vec2f result;
-
-	result.x = a.x * scalar;
-	result.y = a.y * scalar;
-
-	return result;
+inline esferixis_cps_cont esferixis_cps_iterator_next(esferixis_cps_iterator iterator, esferixis_cps_iterator_next_feedback feedback) {
+	return iterator.next(iterator.implData, feedback);
 }
 
 EsferixisCommon_C_END
 
 #ifdef __cplusplus
 namespace esferixis {
-	namespace math {
-		class Vec2f {
+	namespace cps {
+		template<typename T>
+		class IteratorRef final {
 		public:
+			struct NextFeedback {
+				T *element;
+
+				esferixis_cps_cont onNextElement;
+				esferixis_cps_cont onEnd;
+
+				esferixis_cps_failurecont onFailure;
+			};
+
 			/**
-			 * @post Creates a zero vector
+			 * @post Creates a description from the specified C CPS Iterator
 			 */
-			inline Vec2f() {
-				this->c_vec_m = esferixis_vec2f_new(0.0f, 0.0f);
+			inline IteratorRef(esferixis_cps_iterator c_iterator) {
+				this->c_iterator_m = c_iterator;
 			}
 
 			/**
-			 * @post Creates a C++ vector from C vector
+			 * @post Gets the next element
 			 */
-			inline Vec2f(esferixis_vec2f c_vec) {
-				this->c_vec_m = c_vec;
+			inline esferixis_cps_cont next(NextFeedback nextFeedback) {
+				esferixis_cps_iterator_next_feedback c_feedback;
+
+				c_feedback.element = static_cast<void *>(nextFeedback.element);
+				c_feedback.onEnd = nextFeedback.onEnd;
+				c_feedback.onFailure = nextFeedback.onFailure;
+				c_feedback.onNextElement = nextFeedback.onFailure;
+
+				return esferixis_cps_iterator_next(this->c_iterator_m, c_feedback);
 			}
 
 			/**
-			 * @post Creates a vector with the given components
+			 * @post Returns the same iterator as C version
 			 */
-			inline Vec2f(float x, float y) {
-				this->c_vec_m = esferixis_vec2f_new(x, y);
-			}
-
-			/**
-			 * @post Returns the 'x' component
-			 */
-			float x() {
-				return this->c_vec_m.x;
-			}
-
-			/**
-			 * @post Returns the 'y' component
-			 */
-			float y() {
-				return this->c_vec_m.y;
-			}
-
-			/**
-			 * @post Returns the C vector 
-			 */
-			inline esferixis_vec2f cVec2f() const {
-				return this->c_vec_m;
-			}
-
-			esferixis::math::Vec2f operator+(const esferixis::math::Vec2f& other) const {
-				return esferixis::math::Vec2f( esferixis_vec2f_add(this->c_vec_m, other.c_vec_m) );
+			inline esferixis_cps_iterator cIterator() {
+				return this->c_iterator_m;
 			}
 
 		private:
-			esferixis_vec2f c_vec_m;
+			esferixis_cps_iterator c_iterator_m;
 		};
 	}
 }

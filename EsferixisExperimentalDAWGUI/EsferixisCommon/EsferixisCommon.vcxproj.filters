@@ -60,6 +60,15 @@
     <ClInclude Include="include\esferixis\common\data\iterator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\esferixis\common\cps\data\iterator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\esferixis\common\graphics\rgbcolor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\esferixis\common\graphics\rectf.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

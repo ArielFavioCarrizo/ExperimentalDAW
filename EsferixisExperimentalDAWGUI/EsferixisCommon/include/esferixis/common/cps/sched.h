@@ -35,7 +35,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <esferixis/common/common.h>
 #include <esferixis/common/cps/cont.h>
 
+#ifdef __cplusplus
 #include <cstdint>
+#else
+#include "stdint.h"
+#endif
+
+EsferixisCommon_C_BEGIN
 
 typedef struct esferixis_cps_sched_vtable {
 	esferixis_cps_cont(*yield) (void *schedData, esferixis_cps_cont cont);
@@ -86,3 +92,5 @@ EsferixisCommon_C_API esferixis_cps_cont esferixis_cps_sched_waitFor(int64_t dur
  * @post Terminates the current green thread
  */
 EsferixisCommon_C_API esferixis_cps_cont esferixis_cps_sched_exit();
+
+EsferixisCommon_C_END

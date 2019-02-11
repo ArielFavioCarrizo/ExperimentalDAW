@@ -35,35 +35,39 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <esferixis/common/common.h>
 #include <esferixis/common/cps/cont.h>
 
+EsferixisCommon_C_BEGIN
+
 typedef struct _esferixis_cps_asyncforker esferixis_cps_asyncforker;
 
-struct esferixis_cps_asyncforker_cfg {
+typedef struct _esferixis_cps_asyncforker_cfg {
 	esferixis_cps_cont onFork1;
 	esferixis_cps_cont onFork2;
 	esferixis_cps_cont onJoin;
-};
+} esferixis_cps_asyncforker_cfg;
 
 /**
- * @post Creates an async forker
- */
+	* @post Creates an async forker
+	*/
 EsferixisCommon_C_API esferixis_cps_asyncforker * esferixis_cps_asyncforker_new();
 
 /**
- * @post Destroys the given async forker
- */
+	* @post Destroys the given async forker
+	*/
 EsferixisCommon_C_API void esferixis_cps_asyncforker_delete(esferixis_cps_asyncforker *asyncForker);
 
 /**
- * @post Returns a pointer to the given async forker's config
- */
+	* @post Returns a pointer to the given async forker's config
+	*/
 EsferixisCommon_C_API esferixis_cps_asyncforker_cfg * esferixis_cps_asyncforker_config(esferixis_cps_asyncforker *asyncForker);
 
 /**
- * @post Forks the green thread with the given forker
- */
+	* @post Forks the green thread with the given forker
+	*/
 EsferixisCommon_C_API esferixis_cps_cont esferixis_cps_asyncforker_fork(esferixis_cps_asyncforker *asyncForker);
 
 /**
- * @post Joins the green thread with the given forker
- */
+	* @post Joins the green thread with the given forker
+	*/
 EsferixisCommon_C_API esferixis_cps_cont esferixis_cps_asyncforker_join(esferixis_cps_asyncforker *asyncForker);
+
+EsferixisCommon_C_END

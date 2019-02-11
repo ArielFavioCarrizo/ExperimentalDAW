@@ -39,6 +39,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <stdexcept>
 #endif
 
+EsferixisCommon_C_BEGIN
+
 typedef struct _esferixis_cps_exception {
 	const char *message;
 	void(*destroy) (void *implData);
@@ -82,6 +84,8 @@ inline esferixis_cps_unsafecont esferixis_cps_mkInvalidUnsafeCont() {
 
 	return unsafeCont;
 }
+
+EsferixisCommon_C_END
 
 #ifdef __cplusplus
 namespace esferixis {

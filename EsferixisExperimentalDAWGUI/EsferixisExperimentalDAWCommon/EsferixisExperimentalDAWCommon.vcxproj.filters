@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\gui">
+      <UniqueIdentifier>{d13e1469-d366-49f1-ab6b-577654aef878}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -22,10 +25,13 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\esferixis\daw\gui\common\grid.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\gui</Filter>
     </ClInclude>
-    <ClInclude Include="include\esferixis\daw\gui\common\color.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="include\esferixis\daw\gui\common\modifiableview.h">
+      <Filter>Header Files\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="include\esferixis\daw\gui\common\viewnotesegment.h">
+      <Filter>Header Files\gui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
