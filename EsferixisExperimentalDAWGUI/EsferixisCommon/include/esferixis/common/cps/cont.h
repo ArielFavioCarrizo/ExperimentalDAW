@@ -38,7 +38,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 EsferixisCommon_C_BEGIN
 
 typedef struct _esferixis_cps_cont {
-	_esferixis_cps_cont(*funptr) (void *);
+	void (*funptr) (void *, _esferixis_cps_cont *nextCont);
 	void *data;
 } esferixis_cps_cont;
 
@@ -46,11 +46,11 @@ inline void esferixis_runcps(esferixis_cps_cont firstCont) {
 	esferixis_cps_cont currentCont = firstCont;
 
 	while (currentCont.funptr != NULL) {
-		currentCont = currentCont.funptr(currentCont.data);
+		currentCont.funptr(currentCont.data, &currentCont);
 	}
 }
 
-inline esferixis_cps_cont esferixis_cps_mkCont(esferixis_cps_cont(*funptr) (void *), void *data) {
+inline esferixis_cps_cont esferixis_cps_mkCont(void (*funptr) (void *, esferixis_cps_cont *), void *data) {
 	esferixis_cps_cont cont;
 
 	cont.funptr = funptr;
@@ -59,7 +59,7 @@ inline esferixis_cps_cont esferixis_cps_mkCont(esferixis_cps_cont(*funptr) (void
 	return cont;
 }
 
-EsferixisCommon_C_API esferixis_cps_cont esferixis_cps_invalidContFun(void *data);
+EsferixisCommon_C_API void esferixis_cps_invalidContFun(void *data, esferixis_cps_cont *nextCont);
 
 inline esferixis_cps_cont esferixis_cps_mkInvalidCont() {
 	return esferixis_cps_mkCont(esferixis_cps_invalidContFun, nullptr);
@@ -74,9 +74,9 @@ namespace esferixis {
 		 * @post Creates a continuation with the given function pointer and data
 		 */
 		template<typename T>
-		inline esferixis_cps_cont mkCont(esferixis_cps_cont(*funptr) (T *), T *data) {
+		inline esferixis_cps_cont mkCont(void(*funptr) (T *data, esferixis_cps_cont *nextCont), T *data) {
 			esferixis_cps_cont cont;
-			cont.funptr = reinterpret_cast<esferixis_cps_cont(*) (void *)>(funptr);
+			cont.funptr = reinterpret_cast<void (*) (void *, esferixis_cps_cont *)>(funptr);
 			cont.data = reinterpret_cast<void *>(data);
 
 			return cont;

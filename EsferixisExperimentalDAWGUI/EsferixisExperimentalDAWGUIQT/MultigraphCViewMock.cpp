@@ -34,8 +34,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "MultigraphCHNoteSegmentMock.h"
 
 #define SELFCLASS esferixis::daw::gui::test::MultigraphCViewMock
-
-esferixis_cps_cont SELFCLASS::create(esferixis::daw::gui::MultigraphCView<esferixis::daw::gui::MultigraphCHNoteSegment, esferixis::daw::gui::MultigraphCHNoteSegment::Essence, esferixis::daw::gui::MultigraphCHNoteSegment::StateFeedback>::ContextEssence contextEssence) {
+void SELFCLASS::create(esferixis::daw::gui::MultigraphCView<esferixis::daw::gui::MultigraphCHNoteSegment, esferixis::daw::gui::MultigraphCHNoteSegment::Essence, esferixis::daw::gui::MultigraphCHNoteSegment::StateFeedback>::ContextEssence contextEssence, esferixis_cps_cont *nextCont) {
 	/*
 	*(contextEssence.onInitialized.exception) = esferixis::cps::createException("Mock failure");
 
@@ -54,7 +53,7 @@ esferixis_cps_cont SELFCLASS::create(esferixis::daw::gui::MultigraphCView<esferi
 
 	self->onClosed_m = esferixis_cps_mkInvalidUnsafeCont();
 
-	return contextEssence.onCreated.onSuccess;
+	*nextCont = contextEssence.onCreated.onSuccess;
 }
 
 SELFCLASS::MultigraphCViewMock()
@@ -67,30 +66,30 @@ SELFCLASS::~MultigraphCViewMock()
 {
 }
 
-esferixis_cps_cont SELFCLASS::createElement(esferixis::daw::gui::MultigraphCHNoteSegment::Essence elementEssence, esferixis_cps_unsafecont cont) {
+void SELFCLASS::createElement(esferixis::daw::gui::MultigraphCHNoteSegment::Essence elementEssence, esferixis_cps_unsafecont cont, esferixis_cps_cont *nextCont) {
 	esferixis::daw::gui::test::MultigraphCHNoteSegmentMock *element = new esferixis::daw::gui::test::MultigraphCHNoteSegmentMock(elementEssence, this);
 
 	*(this->stateFeedback_m.element) = element;
 	*(this->stateFeedback_m.elementStateFeedback) = &(element->stateFeedback);
 
-	return this->stateFeedback_m.onElementLoad;
+	*nextCont = this->stateFeedback_m.onElementLoad;
 }
 
-esferixis_cps_cont SELFCLASS::setViewArea(QRectF viewArea, esferixis_cps_unsafecont cont) {
-	return cont.onSuccess; // Do nothing
+void SELFCLASS::setViewArea(QRectF viewArea, esferixis_cps_unsafecont cont, esferixis_cps_cont *nextCont) {
+	*nextCont = cont.onSuccess; // Do nothing
 }
 
-esferixis_cps_cont SELFCLASS::lockElement(esferixis::daw::gui::MultigraphCHNoteSegment *element, esferixis_cps_cont cont) {
-	return cont; // Do nothing
+void SELFCLASS::lockElement(esferixis::daw::gui::MultigraphCHNoteSegment *element, esferixis_cps_cont cont, esferixis_cps_cont *nextCont) {
+	*nextCont = cont; // Do nothing
 }
 
-esferixis_cps_cont SELFCLASS::unlockElement(esferixis::daw::gui::MultigraphCHNoteSegment *element, esferixis_cps_cont cont) {
-	return cont; // Do nothing
+void SELFCLASS::unlockElement(esferixis::daw::gui::MultigraphCHNoteSegment *element, esferixis_cps_cont cont, esferixis_cps_cont *nextCont) {
+	*nextCont = cont; // Do nothing
 }
 
-esferixis_cps_cont SELFCLASS::close(esferixis_cps_unsafecont cont) {
+void SELFCLASS::close(esferixis_cps_unsafecont cont, esferixis_cps_cont *nextCont) {
 	struct STM {
-		static esferixis_cps_cont findElement(SELFCLASS *self) {
+		static void findElement(SELFCLASS *self, esferixis_cps_cont *nextCont) {
 			if (!self->noteSegments_m.isEmpty()) {
 				esferixis_cps_unsafecont cont;
 
@@ -98,25 +97,23 @@ esferixis_cps_cont SELFCLASS::close(esferixis_cps_unsafecont cont) {
 				cont.onSuccess = esferixis::cps::mkCont(findElement, self);
 				cont.onFailure = esferixis::cps::mkCont(onFailure, self);
 
-				return self->noteSegments_m.first()->get()->erase(cont);
+				*nextCont = self->noteSegments_m.first()->get()->erase(cont);
 			}
 			else {
-				esferixis_cps_cont cont = self->onClosed_m.onSuccess;
+				*nextCont = self->onClosed_m.onSuccess;
 
 				delete self;
-
-				return cont;
 			}
 		}
 
-		static esferixis_cps_cont onFailure(SELFCLASS *self) {
+		static void onFailure(SELFCLASS *self, esferixis_cps_cont *nextCont) {
 			*(self->onClosed_m.exception) = esferixis::cps::createException("Cannot destroy element" + esferixis::cps::destructiveExceptMsgCopy(self->exception_m));
 
-			return self->onClosed_m.onFailure;
+			*nextCont = self->onClosed_m.onFailure;
 		}
 	};
 
 	this->onClosed_m = cont;
 
-	return esferixis::cps::mkCont(STM::findElement, this);
+	*nextCont = esferixis::cps::mkCont(STM::findElement, this);
 }

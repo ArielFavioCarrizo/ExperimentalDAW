@@ -51,41 +51,32 @@ int SELFCLASS::run(int &argc, char **argv, esferixis_cps_cont cont) {
 	instance->quit_m = false;
 
 	// Define and attach the CPS scheduler
-	esferixis_cps_sched sched;
-	{
-		esferixis_cps_sched_vtable sched_vtable;
+	instance->sched.data = static_cast<void *>(instance);
+	instance->sched.vtable = &SELFCLASS::sched_vtable;
 
-		sched_vtable.yield = SELFCLASS::sched_yield;
-		sched_vtable.waitFor = SELFCLASS::sched_waitFor;
-		sched_vtable.fork = SELFCLASS::sched_fork;
-		sched_vtable.exit = SELFCLASS::sched_exit;
+	esferixis_cps_sched_attach(&instance->sched);
 
-		sched.data = static_cast<void *>(instance);
-		sched.vtable = sched_vtable;
-
-		esferixis_cps_sched_attach(sched);
-	}
-
-	esferixis_runcps( SELFCLASS::lockGUI( cont ) );
+	esferixis_cps_cont nextCont;
+	SELFCLASS::lockGUI(cont, &nextCont);
+	esferixis_runcps(nextCont);
 
 	int retCode = instance->qApp_m->exec();
 
-	esferixis_cps_sched_detach(sched);
+	esferixis_cps_sched_detach(&instance->sched);
 
 	return retCode;
 }
 
-esferixis_cps_cont SELFCLASS::toGuiThread(esferixis_cps_cont cont) {
+void SELFCLASS::toGuiThread(esferixis_cps_cont cont, esferixis_cps_cont *nextCont) {
 	SELFCLASS *instance = SELFCLASS::instance();
 
 	QObject *obj = SELFCLASS::instance()->qApp_m->thread()->eventDispatcher();
 
 	QMetaObject::invokeMethod(obj, [cont]() { esferixis_runcps(cont); }, ::Qt::QueuedConnection);
 
-	return esferixis_cps_sched_exit();
+	esferixis_cps_sched_exit(nextCont);
 }
-
-esferixis_cps_cont SELFCLASS::lockGUI(esferixis_cps_cont cont) {
+void SELFCLASS::lockGUI(esferixis_cps_cont cont, esferixis_cps_cont *nextCont) {
 	SELFCLASS *self = SELFCLASS::instance()->instanceFromGUIThread();
 
 	bool processGUIEvents_old = self->processGUIEvents();
@@ -104,14 +95,14 @@ esferixis_cps_cont SELFCLASS::lockGUI(esferixis_cps_cont cont) {
 			self->qApp_m->processEvents(QEventLoop::ExcludeUserInputEvents | QEventLoop::WaitForMoreEvents);
 		}
 
-		return esferixis::cps::CPS_RET;
+		*nextCont = esferixis::cps::CPS_RET;
 	}
 	else {
-		return cont;
+		*nextCont = cont;
 	}
 }
 
-esferixis_cps_cont SELFCLASS::unlockGUI(esferixis_cps_cont cont) {
+void SELFCLASS::unlockGUI(esferixis_cps_cont cont, esferixis_cps_cont *nextCont) {
 	unsigned int& guiLocks = SELFCLASS::instance()->instanceFromGUIThread()->guiLocks_m;
 
 	if (guiLocks != 0) {
@@ -121,16 +112,16 @@ esferixis_cps_cont SELFCLASS::unlockGUI(esferixis_cps_cont cont) {
 		throw std::runtime_error("GUI lock count underflow");
 	}
 
-	return cont;
+	*nextCont = cont;
 }
 
-esferixis_cps_cont SELFCLASS::exit(int returnCode) {
+void SELFCLASS::exit(int returnCode, esferixis_cps_cont *nextCont) {
 	SELFCLASS *self = SELFCLASS::instance()->instanceFromGUIThread();
 
 	self->quit_m = true;
 	self->qApp_m->exit(returnCode);
 
-	return esferixis::cps::CPS_RET;
+	*nextCont = esferixis::cps::CPS_RET;
 }
 
 bool SELFCLASS::onGUIThread() {
@@ -143,28 +134,34 @@ void SELFCLASS::checkOnGUIThread() {
 	}
 }
 
-esferixis_cps_cont SELFCLASS::sched_yield(void *schedData, esferixis_cps_cont cont) {
+void SELFCLASS::sched_yield(void *schedData, const esferixis_cps_cont *cont, esferixis_cps_cont *nextCont) {
 	QObject *obj = QThread::currentThread()->eventDispatcher();
-	QMetaObject::invokeMethod(obj, [cont]() { esferixis_runcps(cont); }, ::Qt::QueuedConnection);
 
-	return esferixis::cps::CPS_RET;
+	esferixis_cps_cont cont_local = *cont;
+	QMetaObject::invokeMethod(obj, [cont_local]() { esferixis_runcps(cont_local); }, ::Qt::QueuedConnection);
+
+	*nextCont = esferixis::cps::CPS_RET;
 }
 
-esferixis_cps_cont SELFCLASS::sched_fork(void *schedData, esferixis_cps_cont cont1, esferixis_cps_cont cont2) {
+void SELFCLASS::sched_fork(void *schedData, const esferixis_cps_cont *cont1, const esferixis_cps_cont *cont2, esferixis_cps_cont *nextCont) {
 	QObject *obj = QThread::currentThread()->eventDispatcher();
-	QMetaObject::invokeMethod(obj, [cont2]() { esferixis_runcps(cont2); }, ::Qt::QueuedConnection);
 
-	return cont1;
+	esferixis_cps_cont cont2_local = *cont2;
+	QMetaObject::invokeMethod(obj, [cont2_local]() { esferixis_runcps(cont2_local); }, ::Qt::QueuedConnection);
+
+	*nextCont = *cont1;
 }
 
-esferixis_cps_cont SELFCLASS::sched_waitFor(void *schedData, int64_t duration, esferixis_cps_cont cont) {
-	QTimer::singleShot(std::chrono::duration_cast<std::chrono::milliseconds>( std::chrono::nanoseconds( duration ) ), [cont]() { esferixis_runcps(cont); });
+void SELFCLASS::sched_waitFor(void *schedData, int64_t duration, const esferixis_cps_cont *cont, esferixis_cps_cont *nextCont) {
+	esferixis_cps_cont cont_local = *cont;
 
-	return esferixis::cps::CPS_RET;
+	QTimer::singleShot(std::chrono::duration_cast<std::chrono::milliseconds>( std::chrono::nanoseconds( duration ) ), [cont_local]() { esferixis_runcps(cont_local); });
+
+	*nextCont = esferixis::cps::CPS_RET;
 }
 
-esferixis_cps_cont SELFCLASS::sched_exit(void *schedData) {
-	return esferixis::cps::CPS_RET;
+void SELFCLASS::sched_exit(void *schedData, esferixis_cps_cont *nextCont) {
+	*nextCont = esferixis::cps::CPS_RET;
 }
 
 SELFCLASS::Application() {

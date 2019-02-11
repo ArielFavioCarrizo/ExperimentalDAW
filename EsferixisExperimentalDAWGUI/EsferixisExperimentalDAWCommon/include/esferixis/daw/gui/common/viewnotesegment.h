@@ -37,6 +37,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <esferixis/common/graphics/rgbcolor.h>
 
 EsferixisCommon_C_BEGIN
+
 typedef struct _esferixis_daw_gui_viewNoteSegment_stateFeedback {
 	esferixis_cps_cont onNewOffset;
 	esferixis_cps_cont onNewHeight;
@@ -75,21 +76,21 @@ typedef struct _esferixis_daw_gui_viewNoteSegment_vtable {
 	/**
 	 * @post Sets the offset
 	 */
-	esferixis_cps_cont (*setOffset) (void *implData, double offset, esferixis_cps_unsafecont cont);
+	void (*setOffset) (void *implData, double offset, const esferixis_cps_unsafecont *cont, esferixis_cps_cont *nextCont);
 
 	/**
 	 * @post Sets the height
 	 */
-	esferixis_cps_cont (*setHeight) (void *implData, double height, esferixis_cps_unsafecont cont);
+	void (*setHeight) (void *implData, double height, const esferixis_cps_unsafecont *cont, esferixis_cps_cont *nextCont);
 
 	/**
 	 * @post Erases the note segment
 	 */
-	esferixis_cps_cont (*erase) (void *implData, esferixis_cps_unsafecont cont);
+	void (*erase) (void *implData, const esferixis_cps_unsafecont *cont, esferixis_cps_cont *nextCont);
 } esferixis_daw_gui_viewNoteSegment_vtable;
 
 typedef struct _esferixis_daw_gui_viewNoteSegment {
-	esferixis_daw_gui_viewNoteSegment_vtable *vtable;
+	const esferixis_daw_gui_viewNoteSegment_vtable *vtable;
 	void *implData;
 } esferixis_daw_gui_viewNoteSegment;
 
@@ -109,15 +110,15 @@ inline bool esferixis_daw_gui_viewNoteSegment_isSelected(esferixis_daw_gui_viewN
 	return self->vtable->isSelected(self->implData);
 }
 
-inline esferixis_cps_cont esferixis_daw_gui_viewNoteSegment_setOffset(esferixis_daw_gui_viewNoteSegment *self, double offset, esferixis_cps_unsafecont cont) {
-	return self->vtable->setOffset(self->implData, offset, cont);
+inline void esferixis_daw_gui_viewNoteSegment_setOffset(esferixis_daw_gui_viewNoteSegment *self, double offset, esferixis_cps_unsafecont cont, esferixis_cps_cont *nextCont) {
+	self->vtable->setOffset(self->implData, offset, &cont, nextCont);
 }
 
-inline esferixis_cps_cont esferixis_daw_gui_viewNoteSegment_setHeight(esferixis_daw_gui_viewNoteSegment *self, double height, esferixis_cps_unsafecont cont) {
-	return self->vtable->setHeight(self->implData, height, cont);
+inline void esferixis_daw_gui_viewNoteSegment_setHeight(esferixis_daw_gui_viewNoteSegment *self, double height, esferixis_cps_unsafecont cont, esferixis_cps_cont *nextCont) {
+	self->vtable->setHeight(self->implData, height, &cont, nextCont);
 }
 
-inline esferixis_cps_cont esferixis_daw_gui_viewNoteSegment_setHeight(esferixis_daw_gui_viewNoteSegment *self, esferixis_cps_unsafecont cont) {
-	return self->vtable->erase(self->implData, cont);
+inline void esferixis_daw_gui_viewNoteSegment_setHeight(esferixis_daw_gui_viewNoteSegment *self, esferixis_cps_unsafecont cont, esferixis_cps_cont *nextCont) {
+	self->vtable->erase(self->implData, &cont, nextCont);
 }
 EsferixisCommon_C_END

@@ -64,13 +64,13 @@ esferixis_cps_asyncforker_cfg * esferixis_cps_asyncforker_config(esferixis_cps_a
 	return &(asyncForker->config);
 }
 
-esferixis_cps_cont esferixis_cps_asyncforker_fork(esferixis_cps_asyncforker *asyncForker) {
+void esferixis_cps_asyncforker_fork(esferixis_cps_asyncforker *asyncForker, esferixis_cps_cont *nextCont) {
 	if (asyncForker->remainingJoins == 0) {
 		esferixis_cps_asyncforker_cfg config = asyncForker->config;
 
 		asyncForker->remainingJoins = 2;
 
-		return esferixis_cps_sched_fork(config.onFork1, config.onFork2);
+		esferixis_cps_sched_fork(&config.onFork1, &config.onFork2, nextCont);
 	}
 	else {
 		std::cerr << "Unexpected forked state";
@@ -78,14 +78,14 @@ esferixis_cps_cont esferixis_cps_asyncforker_fork(esferixis_cps_asyncforker *asy
 	}
 }
 
-esferixis_cps_cont esferixis_cps_asyncforker_join(esferixis_cps_asyncforker *asyncForker) {
+void esferixis_cps_asyncforker_join(esferixis_cps_asyncforker *asyncForker, esferixis_cps_cont *nextCont) {
 	const int remainingJoins_old = asyncForker->remainingJoins--;
 
 	if (remainingJoins_old == 2) {
-		return esferixis_cps_sched_exit();
+		esferixis_cps_sched_exit(nextCont);
 	}
 	else if (remainingJoins_old == 1) {
-		return esferixis_cps_sched_exit();
+		esferixis_cps_sched_exit(nextCont);
 	}
 	else {
 		std::cerr << "Unexpected joined state";

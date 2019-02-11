@@ -60,22 +60,22 @@ namespace esferixis {
 			/**
 			 * @post Executes continuation in the GUI thread
 			 */
-			static esferixis_cps_cont toGuiThread(esferixis_cps_cont cont);
+			static void toGuiThread(esferixis_cps_cont cont, esferixis_cps_cont *nextCont);
 
 			/**
 			 * @post Lock GUI
 			 */
-			static esferixis_cps_cont lockGUI(esferixis_cps_cont cont);
+			static void lockGUI(esferixis_cps_cont cont, esferixis_cps_cont *nextCont);
 
 			/**
 			 * @post Unlock GUI
 			 */
-			static esferixis_cps_cont unlockGUI(esferixis_cps_cont cont);
+			static void unlockGUI(esferixis_cps_cont cont, esferixis_cps_cont *nextCont);
 
 			/**
 			 * @post Exits application with the specified return code
 			 */
-			static esferixis_cps_cont exit(int returnCode = 0);
+			static void exit(int returnCode, esferixis_cps_cont *nextCont);
 
 			/**
 			 * @post Returns if the current thread is the GUI thread
@@ -89,10 +89,19 @@ namespace esferixis {
 			static void checkOnGUIThread();
 
 		private:
-			static esferixis_cps_cont sched_yield(void *schedData, esferixis_cps_cont cont);
-			static esferixis_cps_cont sched_fork(void *schedData, esferixis_cps_cont cont1, esferixis_cps_cont cont2);
-			static esferixis_cps_cont sched_waitFor(void *schedData, int64_t duration, esferixis_cps_cont cont);
-			static esferixis_cps_cont sched_exit(void *schedData);
+			static void sched_yield(void *schedData, const esferixis_cps_cont *cont, esferixis_cps_cont *nextCont);
+			static void sched_fork(void *schedData, const esferixis_cps_cont *cont1, const esferixis_cps_cont *cont2, esferixis_cps_cont *nextCont);
+			static void sched_waitFor(void *schedData, int64_t duration, const esferixis_cps_cont *cont, esferixis_cps_cont *nextCont);
+			static void sched_exit(void *schedData, esferixis_cps_cont *nextCont);
+
+			static constexpr esferixis_cps_sched_vtable sched_vtable = {
+				sched_yield,
+				sched_fork,
+				sched_waitFor,
+				sched_exit
+			};
+
+			esferixis_cps_sched sched;
 
 			/**
 			 * @post Creates an QApplication wrapped in a CPS style manager

@@ -41,8 +41,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <QObject>
 #include <QCloseEvent>
 
-esferixis_cps_cont setup_simpleTest(void *dummy);
-esferixis_cps_cont setup_multigraphcCViewMockTestWindow(void *dummy);
+void setup_simpleTest(void *dummy, esferixis_cps_cont *nextCont);
+void setup_multigraphcCViewMockTestWindow(void *dummy, esferixis_cps_cont *nextCont);
 
 int main(int argc, char *argv[])
 {
@@ -50,37 +50,37 @@ int main(int argc, char *argv[])
 	return esferixis::Qt::Application::run(argc, argv, esferixis::cps::mkCont(setup_multigraphcCViewMockTestWindow, (void *) nullptr));
 }
 
-esferixis_cps_cont setup_multigraphcCViewMockTestWindow(void *dummy) {
+void setup_multigraphcCViewMockTestWindow(void *dummy, esferixis_cps_cont *nextCont) {
 	struct LocalContext {
 		esferixis::daw::gui::test::MultigraphCViewWindowMock *windowMock;
 		esferixis_cps_exception windowException;
 	};
 
 	struct STM {
-		static esferixis_cps_cont onWindowInstFailure(LocalContext *context) {
+		static void onWindowInstFailure(LocalContext *context, esferixis_cps_cont *nextCont) {
 			throw esferixis::cps::destructivelyConvertToStdException(context->windowException);
 		}
 
-		static esferixis_cps_cont onWindowCreated(LocalContext *context) {
-			return esferixis::Qt::Application::unlockGUI(esferixis::cps::mkCont(onGUIUnlocked_1, context));
+		static void onWindowCreated(LocalContext *context, esferixis_cps_cont *nextCont) {
+			esferixis::Qt::Application::unlockGUI(esferixis::cps::mkCont(onGUIUnlocked_1, context), nextCont);
 		}
 
-		static esferixis_cps_cont onGUIUnlocked_1(LocalContext *context) {
-			return esferixis_cps_sched_exit();
+		static void onGUIUnlocked_1(LocalContext *context, esferixis_cps_cont *nextCont) {
+			esferixis_cps_sched_exit(nextCont);
 		}
 
-		static esferixis_cps_cont onWindowClosed_success(LocalContext *context) {
-			return esferixis::Qt::Application::unlockGUI(esferixis::cps::mkCont(onDestroyContext, context));
+		static void onWindowClosed_success(LocalContext *context, esferixis_cps_cont *nextCont) {
+			esferixis::Qt::Application::unlockGUI(esferixis::cps::mkCont(onDestroyContext, context), nextCont);
 		}
 
-		static esferixis_cps_cont onWindowClosed_failure(LocalContext *context) {
+		static void onWindowClosed_failure(LocalContext *context, esferixis_cps_cont *nextCont) {
 			throw esferixis::cps::destructivelyConvertToStdException(context->windowException);
 		}
 
-		static esferixis_cps_cont onDestroyContext(LocalContext *context) {
+		static void onDestroyContext(LocalContext *context, esferixis_cps_cont *nextCont) {
 			delete context;
 
-			return esferixis::Qt::Application::exit();
+			esferixis::Qt::Application::exit(0, nextCont);
 		}
 	};
 
@@ -97,17 +97,17 @@ esferixis_cps_cont setup_multigraphcCViewMockTestWindow(void *dummy) {
 	windowContext.onClosed.onFailure = esferixis::cps::mkCont(STM::onWindowClosed_failure, localContext);
 	windowContext.onClosed.onSuccess = esferixis::cps::mkCont(STM::onWindowClosed_success, localContext);
 
-	return esferixis::daw::gui::test::MultigraphCViewWindowMock::create(windowContext);
+	esferixis::daw::gui::test::MultigraphCViewWindowMock::create(windowContext, nextCont);
 }
 
-esferixis_cps_cont setup_simpleTest(void *dummy) {
+void setup_simpleTest(void *dummy, esferixis_cps_cont *nextCont) {
 	struct Context {
 		QWindow *window;
 	};
 
 	struct STM {
-		static esferixis_cps_cont onGUIUnlocked(Context *context) {
-			return esferixis_cps_sched_exit();
+		static void onGUIUnlocked(Context *context, esferixis_cps_cont *nextCont) {
+			esferixis_cps_sched_exit(nextCont);
 		}
 	};
 
@@ -144,10 +144,12 @@ esferixis_cps_cont setup_simpleTest(void *dummy) {
 	window->setTitle("Test");
 
 	QObject::connect(window, &QWindow::destroyed, []() {
-		esferixis_runcps( esferixis::Qt::Application::exit() );
+		esferixis_cps_cont nextCont;
+		esferixis::Qt::Application::exit(0, &nextCont);
+		esferixis_runcps(nextCont);
 	});
 
-	return esferixis::Qt::Application::unlockGUI( esferixis::cps::mkCont(STM::onGUIUnlocked, context) );
+	esferixis::Qt::Application::unlockGUI( esferixis::cps::mkCont(STM::onGUIUnlocked, context), nextCont );
 }
 
 /*

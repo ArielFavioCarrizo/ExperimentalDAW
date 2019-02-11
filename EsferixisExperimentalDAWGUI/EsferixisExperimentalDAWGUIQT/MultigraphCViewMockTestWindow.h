@@ -57,7 +57,7 @@ namespace esferixis {
 					 * @pre The GUI must be locked
 					 * @post Creates a multigraphCView window mock
 					 */
-					static esferixis_cps_cont create(Essence essence);
+					static void create(Essence essence, esferixis_cps_cont *nextCont);
 
 				private:
 					class LocalWindow : public QWidget {

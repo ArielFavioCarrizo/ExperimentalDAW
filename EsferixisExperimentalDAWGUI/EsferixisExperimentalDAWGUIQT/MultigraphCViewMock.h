@@ -51,17 +51,17 @@ namespace esferixis {
 					/**
 					 * @post Creates the view mock
 					 */
-					static esferixis_cps_cont create(esferixis::daw::gui::MultigraphCView<esferixis::daw::gui::MultigraphCHNoteSegment, esferixis::daw::gui::MultigraphCHNoteSegment::Essence, esferixis::daw::gui::MultigraphCHNoteSegment::StateFeedback>::ContextEssence contextEssence);
+					static void create(esferixis::daw::gui::MultigraphCView<esferixis::daw::gui::MultigraphCHNoteSegment, esferixis::daw::gui::MultigraphCHNoteSegment::Essence, esferixis::daw::gui::MultigraphCHNoteSegment::StateFeedback>::ContextEssence contextEssence, esferixis_cps_cont *nextCont);
 
-					esferixis_cps_cont createElement(esferixis::daw::gui::MultigraphCHNoteSegment::Essence elementEssence, esferixis_cps_unsafecont cont) override;
+					void createElement(esferixis::daw::gui::MultigraphCHNoteSegment::Essence elementEssence, esferixis_cps_unsafecont cont, esferixis_cps_cont *nextCont) override;
 
-					esferixis_cps_cont setViewArea(QRectF viewArea, esferixis_cps_unsafecont cont) override;
+					void setViewArea(QRectF viewArea, esferixis_cps_unsafecont cont, esferixis_cps_cont *nextCont) override;
 
-					esferixis_cps_cont lockElement(esferixis::daw::gui::MultigraphCHNoteSegment *element, esferixis_cps_cont cont) override;
+					void lockElement(esferixis::daw::gui::MultigraphCHNoteSegment *element, esferixis_cps_cont cont, esferixis_cps_cont *nextCont) override;
 
-					esferixis_cps_cont unlockElement(esferixis::daw::gui::MultigraphCHNoteSegment *element, esferixis_cps_cont cont) override;
+					void unlockElement(esferixis::daw::gui::MultigraphCHNoteSegment *element, esferixis_cps_cont cont, esferixis_cps_cont *nextCont) override;
 
-					esferixis_cps_cont close(esferixis_cps_unsafecont cont) override;
+					void close(esferixis_cps_unsafecont cont, esferixis_cps_cont *nextCont) override;
 
 				private:
 					/**

@@ -43,15 +43,15 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 EsferixisCommon_C_BEGIN
 
-typedef struct esferixis_cps_sched_vtable {
-	esferixis_cps_cont(*yield) (void *schedData, esferixis_cps_cont cont);
-	esferixis_cps_cont(*fork) (void *schedData, esferixis_cps_cont cont1, esferixis_cps_cont cont2);
-	esferixis_cps_cont(*waitFor)(void *schedData, int64_t duration, esferixis_cps_cont cont);
-	esferixis_cps_cont(*exit)(void *schedData);
+typedef struct _esferixis_cps_sched_vtable {
+	void(*yield) (void *schedData, const esferixis_cps_cont *cont, esferixis_cps_cont *nextCont);
+	void(*fork) (void *schedData, const esferixis_cps_cont *cont1, const esferixis_cps_cont *cont2, esferixis_cps_cont *nextCont);
+	void(*waitFor)(void *schedData, int64_t duration, const esferixis_cps_cont *cont, esferixis_cps_cont *nextCont);
+	void(*exit)(void *schedData, esferixis_cps_cont *nextCont);
 } esferixis_cps_sched_vtable;
 
-typedef struct esferixis_cps_sched {
-	esferixis_cps_sched_vtable vtable;
+typedef struct _esferixis_cps_sched {
+	const esferixis_cps_sched_vtable *vtable;
 	void *data;
 } esferixis_cps_sched;
 
@@ -64,33 +64,33 @@ EsferixisCommon_C_API bool esferixis_cps_sched_isPresent();
  * @pre Expects that the current OS thread doesn't have a scheduler and the scheduler isn't attached to any OS thread.
  * @post Adds an scheduler in the current OS thread.
  */
-EsferixisCommon_C_API void esferixis_cps_sched_attach(esferixis_cps_sched sched);
+EsferixisCommon_C_API void esferixis_cps_sched_attach(esferixis_cps_sched *sched);
 
 /**
  * @pre Expects that the current OS thread does have the given scheduler
    @post Removes the scheduler from the current OS thread
  */
-EsferixisCommon_C_API void esferixis_cps_sched_detach(esferixis_cps_sched sched);
+EsferixisCommon_C_API void esferixis_cps_sched_detach(esferixis_cps_sched *sched);
 
 /**
  * @post Yields to another tasks with the given continuation
  */
-EsferixisCommon_C_API esferixis_cps_cont esferixis_cps_sched_yield(esferixis_cps_cont cont);
+EsferixisCommon_C_API void esferixis_cps_sched_yield(const esferixis_cps_cont *cont, esferixis_cps_cont *nextCont);
 
 /**
   * @post Forks the current green thread into two threads with the
 		  given continuations
  */
-EsferixisCommon_C_API esferixis_cps_cont esferixis_cps_sched_fork(esferixis_cps_cont cont1, esferixis_cps_cont cont2);
+EsferixisCommon_C_API void esferixis_cps_sched_fork(const esferixis_cps_cont *cont1, const esferixis_cps_cont *cont2, esferixis_cps_cont *nextCont);
 
 /**
  * @post Waits the given duration and executes the given continuation in nanoseconds
  */
-EsferixisCommon_C_API esferixis_cps_cont esferixis_cps_sched_waitFor(int64_t duration, esferixis_cps_cont cont);
+EsferixisCommon_C_API void esferixis_cps_sched_waitFor(int64_t duration, const esferixis_cps_cont *cont, esferixis_cps_cont *nextCont);
 
 /**
  * @post Terminates the current green thread
  */
-EsferixisCommon_C_API esferixis_cps_cont esferixis_cps_sched_exit();
+EsferixisCommon_C_API void esferixis_cps_sched_exit(esferixis_cps_cont *nextCont);
 
 EsferixisCommon_C_END

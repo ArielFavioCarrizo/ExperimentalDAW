@@ -86,20 +86,18 @@ esferixis_cps_cont SELFCLASS::setHeight(double height, esferixis_cps_unsafecont 
 
 esferixis_cps_cont SELFCLASS::erase(esferixis_cps_unsafecont cont) {
 	struct STM {
-		static esferixis_cps_cont deleteItself(SELFCLASS *self) {
-			esferixis_cps_cont cont = self->returnCont_m.onSuccess;
+		static void deleteItself(SELFCLASS *self, esferixis_cps_cont *nextCont) {
+			*nextCont = self->returnCont_m.onSuccess;
 
 			self->multigraphCViewMock_m->noteSegments_m.remove(&(self->containerNode_m));
 
 			delete self;
-
-			return cont;
 		}
 
-		static esferixis_cps_cont onFailure(SELFCLASS *self) {
+		static void onFailure(SELFCLASS *self, esferixis_cps_cont *nextCont) {
 			*(self->returnCont_m.exception) = esferixis::cps::createException("Cannot remove element because notification has failed -> " + esferixis::cps::destructiveExceptMsgCopy(self->externalException_m));
 
-			return self->returnCont_m.onFailure;
+			*nextCont = self->returnCont_m.onFailure;
 		}
 	};
 

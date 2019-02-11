@@ -39,9 +39,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <boost/optional.hpp>
 
-static thread_local boost::optional<esferixis_cps_sched> currentSched;
+static thread_local boost::optional<esferixis_cps_sched *> currentSched;
 
-static inline esferixis_cps_sched getCurrentSched() {
+static inline esferixis_cps_sched * getCurrentSched() {
 	if ( currentSched.is_initialized() ) {
 		return *currentSched;
 	}
@@ -55,9 +55,9 @@ bool esferixis_cps_sched_isPresent() {
 	return currentSched.is_initialized();
 }
 
-void esferixis_cps_sched_attach(esferixis_cps_sched sched) {
+void esferixis_cps_sched_attach(esferixis_cps_sched *sched) {
 	if (!currentSched.is_initialized() ) {
-		currentSched = boost::optional<esferixis_cps_sched>(sched);
+		currentSched = boost::optional<esferixis_cps_sched *>(sched);
 	}
 	else {
 		std::cerr << "The current OS thread already has a green threads scheduler!";
@@ -65,9 +65,9 @@ void esferixis_cps_sched_attach(esferixis_cps_sched sched) {
 	}
 }
 
-void esferixis_cps_sched_detach(esferixis_cps_sched sched) {
-	if (currentSched.is_initialized() && (currentSched->data == sched.data)) {
-		currentSched = boost::optional<esferixis_cps_sched>();
+void esferixis_cps_sched_detach(esferixis_cps_sched *sched) {
+	if (currentSched.is_initialized() && (currentSched == sched)) {
+		currentSched = boost::optional<esferixis_cps_sched *>();
 	}
 	else {
 		std::cerr << "Attemped to remove an scheduler that isn't assigned to the current OS thread!";
@@ -75,26 +75,26 @@ void esferixis_cps_sched_detach(esferixis_cps_sched sched) {
 	}
 }
 
-esferixis_cps_cont esferixis_cps_sched_yield(esferixis_cps_cont cont) {
-	esferixis_cps_sched sched = getCurrentSched();
+void esferixis_cps_sched_yield(const esferixis_cps_cont *cont, esferixis_cps_cont *nextCont) {
+	esferixis_cps_sched *sched = getCurrentSched();
 
-	return sched.vtable.yield(sched.data, cont);
+	sched->vtable->yield(sched->data, cont, nextCont);
 }
 
-esferixis_cps_cont esferixis_cps_sched_fork(esferixis_cps_cont cont1, esferixis_cps_cont cont2) {
-	esferixis_cps_sched sched = getCurrentSched();
+void esferixis_cps_sched_fork(const esferixis_cps_cont *cont1, const esferixis_cps_cont *cont2, esferixis_cps_cont *nextCont) {
+	esferixis_cps_sched *sched = getCurrentSched();
 
-	return sched.vtable.fork(sched.vtable.fork, cont1, cont2);
+	sched->vtable->fork(sched->data, cont1, cont2, nextCont);
 }
 
-esferixis_cps_cont esferixis_cps_sched_waitFor(int64_t duration, esferixis_cps_cont cont) {
-	esferixis_cps_sched sched = getCurrentSched();
+void esferixis_cps_sched_waitFor(int64_t duration, const esferixis_cps_cont *cont, esferixis_cps_cont *nextCont) {
+	esferixis_cps_sched *sched = getCurrentSched();
 
-	return sched.vtable.waitFor(sched.vtable.fork, duration, cont);
+	sched->vtable->waitFor(sched->data, duration, cont, nextCont);
 }
 
-esferixis_cps_cont esferixis_cps_sched_exit() {
-	esferixis_cps_sched sched = getCurrentSched();
+void esferixis_cps_sched_exit(esferixis_cps_cont *nextCont) {
+	esferixis_cps_sched *sched = getCurrentSched();
 
-	return sched.vtable.exit(sched.data);
+	sched->vtable->exit(sched->data, nextCont);
 }

@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "esferixis/common/cps/cont.h"
 
-EsferixisCommon_C_API esferixis_cps_cont esferixis_cps_invalidContFun(void *data) {
+EsferixisCommon_C_API void esferixis_cps_invalidContFun(void *data, esferixis_cps_cont *nextCont) {
 	std::cerr << "Invalid continuation";
 	std::terminate();
 }

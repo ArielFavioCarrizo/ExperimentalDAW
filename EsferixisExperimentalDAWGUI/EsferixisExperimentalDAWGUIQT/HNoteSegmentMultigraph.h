@@ -65,7 +65,7 @@ namespace esferixis {
 				/**
 				 * @post Creates an editable multigraph based on horizontal notes with the specified essence
 				 */
-				static esferixis_cps_cont create(Essence essence);
+				static void create(Essence essence, esferixis_cps_cont *nextCont);
 
 				/*
 				 * @post Gets the QT widget
@@ -87,7 +87,7 @@ namespace esferixis {
 				/**
 				 * @post Destroys the multiview without destroying the widget
 				 */
-				esferixis_cps_cont destroy(esferixis_cps_unsafecont cont);
+				void destroy(esferixis_cps_unsafecont cont, esferixis_cps_cont *nextCont);
 
 			private:
 				class LocalQWidget final : public QWidget {

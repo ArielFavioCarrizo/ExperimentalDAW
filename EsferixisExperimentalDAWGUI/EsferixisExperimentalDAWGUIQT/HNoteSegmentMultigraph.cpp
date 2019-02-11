@@ -44,31 +44,29 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define SELFCLASS esferixis::daw::gui::HNoteSegmentMultigraph
 
-esferixis_cps_cont SELFCLASS::create(esferixis::daw::gui::HNoteSegmentMultigraph::Essence essence) {
+void SELFCLASS::create(esferixis::daw::gui::HNoteSegmentMultigraph::Essence essence, esferixis_cps_cont *nextCont) {
 	struct STM {
-		static esferixis_cps_cont onCreateWidget(esferixis::daw::gui::HNoteSegmentMultigraph *self) {
+		static void onCreateWidget(esferixis::daw::gui::HNoteSegmentMultigraph *self, esferixis_cps_cont *nextCont) {
 			self->widget_m = new SELFCLASS::LocalQWidget(self);
 
-			return self->essence_m.onWaitingViewCreation;
+			*nextCont = self->essence_m.onWaitingViewCreation;
 		}
 
-		static esferixis_cps_cont onCreatedView_failure(esferixis::daw::gui::HNoteSegmentMultigraph *self) {
+		static void onCreatedView_failure(esferixis::daw::gui::HNoteSegmentMultigraph *self, esferixis_cps_cont *nextCont) {
 			*(self->essence_m.onInitialized.exception) = esferixis::cps::createException("Cannot create multigraph because instantion of the view has failed -> " + esferixis::cps::destructiveExceptMsgCopy(self->viewException_m));
 
-			esferixis_cps_cont cont = self->essence_m.onInitialized.onFailure;
+			*nextCont = self->essence_m.onInitialized.onFailure;
 
 			delete self;
-
-			return cont;
 		}
 
-		static esferixis_cps_cont onCreatedView_success(esferixis::daw::gui::HNoteSegmentMultigraph *self) {
+		static void onCreatedView_success(esferixis::daw::gui::HNoteSegmentMultigraph *self, esferixis_cps_cont *nextCont) {
 			*(self->essence_m.instance) = self;
 
-			return self->essence_m.onInitialized.onSuccess;
+			*nextCont = self->essence_m.onInitialized.onSuccess;
 		}
 
-		static esferixis_cps_cont onElementLoad(esferixis::daw::gui::HNoteSegmentMultigraph *self) {
+		static void onElementLoad(esferixis::daw::gui::HNoteSegmentMultigraph *self, esferixis_cps_cont *nextCont) {
 			esferixis::daw::gui::HNoteSegmentMultigraph::ElementContext *elementContext = new esferixis::daw::gui::HNoteSegmentMultigraph::ElementContext();
 
 			elementContext->multigraph = self;
@@ -78,10 +76,10 @@ esferixis_cps_cont SELFCLASS::create(esferixis::daw::gui::HNoteSegmentMultigraph
 
 			self->loadedElements_m.addLast(&elementContext->node_m);
 
-			return self->viewState_m.onUpdated.onSuccess;
+			*nextCont = self->viewState_m.onUpdated.onSuccess;
 		}
 
-		static esferixis_cps_cont onElementUnload(esferixis::daw::gui::HNoteSegmentMultigraph *self) {
+		static void onElementUnload(esferixis::daw::gui::HNoteSegmentMultigraph *self, esferixis_cps_cont *nextCont) {
 			esferixis::daw::gui::MultigraphCHNoteSegment *noteSegment = self->viewState_m.referencedElement_m;
 
 			esferixis::daw::gui::HNoteSegmentMultigraph::ElementContext *elementContext = static_cast<esferixis::daw::gui::HNoteSegmentMultigraph::ElementContext *>(noteSegment->getContext());
@@ -92,7 +90,7 @@ esferixis_cps_cont SELFCLASS::create(esferixis::daw::gui::HNoteSegmentMultigraph
 
 			delete elementContext;
 
-			return self->viewState_m.onUpdated.onSuccess;
+			*nextCont = self->viewState_m.onUpdated.onSuccess;
 		}
 	};
 
@@ -122,7 +120,7 @@ esferixis_cps_cont SELFCLASS::create(esferixis::daw::gui::HNoteSegmentMultigraph
 	self->backgroundColor_m = essence.backgroundColor;
 	self->grid_m = essence.grid;
 
-	return esferixis::Qt::Application::toGuiThread(esferixis::cps::mkCont(STM::onCreateWidget, self));
+	esferixis::Qt::Application::toGuiThread(esferixis::cps::mkCont(STM::onCreateWidget, self), nextCont);
 }
 
 QWidget * SELFCLASS::widget() const {
@@ -137,33 +135,33 @@ void SELFCLASS::setGrid(esferixis::daw::gui::Grid grid) {
 	this->grid_m = grid;
 }
 
-esferixis_cps_cont SELFCLASS::destroy(const esferixis_cps_unsafecont cont) {
+void SELFCLASS::destroy(const esferixis_cps_unsafecont cont, esferixis_cps_cont *nextCont) {
 	struct STM {
-		static esferixis_cps_cont deleteSelf(SELFCLASS *self) {
+		static void deleteSelf(SELFCLASS *self, esferixis_cps_cont *nextCont) {
 			esferixis_cps_unsafecont cont = self->nextExternalCont_m;
 
 			self->widget_m->detachFromMultigraph();
 
 			delete self;
 
-			return cont.onSuccess;
+			*nextCont = cont.onSuccess;
 		}
 
-		static esferixis_cps_cont onFailure(SELFCLASS *self) {
+		static void onFailure(SELFCLASS *self, esferixis_cps_cont *nextCont) {
 			*(self->nextExternalCont_m.exception) = esferixis::cps::createException("Cannot destroy multigraph because its view couldn't have been destroyed -> " + esferixis::cps::destructiveExceptMsgCopy(self->viewException_m));
 
-			return self->nextExternalCont_m.onFailure;
+			*nextCont = self->nextExternalCont_m.onFailure;
 		}
 	};
 
 	this->nextExternalCont_m = cont;
 
-	esferixis_cps_unsafecont nextCont;
-	nextCont.exception = &(this->viewException_m);
-	nextCont.onFailure = esferixis::cps::mkCont(STM::onFailure, this);
-	nextCont.onSuccess = esferixis::cps::mkCont(STM::deleteSelf, this);
+	esferixis_cps_unsafecont nextUnsafeCont;
+	nextUnsafeCont.exception = &(this->viewException_m);
+	nextUnsafeCont.onFailure = esferixis::cps::mkCont(STM::onFailure, this);
+	nextUnsafeCont.onSuccess = esferixis::cps::mkCont(STM::deleteSelf, this);
 
-	return this->view_m->close(nextCont);
+	this->view_m->close(nextUnsafeCont, nextCont);
 }
 
 SELFCLASS::LocalQWidget::LocalQWidget(esferixis::daw::gui::HNoteSegmentMultigraph *multigraph) {
@@ -181,6 +179,8 @@ void SELFCLASS::LocalQWidget::paintEvent(QPaintEvent *event) {
 		painter.save();
 
 		painterAux.render(this->multigraph_m->grid_m, event->rect());
+
+		painter.restore();
 
 		// FIXME: Implement this
 	}

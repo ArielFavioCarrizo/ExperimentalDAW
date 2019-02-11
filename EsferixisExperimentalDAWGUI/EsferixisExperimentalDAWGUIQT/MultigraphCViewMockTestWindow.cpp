@@ -41,9 +41,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define SELFCLASS esferixis::daw::gui::test::MultigraphCViewWindowMock
 
-esferixis_cps_cont SELFCLASS::create(SELFCLASS::Essence essence) {
+void SELFCLASS::create(SELFCLASS::Essence essence, esferixis_cps_cont *nextCont) {
 	struct STM {
-		static esferixis_cps_cont onCreateWindow(SELFCLASS *self) {
+		static void onCreateWindow(SELFCLASS *self, esferixis_cps_cont *nextCont) {
 			self->window_m = new SELFCLASS::LocalWindow(self);
 			self->window_m->setWindowTitle("MultigraphCViewWindow test");
 			self->window_m->setAttribute(::Qt::WA_DeleteOnClose, false);
@@ -62,24 +62,24 @@ esferixis_cps_cont SELFCLASS::create(SELFCLASS::Essence essence) {
 			multigraphEssence.onWaitingViewCreation = esferixis::cps::mkCont(onCreateView, self);
 			multigraphEssence.viewContextEssence = &(self->viewContextEssence_m);
 
-			return esferixis::daw::gui::HNoteSegmentMultigraph::create(multigraphEssence);
+			esferixis::daw::gui::HNoteSegmentMultigraph::create(multigraphEssence, nextCont);
 		}
 
-		static esferixis_cps_cont onMultigraphInstException(SELFCLASS *self) {
+		static void onMultigraphInstException(SELFCLASS *self, esferixis_cps_cont *nextCont) {
 			*(self->essence_m.onCreated.exception) = esferixis::cps::createException("Cannot create window because multigraph instantiation has failed -> " + esferixis::cps::destructiveExceptMsgCopy(self->multigraphException_m));
 
-			return self->essence_m.onCreated.onFailure;
+			*nextCont = self->essence_m.onCreated.onFailure;
 		}
 
-		static esferixis_cps_cont onCreateView(SELFCLASS *self) {
-			return esferixis::daw::gui::test::MultigraphCViewMock::create(self->viewContextEssence_m);
+		static void onCreateView(SELFCLASS *self, esferixis_cps_cont *nextCont) {
+			esferixis::daw::gui::test::MultigraphCViewMock::create(self->viewContextEssence_m, nextCont);
 		}
 
-		static esferixis_cps_cont onAddMultigraphWidget_goToGUIThread(SELFCLASS *self) {
-			return esferixis::Qt::Application::toGuiThread(esferixis::cps::mkCont(onAddMultigraphWidget_onGUIThread, self));
+		static void onAddMultigraphWidget_goToGUIThread(SELFCLASS *self, esferixis_cps_cont *nextCont) {
+			esferixis::Qt::Application::toGuiThread(esferixis::cps::mkCont(onAddMultigraphWidget_onGUIThread, self), nextCont);
 		}
 
-		static esferixis_cps_cont onAddMultigraphWidget_onGUIThread(SELFCLASS *self) {
+		static void onAddMultigraphWidget_onGUIThread(SELFCLASS *self, esferixis_cps_cont *nextCont) {
 			QHBoxLayout *layout = new QHBoxLayout();
 
 			layout->addWidget(self->multigraph_m->widget());
@@ -87,14 +87,14 @@ esferixis_cps_cont SELFCLASS::create(SELFCLASS::Essence essence) {
 
 			*(self->essence_m.windowMock) = self;
 
-			return self->essence_m.onCreated.onSuccess;
+			*nextCont = self->essence_m.onCreated.onSuccess;
 		}
 	};
 
 	SELFCLASS *self = new SELFCLASS();
 	self->essence_m = essence;
 
-	return esferixis::Qt::Application::toGuiThread(esferixis::cps::mkCont(STM::onCreateWindow, self));
+	esferixis::Qt::Application::toGuiThread(esferixis::cps::mkCont(STM::onCreateWindow, self), nextCont);
 }
 
 SELFCLASS::LocalWindow::LocalWindow(esferixis::daw::gui::test::MultigraphCViewWindowMock *parent) {
@@ -103,39 +103,40 @@ SELFCLASS::LocalWindow::LocalWindow(esferixis::daw::gui::test::MultigraphCViewWi
 
 void SELFCLASS::LocalWindow::closeEvent(QCloseEvent *event) {
 	struct STM {
-		static esferixis_cps_cont onLockedGUI(esferixis::daw::gui::test::MultigraphCViewWindowMock *self) {
+		static void onLockedGUI(esferixis::daw::gui::test::MultigraphCViewWindowMock *self, esferixis_cps_cont *nextCont) {
 			esferixis_cps_unsafecont cont;
 
 			cont.exception = &(self->multigraphException_m);
 			cont.onFailure = esferixis::cps::mkCont(onMultigraphFailure, self);
 			cont.onSuccess = esferixis::cps::mkCont(onMultigraphSuccess, self);
 
-			return self->multigraph_m->destroy(cont);
+			self->multigraph_m->destroy(cont, nextCont);
 		}
 
-		static esferixis_cps_cont onMultigraphFailure(esferixis::daw::gui::test::MultigraphCViewWindowMock *self) {
+		static void onMultigraphFailure(esferixis::daw::gui::test::MultigraphCViewWindowMock *self, esferixis_cps_cont *nextCont) {
 			*(self->essence_m.onClosed.exception) = esferixis::cps::createException("Cannot destroy test window because its multigraph couldn't been destroyed -> " + esferixis::cps::destructiveExceptMsgCopy(self->multigraphException_m));
 			
-			return self->essence_m.onClosed.onFailure;
+			*nextCont = self->essence_m.onClosed.onFailure;
 		}
 
-		static esferixis_cps_cont onMultigraphSuccess(esferixis::daw::gui::test::MultigraphCViewWindowMock *self) {
-			return esferixis::Qt::Application::toGuiThread( esferixis::cps::mkCont(onDeleteAll, self) );
+		static void onMultigraphSuccess(esferixis::daw::gui::test::MultigraphCViewWindowMock *self, esferixis_cps_cont *nextCont) {
+			esferixis::Qt::Application::toGuiThread( esferixis::cps::mkCont(onDeleteAll, self), nextCont);
 		}
 
-		static esferixis_cps_cont onDeleteAll(esferixis::daw::gui::test::MultigraphCViewWindowMock *self) {
-			esferixis_cps_cont nextCont = self->essence_m.onClosed.onSuccess;
+		static void onDeleteAll(esferixis::daw::gui::test::MultigraphCViewWindowMock *self, esferixis_cps_cont *nextCont) {
+			*nextCont = self->essence_m.onClosed.onSuccess;
 			
 			self->window_m->deleteLater();
 
 			delete self;
-
-			return nextCont;
 		}
 	};
 
 	event->accept();
-	esferixis_runcps( esferixis::Qt::Application::lockGUI(esferixis::cps::mkCont(STM::onLockedGUI, this->parent_m)) );
+
+	esferixis_cps_cont nextCont;
+	esferixis::Qt::Application::lockGUI(esferixis::cps::mkCont(STM::onLockedGUI, this->parent_m), &nextCont);
+	esferixis_runcps(nextCont);
 }
 
 SELFCLASS::MultigraphCViewWindowMock() {

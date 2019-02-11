@@ -61,22 +61,22 @@ typedef struct _esferixis_daw_gui_modifiableview_vtable {
 	/**
 	 * @post Creates an element with the given essence and continuation
 	 */
-	esferixis_cps_cont(*createElement) (void *implData, void *essence, esferixis_cps_unsafecont cont);
+	void(*createElement) (void *implData, void *essence, const esferixis_cps_unsafecont *cont, esferixis_cps_cont *nextCont);
 
 	/**
 	 * @post Locks the reference to element to preserve it
 	 */
-	esferixis_cps_cont(*lockElement) (void *implData, void *element, esferixis_cps_unsafecont cont);
+	void(*lockElement) (void *implData, void *element, const esferixis_cps_unsafecont *cont, esferixis_cps_cont *nextCont);
 
 	/**
 	 * @post Unlocks the reference to element to allow to delete it
 	 */
-	esferixis_cps_cont(*unlockElement) (void *implData, void *element, esferixis_cps_unsafecont cont);
+	void(*unlockElement) (void *implData, void *element, const esferixis_cps_unsafecont *cont, esferixis_cps_cont *nextCont);
 
 	/**
 	 * @post Sets an area to view
 	 */
-	esferixis_cps_cont(*setViewArea) (void *implData, esferixis_rectf viewArea, esferixis_cps_unsafecont cont);
+	void(*setViewArea) (void *implData, esferixis_rectf viewArea, const esferixis_cps_unsafecont *cont, esferixis_cps_cont *nextCont);
 
 	/**
 	 * @post Closes the view
@@ -85,32 +85,32 @@ typedef struct _esferixis_daw_gui_modifiableview_vtable {
 	 *		 close the view.
 	 *		 The view will be invalidated.
 	 */
-	esferixis_cps_cont(*close) (void *implData, esferixis_cps_unsafecont cont);
+	void(*close) (void *implData, const esferixis_cps_unsafecont *cont, esferixis_cps_cont *nextCont);
 } esferixis_daw_gui_modifiableview_vtable;
 
 typedef struct _esferixis_daw_gui_modifiableview {
-	esferixis_daw_gui_modifiableview_vtable *vtable;
+	const esferixis_daw_gui_modifiableview_vtable *vtable;
 	void *implData;
 } esferixis_daw_gui_modifiableview;
 
-inline esferixis_cps_cont esferixis_daw_gui_modifiableview_createElement(esferixis_daw_gui_modifiableview *self, void *essence, esferixis_cps_unsafecont cont) {
-	return self->vtable->createElement(self->implData, essence, cont);
+inline void esferixis_daw_gui_modifiableview_createElement(esferixis_daw_gui_modifiableview *self, void *essence, esferixis_cps_unsafecont cont, esferixis_cps_cont *nextCont) {
+	self->vtable->createElement(self->implData, essence, &cont, nextCont);
 }
 
-inline esferixis_cps_cont esferixis_daw_gui_modifiableview_lockElement(esferixis_daw_gui_modifiableview *self, void *element, esferixis_cps_unsafecont cont) {
-	return self->vtable->lockElement(self->implData, element, cont);
+inline void esferixis_daw_gui_modifiableview_lockElement(esferixis_daw_gui_modifiableview *self, void *element, esferixis_cps_unsafecont cont, esferixis_cps_cont *nextCont) {
+	self->vtable->lockElement(self->implData, element, &cont, nextCont);
 }
 
-inline esferixis_cps_cont esferixis_daw_gui_modifiableview_unlockElement(esferixis_daw_gui_modifiableview *self, void *element, esferixis_cps_unsafecont cont) {
-	return self->vtable->unlockElement(self->implData, element, cont);
+inline void esferixis_daw_gui_modifiableview_unlockElement(esferixis_daw_gui_modifiableview *self, void *element, esferixis_cps_unsafecont cont, esferixis_cps_cont *nextCont) {
+	self->vtable->unlockElement(self->implData, element, &cont, nextCont);
 }
 
-inline esferixis_cps_cont esferixis_daw_gui_modifiableview_setViewArea(esferixis_daw_gui_modifiableview *self, esferixis_rectf viewArea, esferixis_cps_unsafecont cont) {
-	return self->vtable->setViewArea(self->implData, viewArea, cont);
+inline void esferixis_daw_gui_modifiableview_setViewArea(esferixis_daw_gui_modifiableview *self, esferixis_rectf viewArea, esferixis_cps_unsafecont cont, esferixis_cps_cont *nextCont) {
+	self->vtable->setViewArea(self->implData, viewArea, &cont, nextCont);
 }
 
-inline esferixis_cps_cont esferixis_daw_gui_modifiableview_close(esferixis_daw_gui_modifiableview *self, esferixis_cps_unsafecont cont) {
-	return self->vtable->close(self->implData, cont);
+inline void esferixis_daw_gui_modifiableview_close(esferixis_daw_gui_modifiableview *self, esferixis_cps_unsafecont cont, esferixis_cps_cont *nextCont) {
+	self->vtable->close(self->implData, &cont, nextCont);
 }
 
 EsferixisCommon_C_END

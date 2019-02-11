@@ -51,8 +51,8 @@ typedef struct _esferixis_cps_asyncforker_cfg {
 EsferixisCommon_C_API esferixis_cps_asyncforker * esferixis_cps_asyncforker_new();
 
 /**
-	* @post Destroys the given async forker
-	*/
+ * @post Destroys the given async forker
+ */
 EsferixisCommon_C_API void esferixis_cps_asyncforker_delete(esferixis_cps_asyncforker *asyncForker);
 
 /**
@@ -63,11 +63,11 @@ EsferixisCommon_C_API esferixis_cps_asyncforker_cfg * esferixis_cps_asyncforker_
 /**
 	* @post Forks the green thread with the given forker
 	*/
-EsferixisCommon_C_API esferixis_cps_cont esferixis_cps_asyncforker_fork(esferixis_cps_asyncforker *asyncForker);
+EsferixisCommon_C_API void esferixis_cps_asyncforker_fork(esferixis_cps_asyncforker *asyncForker, esferixis_cps_cont *nextCont);
 
 /**
 	* @post Joins the green thread with the given forker
 	*/
-EsferixisCommon_C_API esferixis_cps_cont esferixis_cps_asyncforker_join(esferixis_cps_asyncforker *asyncForker);
+EsferixisCommon_C_API void esferixis_cps_asyncforker_join(esferixis_cps_asyncforker *asyncForker, esferixis_cps_cont *nextCont);
 
 EsferixisCommon_C_END

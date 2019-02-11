@@ -70,22 +70,22 @@ namespace esferixis {
 				/**
 				 * @post Creates an element with the given essence and continuation
 				 */
-				virtual esferixis_cps_cont createElement(EEssence elementEssence, esferixis_cps_unsafecont cont) =0;
+				virtual void createElement(EEssence elementEssence, esferixis_cps_unsafecont cont, esferixis_cps_cont *nextCont) =0;
 
 				/**
 				 * @post Locks the reference to element to preserve it
 				 */
-				virtual esferixis_cps_cont lockElement(E *element, esferixis_cps_cont cont) = 0;
+				virtual void lockElement(E *element, esferixis_cps_cont cont, esferixis_cps_cont *nextCont) = 0;
 
 				/**
 				 * @post Unlocks the reference to element to allow to delete it
 				 */
-				virtual esferixis_cps_cont unlockElement(E *element, esferixis_cps_cont cont) = 0;
+				virtual void unlockElement(E *element, esferixis_cps_cont cont, esferixis_cps_cont *nextCont) = 0;
 
 				/**
 				 * @post Sets an area to view
 				 */
-				virtual esferixis_cps_cont setViewArea(QRectF viewArea, esferixis_cps_unsafecont cont) =0;
+				virtual void setViewArea(QRectF viewArea, esferixis_cps_unsafecont cont, esferixis_cps_cont *nextCont) =0;
 
 				/**
 				 * @post Closes the view
@@ -94,7 +94,7 @@ namespace esferixis {
 				 *		 close the view.
 				 *		 The view will be invalidated.
 				 */
-				virtual esferixis_cps_cont close(esferixis_cps_unsafecont cont) =0;
+				virtual void close(esferixis_cps_unsafecont cont, esferixis_cps_cont *nextCont) =0;
 
 			protected:
 				/**
