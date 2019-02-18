@@ -1,7 +1,7 @@
 /*
 BSD 3-Clause License
 
-Copyright (c) 2018, Ariel Favio Carrizo
+Copyright (c) 2019, Ariel Favio Carrizo
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -30,14 +30,63 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include "MultigraphCHNoteSegment.h"
+#pragma once
 
-#define SELFCLASS esferixis::daw::gui::MultigraphCHNoteSegment
+#include <esferixis/common/cps/cont.h>
+#include <esferixis/common/cps/exception.h>
 
-SELFCLASS::MultigraphCHNoteSegment() {
+EsferixisCommon_C_BEGIN
 
+typedef struct _esferixis_cps_methodContext {
+	void *objImplData;
+	void *param;
+} esferixis_cps_methodContext;
+
+EsferixisCommon_C_END
+
+#ifdef __cplusplus
+namespace esferixis {
+	namespace cps {
+		template<typename T>
+		class MethodProcedureContext final {
+		public:
+			/**
+			 * @post Creates a method procedure context with
+					 the specified parameter value and
+					 the specified return continuation
+			 */
+			MethodProcedureContext(T *param, esferixis_cps_unsafecont cont) {
+				this->c_methodContext_m.param = (void *)param;
+
+				this->c_context_m.param = &(this->param_m);
+				this->c_context_m.cont = cont;
+			}
+
+			/**
+			 * @post Sets the parameter pointer
+			 */
+			void setParameter(T *param) {
+				this->c_methodContext_m.param = (void *)param;
+			}
+
+			/**
+			 * @post Sets the continuation
+			 */
+			void setCont(esferixis_cps_unsafecont cont) {
+				this->c_context_m.cont = cont;
+			}
+
+			/**
+			 * @post Gets the pointer to C context
+			 */
+			esferixis_cps_procedureContext * cContext() {
+				return &(this->c_context_m);
+			}
+
+		private:
+			esferixis_cps_methodContext c_methodContext_m;
+			esferixis_cps_procedureContext c_context_m;
+		};
+	}
 }
-
-SELFCLASS::~MultigraphCHNoteSegment() {
-
-}
+#endif

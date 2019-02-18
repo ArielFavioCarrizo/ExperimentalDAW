@@ -37,9 +37,6 @@
     <Filter Include="Header Files\Widgets">
       <UniqueIdentifier>{429fe43e-c940-4785-806a-44b6ca47be8f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Widgets">
-      <UniqueIdentifier>{f38c8bb9-b72d-4fe3-96a0-f5a2e7c51337}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Test">
       <UniqueIdentifier>{4a4772e5-a067-4b35-aa23-c7f2d6e42e49}</UniqueIdentifier>
     </Filter>
@@ -51,6 +48,9 @@
     </Filter>
     <Filter Include="Source Files\Test\Widgets">
       <UniqueIdentifier>{cc1c4ce4-7abb-49ca-9709-46804598a89f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Test\Widgets\Widgets">
+      <UniqueIdentifier>{f38c8bb9-b72d-4fe3-96a0-f5a2e7c51337}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -65,12 +65,6 @@
     </ClInclude>
     <ClInclude Include="MultigraphCHNoteSegment.h">
       <Filter>Header Files\Widgets</Filter>
-    </ClInclude>
-    <ClInclude Include="MultigraphCHNoteSegmentMock.h">
-      <Filter>Header Files\Test\Widgets</Filter>
-    </ClInclude>
-    <ClInclude Include="MultigraphCViewMock.h">
-      <Filter>Header Files\Test\Widgets</Filter>
     </ClInclude>
     <ClInclude Include="HNoteSegmentMultigraph.h">
       <Filter>Header Files\Widgets</Filter>
@@ -87,6 +81,9 @@
     <ClInclude Include="EsferixisQtMisc.h">
       <Filter>Header Files\QT</Filter>
     </ClInclude>
+    <ClInclude Include="ModifiableNoteSegmentViewMock.h">
+      <Filter>Header Files\Test\Widgets</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="EsferixisQtApplication.cpp">
@@ -95,23 +92,14 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MultigraphCHNoteSegment.cpp">
-      <Filter>Source Files\Widgets</Filter>
-    </ClCompile>
-    <ClCompile Include="MultigraphCHNoteSegmentMock.cpp">
-      <Filter>Source Files\Test\Widgets</Filter>
-    </ClCompile>
-    <ClCompile Include="MultigraphCViewMock.cpp">
-      <Filter>Source Files\Test\Widgets</Filter>
-    </ClCompile>
-    <ClCompile Include="HNoteSegmentMultigraph.cpp">
-      <Filter>Source Files\Widgets</Filter>
-    </ClCompile>
     <ClCompile Include="MultigraphCViewMockTestWindow.cpp">
       <Filter>Source Files\Test\Widgets</Filter>
     </ClCompile>
     <ClCompile Include="EsferixisQtPainterAux.cpp">
       <Filter>Source Files\QT</Filter>
+    </ClCompile>
+    <ClCompile Include="ModifiableNoteSegmentViewMock.cpp">
+      <Filter>Source Files\Test\Widgets</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
