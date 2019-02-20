@@ -38,15 +38,75 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <esferixis/common/data/linkedlist.h>
 
 namespace impl {
+	namespace NoteSegment {
+		class ImplData;
+	}
+
 	namespace View {
 		struct ImplData {
 			esferixis_daw_gui_modifiableview view;
-
 			esferixis_daw_gui_modifiableview_stateFeedback stateFeedback;
-
 			esferixis::LinkedList<impl::NoteSegment::ImplData *> noteSegments;
 		};
 
+		void createElement(esferixis_cps_procedureContext *context, esferixis_cps_cont *nextCont);
+		void lockElement(esferixis_cps_procedureContext *context, esferixis_cps_cont *nextCont);
+		void unlockElement(esferixis_cps_procedureContext *context, esferixis_cps_cont *nextCont);
+		void setViewArea(esferixis_cps_procedureContext *context, esferixis_cps_cont *nextCont);
+		void close(esferixis_cps_procedureContext *context, esferixis_cps_cont *nextCont);
+
+		constexpr esferixis_daw_gui_modifiableview_vtable vTable = {
+			createElement,
+			lockElement,
+			unlockElement,
+			setViewArea,
+			close
+		};
+	}
+
+	namespace NoteSegment {
+		struct ImplData {
+			esferixis_daw_gui_viewNoteSegment noteSegment;
+			esferixis_daw_gui_viewNoteSegment_stateFeedback stateFeedback;
+
+			impl::View::ImplData *viewData;
+			esferixis::LinkedList<NoteSegment::ImplData *>::Node node;
+
+			unsigned int id;
+			void *userContext;
+			double offset;
+			double height;
+			int isSelected;
+		};
+
+		void * getUserContext(void *implData);
+		void setUserContext(void *implData, void *userContext);
+		esferixis_daw_gui_viewNoteSegment_stateFeedback * getStateFeedback(void *implData);
+		double getOffset(void *implData);
+		double getHeight(void *implData);
+		void getColor(void *implData, esferixis_rgbcolor *color);
+		int isSelected(void *implData);
+		void setOffset(esferixis_cps_procedureContext *context, esferixis_cps_cont *nextCont);
+		void setHeight(esferixis_cps_procedureContext *context, esferixis_cps_cont *nextCont);
+		void setIsSelected(esferixis_cps_procedureContext *context, esferixis_cps_cont *nextCont);
+		void erase(esferixis_cps_procedureContext *context, esferixis_cps_cont *nextCont);
+
+		constexpr esferixis_daw_gui_viewNoteSegment_vtable vTable = {
+			getUserContext,
+			setUserContext,
+			getStateFeedback,
+			getOffset,
+			getHeight,
+			getColor,
+			isSelected,
+			setOffset,
+			setHeight,
+			setIsSelected,
+			erase
+		};
+	}
+
+	namespace View {
 		void createElement(esferixis_cps_procedureContext *context, esferixis_cps_cont *nextCont) {
 			struct STM {
 				static void onSuccess(esferixis_cps_procedureContext *context, esferixis_cps_cont *nextCont) {
@@ -161,45 +221,9 @@ namespace impl {
 
 			*nextCont = esferixis::cps::mkCont(STM::tryToUnloadLast, context);
 		}
-
-		constexpr esferixis_daw_gui_modifiableview_vtable vTable = {
-			impl::View::createElement,
-			impl::View::lockElement,
-			impl::View::unlockElement,
-			impl::View::setViewArea,
-			impl::View::close
-		};
 	}
 
 	namespace NoteSegment {
-		struct ImplData {
-			esferixis_daw_gui_viewNoteSegment noteSegment;
-			esferixis_daw_gui_viewNoteSegment_stateFeedback stateFeedback;
-
-			impl::View::ImplData *viewData;
-			esferixis::LinkedList<NoteSegment::ImplData *>::Node node;
-
-			unsigned int id;
-			void *userContext;
-			double offset;
-			double height;
-			int isSelected;
-		};
-
-		constexpr esferixis_daw_gui_viewNoteSegment_vtable vTable = {
-			getUserContext,
-			setUserContext,
-			setStateFeedback,
-			getOffset,
-			getHeight,
-			getColor,
-			isSelected,
-			setOffset,
-			setHeight,
-			setIsSelected,
-			erase
-		};
-
 		void * getUserContext(void *implData) {
 			return ((NoteSegment::ImplData *) implData)->userContext;
 		}
