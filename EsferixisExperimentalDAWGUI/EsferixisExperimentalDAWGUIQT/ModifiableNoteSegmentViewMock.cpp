@@ -46,12 +46,14 @@ namespace impl {
 		struct ImplData {
 			esferixis_daw_gui_modifiableview view;
 			esferixis_daw_gui_modifiableview_stateFeedback stateFeedback;
+			esferixis_rectf viewArea;
 			esferixis::LinkedList<impl::NoteSegment::ImplData *> noteSegments;
 		};
 
 		void createElement(esferixis_cps_procedureContext *context, esferixis_cps_cont *nextCont);
 		void lockElement(esferixis_cps_procedureContext *context, esferixis_cps_cont *nextCont);
 		void unlockElement(esferixis_cps_procedureContext *context, esferixis_cps_cont *nextCont);
+		void getViewArea(void *implData, esferixis_rectf *viewArea);
 		void setViewArea(esferixis_cps_procedureContext *context, esferixis_cps_cont *nextCont);
 		void close(esferixis_cps_procedureContext *context, esferixis_cps_cont *nextCont);
 
@@ -59,6 +61,7 @@ namespace impl {
 			createElement,
 			lockElement,
 			unlockElement,
+			getViewArea,
 			setViewArea,
 			close
 		};
@@ -167,7 +170,16 @@ namespace impl {
 			*nextCont = context->cont.onSuccess;
 		}
 
+		void getViewArea(void *implData, esferixis_rectf *viewArea) {
+			*viewArea = ((impl::View::ImplData *) implData)->viewArea;
+		}
+
 		void setViewArea(esferixis_cps_procedureContext *context, esferixis_cps_cont *nextCont) {
+			esferixis_cps_methodContext *methodContext = (esferixis_cps_methodContext *)context->param;
+			impl::View::ImplData *self_impl = (impl::View::ImplData *) methodContext->objImplData;
+
+			self_impl->viewArea = *((esferixis_rectf *)methodContext->param);
+
 			*nextCont = context->cont.onSuccess;
 		}
 
@@ -322,13 +334,15 @@ namespace impl {
 	}
 }
 
-void esferixis::daw::gui::test::createNoteSegmentViewMock(esferixis_cps_procedureContext *context, esferixis_cps_cont *nextCont) {
+void esferixis_daw_gui_test_createNoteSegmentViewMock(esferixis_daw_gui_modifiableview_contextEssence *context, esferixis_cps_cont *nextCont) {
 	impl::View::ImplData *selfImpl = new impl::View::ImplData();
 
-	selfImpl->view.implData = &selfImpl;
+	selfImpl->view.implData = (void *) selfImpl;
 	selfImpl->view.vtable = &impl::View::vTable;
+	selfImpl->stateFeedback = context->stateFeedback;
+	selfImpl->viewArea = context->viewArea;
 
-	esferixis_daw_gui_modifiableview_essence *essence = (esferixis_daw_gui_modifiableview_essence *)context->param;
+	*(context->instance) = &(selfImpl->view);
 
-	selfImpl->stateFeedback = essence->stateFeedback;
+	*nextCont = context->onCreated.onSuccess;
 }

@@ -32,8 +32,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #pragma once
 
-#include "MultigraphCView.h"
-#include "MultigraphCHNoteSegment.h"
+#include <esferixis/daw/gui/common/modifiableview.h>
+#include <esferixis/daw/gui/common/viewnotesegment.h>
 
 #include <esferixis/common/cps/cont.h>
 #include <esferixis/common/cps/exception.h>
@@ -50,9 +50,9 @@ namespace esferixis {
 			public:
 				struct Essence {
 					esferixis::daw::gui::HNoteSegmentMultigraph **instance;
-					esferixis::daw::gui::MultigraphCView<esferixis::daw::gui::MultigraphCHNoteSegment, esferixis::daw::gui::MultigraphCHNoteSegment::Essence, esferixis::daw::gui::MultigraphCHNoteSegment::StateFeedback>::ContextEssence *viewContextEssence;
+					esferixis_daw_gui_modifiableview_contextEssence *viewContextEssence;
 
-					QRectF viewArea;
+					esferixis_rectf viewArea;
 
 					QColor backgroundColor;
 					esferixis::daw::gui::Grid grid;
@@ -103,7 +103,7 @@ namespace esferixis {
 				};
 
 				struct ElementContext {
-					esferixis::daw::gui::MultigraphCHNoteSegment *noteSegment;
+					esferixis_daw_gui_viewNoteSegment *noteSegment;
 					esferixis::daw::gui::HNoteSegmentMultigraph *multigraph;
 
 					esferixis::LinkedList<ElementContext *>::Node node_m;
@@ -116,11 +116,11 @@ namespace esferixis {
 				QColor backgroundColor_m;
 				esferixis::daw::gui::Grid grid_m;
 
-				esferixis::daw::gui::MultigraphCView<esferixis::daw::gui::MultigraphCHNoteSegment, esferixis::daw::gui::MultigraphCHNoteSegment::Essence, esferixis::daw::gui::MultigraphCHNoteSegment::StateFeedback> *view_m;
+				esferixis_daw_gui_modifiableview *view_m;
 
 				struct ViewState {
-					esferixis::daw::gui::MultigraphCHNoteSegment *referencedElement_m;
-					esferixis::daw::gui::MultigraphCHNoteSegment::StateFeedback *elementStateFeedback_m;
+					esferixis_daw_gui_viewNoteSegment *referencedElement_m;
+					esferixis_daw_gui_viewNoteSegment_stateFeedback *elementStateFeedback_m;
 
 					esferixis_cps_unsafecont onUpdated;
 				};
@@ -131,6 +131,8 @@ namespace esferixis {
 				esferixis::LinkedList<ElementContext *> loadedElements_m;
 
 				esferixis_cps_unsafecont nextExternalCont_m;
+
+				esferixis::cps::MethodProcedureContext<void> closeViewContext_m;
 			};
 		}
 	}

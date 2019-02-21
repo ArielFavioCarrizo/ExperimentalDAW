@@ -37,7 +37,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <qcolor.h>
 #include <qevent.h>
 
-#include "MultigraphCViewMock.h"
+#include "ModifiableNoteSegmentViewMock.h"
 
 #define SELFCLASS esferixis::daw::gui::test::MultigraphCViewWindowMock
 
@@ -72,7 +72,7 @@ void SELFCLASS::create(SELFCLASS::Essence essence, esferixis_cps_cont *nextCont)
 		}
 
 		static void onCreateView(SELFCLASS *self, esferixis_cps_cont *nextCont) {
-			esferixis::daw::gui::test::MultigraphCViewMock::create(self->viewContextEssence_m, nextCont);
+			esferixis_daw_gui_test_createNoteSegmentViewMock(&self->viewContextEssence_m, nextCont);
 		}
 
 		static void onAddMultigraphWidget_goToGUIThread(SELFCLASS *self, esferixis_cps_cont *nextCont) {

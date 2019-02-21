@@ -68,6 +68,15 @@ inline esferixis_vec2f esferixis_vec2f_scale(esferixis_vec2f a, float scalar) {
 	return result;
 }
 
+inline esferixis_vec2f esferixis_vec2f_scale_2d(esferixis_vec2f a, esferixis_vec2f b) {
+	esferixis_vec2f result;
+
+	result.x = a.x * b.x;
+	result.y = a.y * b.y;
+
+	return result;
+}
+
 EsferixisCommon_C_END
 
 #ifdef __cplusplus
@@ -108,6 +117,13 @@ namespace esferixis {
 			 */
 			float y() {
 				return this->c_vec_m.y;
+			}
+
+			/**
+			 * @post Scales the vector with the specified vector
+			 */
+			esferixis::math::Vec2f scale_2d(esferixis::math::Vec2f scale) {
+				return esferixis::math::Vec2f(esferixis_vec2f_scale_2d(this->c_vec_m, scale.c_vec_m));
 			}
 
 			/**

@@ -58,8 +58,15 @@ namespace esferixis {
 			MethodProcedureContext(T *param, esferixis_cps_unsafecont cont) {
 				this->c_methodContext_m.param = (void *)param;
 
-				this->c_context_m.param = &(this->param_m);
+				this->c_context_m.param = (void *)&this->c_methodContext_m;
 				this->c_context_m.cont = cont;
+			}
+
+			/**
+			 * @post Creates a empty method procedure context
+			 */
+			MethodProcedureContext() : MethodProcedureContext(nullptr, esferixis_cps_mkInvalidUnsafeCont()) {
+
 			}
 
 			/**

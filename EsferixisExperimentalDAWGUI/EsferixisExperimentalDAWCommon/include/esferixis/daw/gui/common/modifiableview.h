@@ -50,13 +50,6 @@ typedef struct _esferixis_daw_gui_modifiableview_stateFeedback {
 	esferixis_cps_unsafecont *onUpdated;
 } esferixis_daw_gui_modifiableview_stateFeedback;
 
-typedef struct _esferixis_daw_gui_modifiableview_essence {
-	void **instance;
-
-	esferixis_rectf viewArea;
-	esferixis_daw_gui_modifiableview_stateFeedback stateFeedback;
-} esferixis_daw_gui_modifiableview_essence;
-
 typedef struct _esferixis_daw_gui_modifiableview_vtable {
 	/**
 	 * @post Creates an element with the given element essence
@@ -72,6 +65,11 @@ typedef struct _esferixis_daw_gui_modifiableview_vtable {
 	 * @post Unlocks the reference to element to allow to delete it
 	 */
 	void(*unlockElement) (esferixis_cps_procedureContext *context, esferixis_cps_cont *nextCont);
+
+	/**
+	 * @post Gets the view area
+	 */
+	void(*getViewArea) (void *implData, esferixis_rectf *viewArea);
 
 	/**
 	 * @post Sets an area to view (esferixis_rectf)
@@ -95,6 +93,14 @@ typedef struct _esferixis_daw_gui_modifiableview {
 	void *implData;
 } esferixis_daw_gui_modifiableview;
 
+typedef struct _esferixis_daw_gui_modifiableview_contextEssence {
+	esferixis_daw_gui_modifiableview **instance;
+
+	esferixis_rectf viewArea;
+	esferixis_daw_gui_modifiableview_stateFeedback stateFeedback;
+	esferixis_cps_unsafecont onCreated;
+} esferixis_daw_gui_modifiableview_contextEssence;
+
 inline void esferixis_daw_gui_modifiableview_createElement(esferixis_daw_gui_modifiableview *self, esferixis_cps_procedureContext *context, esferixis_cps_cont *nextCont) {
 	esferixis_cps_methodContext *methodContext = (esferixis_cps_methodContext *) context->param;
 
@@ -116,6 +122,14 @@ inline void esferixis_daw_gui_modifiableview_unlockElement(esferixis_daw_gui_mod
 	self->vtable->unlockElement(context, nextCont);
 }
 
+inline esferixis_rectf esferixis_daw_gui_modifiableview_getViewArea(esferixis_daw_gui_modifiableview *self) {
+	esferixis_rectf viewArea;
+
+	self->vtable->getViewArea(self->implData, &viewArea);
+
+	return viewArea;
+}
+
 inline void esferixis_daw_gui_modifiableview_setViewArea(esferixis_daw_gui_modifiableview *self, esferixis_cps_procedureContext *context, esferixis_cps_cont *nextCont) {
 	esferixis_cps_methodContext *methodContext = (esferixis_cps_methodContext *)context->param;
 
@@ -127,6 +141,7 @@ inline void esferixis_daw_gui_modifiableview_close(esferixis_daw_gui_modifiablev
 	esferixis_cps_methodContext *methodContext = (esferixis_cps_methodContext *)context->param;
 
 	methodContext->objImplData = self->implData;
+
 	self->vtable->close(context, nextCont);
 }
 

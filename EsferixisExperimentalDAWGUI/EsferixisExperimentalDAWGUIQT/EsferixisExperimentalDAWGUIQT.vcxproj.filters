@@ -52,6 +52,9 @@
     <Filter Include="Source Files\Test\Widgets\Widgets">
       <UniqueIdentifier>{f38c8bb9-b72d-4fe3-96a0-f5a2e7c51337}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Widgets">
+      <UniqueIdentifier>{d8f52e48-779f-4118-9cca-abf892be4bfa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -59,12 +62,6 @@
   <ItemGroup>
     <ClInclude Include="EsferixisQtApplication.h">
       <Filter>Header Files\QT</Filter>
-    </ClInclude>
-    <ClInclude Include="MultigraphCView.h">
-      <Filter>Header Files\Widgets</Filter>
-    </ClInclude>
-    <ClInclude Include="MultigraphCHNoteSegment.h">
-      <Filter>Header Files\Widgets</Filter>
     </ClInclude>
     <ClInclude Include="HNoteSegmentMultigraph.h">
       <Filter>Header Files\Widgets</Filter>
@@ -100,6 +97,9 @@
     </ClCompile>
     <ClCompile Include="ModifiableNoteSegmentViewMock.cpp">
       <Filter>Source Files\Test\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="HNoteSegmentMultigraph.cpp">
+      <Filter>Source Files\Widgets</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -37,16 +37,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <esferixis/daw/gui/common/modifiableview.h>
 
-namespace esferixis {
-	namespace daw {
-		namespace gui {
-			namespace test {
-				/**
-				 * @post Creates a view mock of note segments
-				 */
-				static void createNoteSegmentViewMock(esferixis_cps_procedureContext *context, esferixis_cps_cont *nextCont);
-			}
-		}
-	}
-}
+EsferixisCommon_C_BEGIN
+
+/**
+ * @post Creates a view mock of note segments
+ */
+void esferixis_daw_gui_test_createNoteSegmentViewMock(esferixis_daw_gui_modifiableview_contextEssence *contextEssence, esferixis_cps_cont *nextCont);
+
+EsferixisCommon_C_END
 

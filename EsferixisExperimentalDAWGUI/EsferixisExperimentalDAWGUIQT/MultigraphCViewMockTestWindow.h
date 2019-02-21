@@ -36,7 +36,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <esferixis/common/cps/cont.h>
 #include <esferixis/common/cps/exception.h>
 
-#include "MultigraphCView.h"
+#include "esferixis/daw/gui/common/modifiableview.h"
+#include "esferixis/daw/gui/common/viewnotesegment.h"
+
 #include "HNoteSegmentMultigraph.h"
 
 namespace esferixis {
@@ -78,9 +80,9 @@ namespace esferixis {
 
 					Essence essence_m;
 
-					esferixis::daw::gui::MultigraphCView<esferixis::daw::gui::MultigraphCHNoteSegment, esferixis::daw::gui::MultigraphCHNoteSegment::Essence, esferixis::daw::gui::MultigraphCHNoteSegment::StateFeedback>::ContextEssence viewContextEssence_m;
+					esferixis_daw_gui_modifiableview_contextEssence viewContextEssence_m;
 					struct ViewState {
-						esferixis::daw::gui::MultigraphCHNoteSegment::StateFeedback *elementStateFeedback;
+						esferixis_daw_gui_viewNoteSegment_stateFeedback *elementStateFeedback;
 					};
 					ViewState viewState_m;
 

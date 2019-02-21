@@ -49,6 +49,13 @@ inline esferixis_daw_gui_grid esferixis_daw_gui_grid_translate(esferixis_daw_gui
 	return grid;
 }
 
+inline esferixis_daw_gui_grid esferixis_daw_gui_grid_scale(esferixis_daw_gui_grid grid, esferixis_vec2f vec) {
+	grid.offset = esferixis_vec2f_scale_2d(grid.offset, vec);
+	grid.size = esferixis_vec2f_scale_2d(grid.size, vec);
+
+	return grid;
+}
+
 EsferixisCommon_C_END
 
 namespace esferixis {
@@ -108,6 +115,13 @@ namespace esferixis {
 				 */
 				inline esferixis::daw::gui::Grid translate(esferixis::math::Vec2f vec) const {
 					return esferixis::daw::gui::Grid( esferixis_daw_gui_grid_translate(this->cGrid_m, vec.cVec2f()) );
+				}
+
+				/**
+				 * @post Scales the grid
+				 */
+				inline esferixis::daw::gui::Grid scale(esferixis::math::Vec2f vec) const {
+					return esferixis::daw::gui::Grid(esferixis_daw_gui_grid_scale(this->cGrid_m, vec.cVec2f()));
 				}
 
 			private:
