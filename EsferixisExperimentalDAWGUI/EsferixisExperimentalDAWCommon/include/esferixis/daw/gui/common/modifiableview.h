@@ -46,6 +46,7 @@ typedef struct _esferixis_daw_gui_modifiableview_stateFeedback {
 
 	esferixis_cps_cont onElementLoad;
 	esferixis_cps_cont onElementUnload;
+	esferixis_cps_cont onNewElementsBoundingBox;
 
 	esferixis_cps_unsafecont *onUpdated;
 } esferixis_daw_gui_modifiableview_stateFeedback;
@@ -75,6 +76,11 @@ typedef struct _esferixis_daw_gui_modifiableview_vtable {
 	 * @post Sets an area to view (esferixis_rectf)
 	 */
 	void(*setViewArea) (esferixis_cps_procedureContext *context, esferixis_cps_cont *nextCont);
+
+	/**
+	 * @post Gets the bounding box of elements
+	 */
+	void(*getElementsBoundingBox)(void *implData, esferixis_rectf *rect);
 
 	/**
 	 * @post Closes the view
@@ -137,6 +143,14 @@ inline void esferixis_daw_gui_modifiableview_setViewArea(esferixis_daw_gui_modif
 	self->vtable->setViewArea(context, nextCont);
 }
 
+inline esferixis_rectf esferixis_daw_gui_modifiableview_getElementsBoundingBox(esferixis_daw_gui_modifiableview *self) {
+	esferixis_rectf rect;
+
+	self->vtable->getElementsBoundingBox(self->implData, &rect);
+
+	return rect;
+}
+
 inline void esferixis_daw_gui_modifiableview_close(esferixis_daw_gui_modifiableview *self, esferixis_cps_procedureContext *context, esferixis_cps_cont *nextCont) {
 	esferixis_cps_methodContext *methodContext = (esferixis_cps_methodContext *)context->param;
 
@@ -170,8 +184,16 @@ namespace esferixis {
 					esferixis_daw_gui_modifiableview_unlockElement(this->cObject_m, context->cContext(), nextCont);
 				}
 
+				inline esferixis_rectf getViewArea() {
+					return esferixis_daw_gui_modifiableview_getViewArea(this->cObject_m);
+				}
+
 				inline void setViewArea(esferixis::cps::MethodProcedureContext<esferixis_rectf> *context, esferixis_cps_cont *nextCont) {
 					esferixis_daw_gui_modifiableview_setViewArea(this->cObject_m, context->cContext(), nextCont);
+				}
+
+				inline esferixis_rectf getElementsBoundingBox() {
+					return esferixis_daw_gui_modifiableview_getElementsBoundingBox(this->cObject_m);
 				}
 
 				inline void close(esferixis::cps::MethodProcedureContext<void> *context, esferixis_cps_cont *nextCont) {

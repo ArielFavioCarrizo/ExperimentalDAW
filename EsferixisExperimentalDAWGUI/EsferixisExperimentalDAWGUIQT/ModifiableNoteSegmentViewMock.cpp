@@ -47,6 +47,7 @@ namespace impl {
 			esferixis_daw_gui_modifiableview view;
 			esferixis_daw_gui_modifiableview_stateFeedback stateFeedback;
 			esferixis_rectf viewArea;
+			esferixis_rectf elementsBoundingBox;
 			esferixis::LinkedList<impl::NoteSegment::ImplData *> noteSegments;
 		};
 
@@ -55,6 +56,7 @@ namespace impl {
 		void unlockElement(esferixis_cps_procedureContext *context, esferixis_cps_cont *nextCont);
 		void getViewArea(void *implData, esferixis_rectf *viewArea);
 		void setViewArea(esferixis_cps_procedureContext *context, esferixis_cps_cont *nextCont);
+		void getElementsBoundingBox(void *implData, esferixis_rectf *rect);
 		void close(esferixis_cps_procedureContext *context, esferixis_cps_cont *nextCont);
 
 		constexpr esferixis_daw_gui_modifiableview_vtable vTable = {
@@ -63,6 +65,7 @@ namespace impl {
 			unlockElement,
 			getViewArea,
 			setViewArea,
+			getElementsBoundingBox,
 			close
 		};
 	}
@@ -181,6 +184,10 @@ namespace impl {
 			self_impl->viewArea = *((esferixis_rectf *)methodContext->param);
 
 			*nextCont = context->cont.onSuccess;
+		}
+
+		void getElementsBoundingBox(void *implData, esferixis_rectf *rect) {
+			*rect = ((impl::View::ImplData *) implData)->elementsBoundingBox;
 		}
 
 		void close(esferixis_cps_procedureContext *context, esferixis_cps_cont *nextCont) {

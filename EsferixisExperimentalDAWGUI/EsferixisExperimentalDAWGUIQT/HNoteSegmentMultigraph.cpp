@@ -93,6 +93,10 @@ void SELFCLASS::create(esferixis::daw::gui::HNoteSegmentMultigraph::Essence esse
 			*nextCont = self->viewState_m.onUpdated.onSuccess;
 		}
 
+		static void onNewElementsBoundingBox(esferixis::daw::gui::HNoteSegmentMultigraph *self, esferixis_cps_cont *nextCont) {
+			*nextCont = self->viewState_m.onUpdated.onSuccess;
+		}
+
 		static void onClose_deleteSelf(SELFCLASS *self, esferixis_cps_cont *nextCont) {
 			esferixis_cps_unsafecont cont = self->nextExternalCont_m;
 
@@ -170,6 +174,8 @@ SELFCLASS::LocalQWidget::LocalQWidget(esferixis::daw::gui::HNoteSegmentMultigrap
 
 void SELFCLASS::LocalQWidget::paintEvent(QPaintEvent *event) {
 	const esferixis_rectf viewArea = esferixis_daw_gui_modifiableview_getViewArea(this->multigraph_m->view_m);
+	const esferixis_vec2f viewAreaSize = esferixis_rectf_size(viewArea);
+	const esferixis_vec2f sizeFactor = esferixis_vec2f_new((float)this->size().width() / (float)viewAreaSize.x, (float) this->size().height() / (float)viewAreaSize.y);
 
 	if (this->multigraph_m != nullptr) {
 		QPainter painter(this);
@@ -181,7 +187,7 @@ void SELFCLASS::LocalQWidget::paintEvent(QPaintEvent *event) {
 		painter.save();
 
 		painterAux.render(
-			this->multigraph_m->grid_m, // FIXME
+			this->multigraph_m->grid_m.translate( -esferixis::math::Vec2f(viewArea.topLeft) ).scale( esferixis::math::Vec2f(sizeFactor) ),
 			event->rect()
 		);
 

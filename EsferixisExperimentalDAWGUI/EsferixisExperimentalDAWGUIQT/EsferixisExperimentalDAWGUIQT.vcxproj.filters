@@ -72,14 +72,14 @@
     <ClInclude Include="EsferixisQtPainterAux.h">
       <Filter>Header Files\QT</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="EsferixisQtMisc.h">
       <Filter>Header Files\QT</Filter>
     </ClInclude>
     <ClInclude Include="ModifiableNoteSegmentViewMock.h">
       <Filter>Header Files\Test\Widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files\Widgets</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

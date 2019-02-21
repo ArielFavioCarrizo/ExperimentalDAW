@@ -59,6 +59,7 @@ void SELFCLASS::create(SELFCLASS::Essence essence, esferixis_cps_cont *nextCont)
 			multigraphEssence.onInitialized.onFailure = esferixis::cps::mkCont(onMultigraphInstException, self);
 			multigraphEssence.onInitialized.onSuccess = esferixis::cps::mkCont(onAddMultigraphWidget_goToGUIThread, self);
 
+			multigraphEssence.viewArea = esferixis_rectf_new( esferixis_vec2f_new(0.0f, 0.0f), esferixis_vec2f_new(500.0f, 500.0f) );
 			multigraphEssence.onWaitingViewCreation = esferixis::cps::mkCont(onCreateView, self);
 			multigraphEssence.viewContextEssence = &(self->viewContextEssence_m);
 

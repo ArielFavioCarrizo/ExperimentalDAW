@@ -55,7 +55,7 @@ namespace esferixis {
 					 the specified parameter value and
 					 the specified return continuation
 			 */
-			MethodProcedureContext(T *param, esferixis_cps_unsafecont cont) {
+			inline MethodProcedureContext(T *param, esferixis_cps_unsafecont cont) {
 				this->c_methodContext_m.param = (void *)param;
 
 				this->c_context_m.param = (void *)&this->c_methodContext_m;
@@ -72,21 +72,35 @@ namespace esferixis {
 			/**
 			 * @post Sets the parameter pointer
 			 */
-			void setParameter(T *param) {
+			inline void setParameter(T *param) {
 				this->c_methodContext_m.param = (void *)param;
+			}
+
+			/**
+			 * @post Gets the parameter pointer
+			 */
+			inline T * getParameter() {
+				return (T *) this->c_methodContext_m.param;
 			}
 
 			/**
 			 * @post Sets the continuation
 			 */
-			void setCont(esferixis_cps_unsafecont cont) {
+			inline void setCont(esferixis_cps_unsafecont cont) {
 				this->c_context_m.cont = cont;
+			}
+
+			/**
+			 * @post Gets the continuation
+			 */
+			inline esferixis_cps_unsafecont getCont() {
+				return this->c_context_m.cont;
 			}
 
 			/**
 			 * @post Gets the pointer to C context
 			 */
-			esferixis_cps_procedureContext * cContext() {
+			inline esferixis_cps_procedureContext * cContext() {
 				return &(this->c_context_m);
 			}
 
