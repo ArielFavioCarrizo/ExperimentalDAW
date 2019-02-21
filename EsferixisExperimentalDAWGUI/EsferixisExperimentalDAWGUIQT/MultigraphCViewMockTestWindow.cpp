@@ -1,7 +1,7 @@
 /*
 BSD 3-Clause License
 
-Copyright (c) 2018, Ariel Favio Carrizo
+Copyright (c) 2019, Ariel Favio Carrizo
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -37,7 +37,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <qcolor.h>
 #include <qevent.h>
 
-#include "MultigraphCViewMock.h"
+#include "ModifiableNoteSegmentViewMock.h"
 
 #define SELFCLASS esferixis::daw::gui::test::MultigraphCViewWindowMock
 
@@ -59,6 +59,7 @@ void SELFCLASS::create(SELFCLASS::Essence essence, esferixis_cps_cont *nextCont)
 			multigraphEssence.onInitialized.onFailure = esferixis::cps::mkCont(onMultigraphInstException, self);
 			multigraphEssence.onInitialized.onSuccess = esferixis::cps::mkCont(onAddMultigraphWidget_goToGUIThread, self);
 
+			multigraphEssence.viewArea = esferixis_rectf_new( esferixis_vec2f_new(0.0f, 0.0f), esferixis_vec2f_new(500.0f, 500.0f) );
 			multigraphEssence.onWaitingViewCreation = esferixis::cps::mkCont(onCreateView, self);
 			multigraphEssence.viewContextEssence = &(self->viewContextEssence_m);
 
@@ -72,7 +73,7 @@ void SELFCLASS::create(SELFCLASS::Essence essence, esferixis_cps_cont *nextCont)
 		}
 
 		static void onCreateView(SELFCLASS *self, esferixis_cps_cont *nextCont) {
-			esferixis::daw::gui::test::MultigraphCViewMock::create(self->viewContextEssence_m, nextCont);
+			esferixis_daw_gui_test_createNoteSegmentViewMock(&self->viewContextEssence_m, nextCont);
 		}
 
 		static void onAddMultigraphWidget_goToGUIThread(SELFCLASS *self, esferixis_cps_cont *nextCont) {

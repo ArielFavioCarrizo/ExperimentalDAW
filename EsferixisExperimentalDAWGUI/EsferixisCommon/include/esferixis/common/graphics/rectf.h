@@ -1,7 +1,7 @@
 /*
 BSD 3-Clause License
 
-Copyright (c) 2018, Ariel Favio Carrizo
+Copyright (c) 2019, Ariel Favio Carrizo
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -41,5 +41,18 @@ struct esferixis_rectf {
 	esferixis_vec2f topLeft;
 	esferixis_vec2f bottomRight;
 };
+
+inline esferixis_rectf esferixis_rectf_new(esferixis_vec2f topLeft, esferixis_vec2f bottomRight) {
+	esferixis_rectf rect;
+
+	rect.topLeft = topLeft;
+	rect.bottomRight = bottomRight;
+
+	return rect;
+}
+
+inline esferixis_vec2f esferixis_rectf_size(esferixis_rectf rect) {
+	return esferixis_vec2f_new(rect.bottomRight.x - rect.topLeft.x, rect.bottomRight.y - rect.topLeft.y);
+}
 
 EsferixisCommon_C_END

@@ -1,7 +1,7 @@
 /*
 BSD 3-Clause License
 
-Copyright (c) 2018, Ariel Favio Carrizo
+Copyright (c) 2019, Ariel Favio Carrizo
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -32,80 +32,64 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #pragma once
 
-#include <boost/noncopyable.hpp>
+#ifdef __cplusplus
+#include <cstddef>
+#elif
+#include "stddef.h"
+#endif
+
 #include <esferixis/common/cps/cont.h>
 #include <esferixis/common/cps/exception.h>
 
-#include <esferixis/common/contextualized.h>
-#include <QtGui/qcolor.h>
+EsferixisCommon_C_BEGIN
 
+typedef struct _esferixis_cps_procedureContext {
+	void *param;
+	esferixis_cps_unsafecont cont;
+} esferixis_cps_procedureContext;
+
+EsferixisCommon_C_END
+
+#ifdef __cplusplus
 namespace esferixis {
-	namespace daw {
-		namespace gui {
-			class MultigraphCHNoteSegment : public esferixis::Contextualized, private boost::noncopyable
-			{
-			public:
-				struct StateFeedback {
-					esferixis_cps_cont onNewOffset;
-					esferixis_cps_cont onNewHeight;
-					esferixis_cps_cont onNewColor;
-					esferixis_cps_cont onNewSelectionState;
-				};
+	namespace cps {
+		template<typename T>
+		class ProcedureContext final {
+		public:
+			/**
+			 * @post Creates a procedure context with
+					 the specified parameter pointer and
+					 the specified return continuation
+			 */
+			ProcedureContext(T *param, esferixis_cps_unsafecont cont) {
+				this->c_context_m.param = (void *)param;
+				this->c_context_m.cont = cont;
+			}
 
-				struct Essence {
-					double offset;
-					double height;
+			/**
+			 * @post Sets the parameter value
+			 */
+			void setParameter(T *param) {
+				this->c_context_m.param = (void *)param;
+			}
 
-					bool isAContinuation;
-					bool isSelected;
-				};
+			/**
+			 * @post Sets the continuation
+			 */
+			void setCont(esferixis_cps_unsafecont cont) {
+				this->c_context_m.cont = cont;
+			}
 
-				/**
-				 * @post Gets the time offset
-				 */
-				virtual double getTimeOffset() = 0;
+			/**
+			 * @post Gets the pointer to C context
+			 */
+			esferixis_cps_procedureContext * cContext() {
+				return &(this->c_context_m);
+			}
 
-				/*
-				 * @post Gets the height
-				 */
-				virtual double getHeight() = 0;
-
-				/**
-				 * @post Gets the color
-				 */
-				virtual QColor getColor() = 0;
-
-				/**
-				 * @post Gets a boolean indicating if it is selected
-				 */
-				virtual bool isSelected() = 0;
-
-				/**
-				 * @post Sets the offset
-				 */
-				virtual esferixis_cps_cont setOffset(double offset, esferixis_cps_unsafecont cont) = 0;
-
-				/**
-				 * @post Sets the height
-				 */
-				virtual esferixis_cps_cont setHeight(double height, esferixis_cps_unsafecont cont) = 0;
-
-				/**
-				 * @post Erases the note segment
-				 */
-				virtual esferixis_cps_cont erase(esferixis_cps_unsafecont cont) =0;
-
-			protected:
-				/**
-				 * @post Creates an horizontal note segment
-				 */
-				MultigraphCHNoteSegment();
-
-				/**
-				 * @post Destroys the horizontal note segment
-				 */
-				virtual ~MultigraphCHNoteSegment();
-			};
-		}
+		private:
+			esferixis_cps_procedureContext c_context_m;
+		};
 	}
 }
+#endif

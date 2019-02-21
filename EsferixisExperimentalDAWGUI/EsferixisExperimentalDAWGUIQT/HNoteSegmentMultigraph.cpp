@@ -1,7 +1,7 @@
 /*
 BSD 3-Clause License
 
-Copyright (c) 2018, Ariel Favio Carrizo
+Copyright (c) 2019, Ariel Favio Carrizo
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -72,7 +72,7 @@ void SELFCLASS::create(esferixis::daw::gui::HNoteSegmentMultigraph::Essence esse
 			elementContext->multigraph = self;
 			elementContext->noteSegment = self->viewState_m.referencedElement_m;
 
-			elementContext->noteSegment->setContext(static_cast<void *>(elementContext));
+			esferixis_daw_gui_viewNoteSegment_setUserContext(elementContext->noteSegment, static_cast<void *>(elementContext));
 
 			self->loadedElements_m.addLast(&elementContext->node_m);
 
@@ -80,17 +80,37 @@ void SELFCLASS::create(esferixis::daw::gui::HNoteSegmentMultigraph::Essence esse
 		}
 
 		static void onElementUnload(esferixis::daw::gui::HNoteSegmentMultigraph *self, esferixis_cps_cont *nextCont) {
-			esferixis::daw::gui::MultigraphCHNoteSegment *noteSegment = self->viewState_m.referencedElement_m;
+			esferixis_daw_gui_viewNoteSegment *noteSegment = self->viewState_m.referencedElement_m;
 
-			esferixis::daw::gui::HNoteSegmentMultigraph::ElementContext *elementContext = static_cast<esferixis::daw::gui::HNoteSegmentMultigraph::ElementContext *>(noteSegment->getContext());
+			esferixis::daw::gui::HNoteSegmentMultigraph::ElementContext *elementContext = static_cast<esferixis::daw::gui::HNoteSegmentMultigraph::ElementContext *>( esferixis_daw_gui_viewNoteSegment_getUserContext( noteSegment ) );
 
 			self->loadedElements_m.remove(&elementContext->node_m);
 
-			noteSegment->setContext(nullptr);
+			esferixis_daw_gui_viewNoteSegment_setUserContext(noteSegment, nullptr);
 
 			delete elementContext;
 
 			*nextCont = self->viewState_m.onUpdated.onSuccess;
+		}
+
+		static void onNewElementsBoundingBox(esferixis::daw::gui::HNoteSegmentMultigraph *self, esferixis_cps_cont *nextCont) {
+			*nextCont = self->viewState_m.onUpdated.onSuccess;
+		}
+
+		static void onClose_deleteSelf(SELFCLASS *self, esferixis_cps_cont *nextCont) {
+			esferixis_cps_unsafecont cont = self->nextExternalCont_m;
+
+			self->widget_m->detachFromMultigraph();
+
+			delete self;
+
+			*nextCont = cont.onSuccess;
+		}
+
+		static void onClose_onFailure(SELFCLASS *self, esferixis_cps_cont *nextCont) {
+			*(self->nextExternalCont_m.exception) = esferixis::cps::createException("Cannot destroy multigraph because its view couldn't have been destroyed -> " + esferixis::cps::destructiveExceptMsgCopy(self->viewException_m));
+
+			*nextCont = self->nextExternalCont_m.onFailure;
 		}
 	};
 
@@ -106,8 +126,7 @@ void SELFCLASS::create(esferixis::daw::gui::HNoteSegmentMultigraph::Essence esse
 		e->onCreated.onFailure = esferixis::cps::mkCont(STM::onCreatedView_failure, self);
 		e->onCreated.onSuccess = esferixis::cps::mkCont(STM::onCreatedView_success, self);
 
-		e->stateFeedback.element = &(self->viewState_m.referencedElement_m);
-		e->stateFeedback.elementStateFeedback = &(self->viewState_m.elementStateFeedback_m);
+		e->stateFeedback.element = (void **) &(self->viewState_m.referencedElement_m);
 		e->stateFeedback.onElementLoad = esferixis::cps::mkCont(STM::onElementLoad, self);
 		e->stateFeedback.onElementUnload = esferixis::cps::mkCont(STM::onElementLoad, self);
 		e->stateFeedback.onUpdated = &(self->viewState_m.onUpdated);
@@ -119,6 +138,14 @@ void SELFCLASS::create(esferixis::daw::gui::HNoteSegmentMultigraph::Essence esse
 
 	self->backgroundColor_m = essence.backgroundColor;
 	self->grid_m = essence.grid;
+
+	{
+		esferixis_cps_unsafecont nextUnsafeCont;
+		nextUnsafeCont.exception = &(self->viewException_m);
+		nextUnsafeCont.onFailure = esferixis::cps::mkCont(STM::onClose_onFailure, self);
+		nextUnsafeCont.onSuccess = esferixis::cps::mkCont(STM::onClose_deleteSelf, self);
+		self->closeViewContext_m = esferixis::cps::MethodProcedureContext<void>(nullptr, nextUnsafeCont);
+	}
 
 	esferixis::Qt::Application::toGuiThread(esferixis::cps::mkCont(STM::onCreateWidget, self), nextCont);
 }
@@ -136,32 +163,9 @@ void SELFCLASS::setGrid(esferixis::daw::gui::Grid grid) {
 }
 
 void SELFCLASS::destroy(const esferixis_cps_unsafecont cont, esferixis_cps_cont *nextCont) {
-	struct STM {
-		static void deleteSelf(SELFCLASS *self, esferixis_cps_cont *nextCont) {
-			esferixis_cps_unsafecont cont = self->nextExternalCont_m;
-
-			self->widget_m->detachFromMultigraph();
-
-			delete self;
-
-			*nextCont = cont.onSuccess;
-		}
-
-		static void onFailure(SELFCLASS *self, esferixis_cps_cont *nextCont) {
-			*(self->nextExternalCont_m.exception) = esferixis::cps::createException("Cannot destroy multigraph because its view couldn't have been destroyed -> " + esferixis::cps::destructiveExceptMsgCopy(self->viewException_m));
-
-			*nextCont = self->nextExternalCont_m.onFailure;
-		}
-	};
-
 	this->nextExternalCont_m = cont;
 
-	esferixis_cps_unsafecont nextUnsafeCont;
-	nextUnsafeCont.exception = &(this->viewException_m);
-	nextUnsafeCont.onFailure = esferixis::cps::mkCont(STM::onFailure, this);
-	nextUnsafeCont.onSuccess = esferixis::cps::mkCont(STM::deleteSelf, this);
-
-	this->view_m->close(nextUnsafeCont, nextCont);
+	esferixis_daw_gui_modifiableview_close(this->view_m, this->closeViewContext_m.cContext(), nextCont);
 }
 
 SELFCLASS::LocalQWidget::LocalQWidget(esferixis::daw::gui::HNoteSegmentMultigraph *multigraph) {
@@ -169,6 +173,10 @@ SELFCLASS::LocalQWidget::LocalQWidget(esferixis::daw::gui::HNoteSegmentMultigrap
 }
 
 void SELFCLASS::LocalQWidget::paintEvent(QPaintEvent *event) {
+	const esferixis_rectf viewArea = esferixis_daw_gui_modifiableview_getViewArea(this->multigraph_m->view_m);
+	const esferixis_vec2f viewAreaSize = esferixis_rectf_size(viewArea);
+	const esferixis_vec2f sizeFactor = esferixis_vec2f_new((float)this->size().width() / (float)viewAreaSize.x, (float) this->size().height() / (float)viewAreaSize.y);
+
 	if (this->multigraph_m != nullptr) {
 		QPainter painter(this);
 		esferixis::Qt::PainterAux painterAux(painter);
@@ -178,7 +186,10 @@ void SELFCLASS::LocalQWidget::paintEvent(QPaintEvent *event) {
 
 		painter.save();
 
-		painterAux.render(this->multigraph_m->grid_m, event->rect());
+		painterAux.render(
+			this->multigraph_m->grid_m.translate( -esferixis::math::Vec2f(viewArea.topLeft) ).scale( esferixis::math::Vec2f(sizeFactor) ),
+			event->rect()
+		);
 
 		painter.restore();
 

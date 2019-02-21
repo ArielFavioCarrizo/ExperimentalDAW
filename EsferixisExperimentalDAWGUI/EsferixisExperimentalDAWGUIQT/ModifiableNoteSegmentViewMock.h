@@ -1,7 +1,7 @@
 /*
 BSD 3-Clause License
 
-Copyright (c) 2018, Ariel Favio Carrizo
+Copyright (c) 2019, Ariel Favio Carrizo
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -30,14 +30,19 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include "MultigraphCHNoteSegment.h"
+#pragma once
 
-#define SELFCLASS esferixis::daw::gui::MultigraphCHNoteSegment
+#include <esferixis/common/cps/procedure.h>
+#include <esferixis/common/data/linkedlist.h>
 
-SELFCLASS::MultigraphCHNoteSegment() {
+#include <esferixis/daw/gui/common/modifiableview.h>
 
-}
+EsferixisCommon_C_BEGIN
 
-SELFCLASS::~MultigraphCHNoteSegment() {
+/**
+ * @post Creates a view mock of note segments
+ */
+void esferixis_daw_gui_test_createNoteSegmentViewMock(esferixis_daw_gui_modifiableview_contextEssence *contextEssence, esferixis_cps_cont *nextCont);
 
-}
+EsferixisCommon_C_END
+

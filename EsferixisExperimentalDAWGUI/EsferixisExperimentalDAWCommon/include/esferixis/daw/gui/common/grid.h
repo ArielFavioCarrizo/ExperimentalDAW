@@ -1,7 +1,7 @@
 /*
 BSD 3-Clause License
 
-Copyright (c) 2018, Ariel Favio Carrizo
+Copyright (c) 2019, Ariel Favio Carrizo
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -45,6 +45,13 @@ typedef struct _esferixis_daw_gui_grid {
 
 inline esferixis_daw_gui_grid esferixis_daw_gui_grid_translate(esferixis_daw_gui_grid grid, esferixis_vec2f vec) {
 	grid.offset = esferixis_vec2f_add(grid.offset, vec);
+
+	return grid;
+}
+
+inline esferixis_daw_gui_grid esferixis_daw_gui_grid_scale(esferixis_daw_gui_grid grid, esferixis_vec2f vec) {
+	grid.offset = esferixis_vec2f_scale_2d(grid.offset, vec);
+	grid.size = esferixis_vec2f_scale_2d(grid.size, vec);
 
 	return grid;
 }
@@ -108,6 +115,13 @@ namespace esferixis {
 				 */
 				inline esferixis::daw::gui::Grid translate(esferixis::math::Vec2f vec) const {
 					return esferixis::daw::gui::Grid( esferixis_daw_gui_grid_translate(this->cGrid_m, vec.cVec2f()) );
+				}
+
+				/**
+				 * @post Scales the grid
+				 */
+				inline esferixis::daw::gui::Grid scale(esferixis::math::Vec2f vec) const {
+					return esferixis::daw::gui::Grid(esferixis_daw_gui_grid_scale(this->cGrid_m, vec.cVec2f()));
 				}
 
 			private:

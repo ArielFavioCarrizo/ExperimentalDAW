@@ -69,6 +69,12 @@
     <ClInclude Include="include\esferixis\common\graphics\rectf.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\esferixis\common\cps\procedure.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\esferixis\common\cps\object.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

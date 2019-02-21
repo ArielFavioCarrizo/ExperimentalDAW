@@ -31,69 +31,83 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #pragma once
-#include <qwidget.h>
 
 #include <esferixis/common/cps/cont.h>
 #include <esferixis/common/cps/exception.h>
 
-#include "esferixis/daw/gui/common/modifiableview.h"
-#include "esferixis/daw/gui/common/viewnotesegment.h"
+EsferixisCommon_C_BEGIN
 
-#include "HNoteSegmentMultigraph.h"
+typedef struct _esferixis_cps_methodContext {
+	void *objImplData;
+	void *param;
+} esferixis_cps_methodContext;
 
+EsferixisCommon_C_END
+
+#ifdef __cplusplus
 namespace esferixis {
-	namespace daw {
-		namespace gui {
-			namespace test {
-				class MultigraphCViewWindowMock
-				{
-				public:
-					struct Essence {
-						esferixis::daw::gui::test::MultigraphCViewWindowMock **windowMock;
+	namespace cps {
+		template<typename T>
+		class MethodProcedureContext final {
+		public:
+			/**
+			 * @post Creates a method procedure context with
+					 the specified parameter value and
+					 the specified return continuation
+			 */
+			inline MethodProcedureContext(T *param, esferixis_cps_unsafecont cont) {
+				this->c_methodContext_m.param = (void *)param;
 
-						esferixis_cps_unsafecont onCreated;
-						esferixis_cps_unsafecont onClosed;
-					};
-
-					/**
-					 * @pre The GUI must be locked
-					 * @post Creates a multigraphCView window mock
-					 */
-					static void create(Essence essence, esferixis_cps_cont *nextCont);
-
-				private:
-					class LocalWindow : public QWidget {
-					public:
-						LocalWindow(esferixis::daw::gui::test::MultigraphCViewWindowMock *parent);
-
-					protected:
-						void closeEvent(QCloseEvent *event) override;
-
-					private:
-						esferixis::daw::gui::test::MultigraphCViewWindowMock *parent_m;
-					};
-
-					/**
-					 * @post Creates a window of multigraphCView window mock
-					 */
-					MultigraphCViewWindowMock();
-
-					Essence essence_m;
-
-					esferixis_daw_gui_modifiableview_contextEssence viewContextEssence_m;
-					struct ViewState {
-						esferixis_daw_gui_viewNoteSegment_stateFeedback *elementStateFeedback;
-					};
-					ViewState viewState_m;
-
-					QWidget *window_m;
-					esferixis::daw::gui::HNoteSegmentMultigraph *multigraph_m;
-					esferixis_cps_exception multigraphException_m;
-
-					esferixis_cps_cont onNextExternalOp_m;
-					esferixis_cps_cont onClosed_m;
-				};
+				this->c_context_m.param = (void *)&this->c_methodContext_m;
+				this->c_context_m.cont = cont;
 			}
-		}
+
+			/**
+			 * @post Creates a empty method procedure context
+			 */
+			MethodProcedureContext() : MethodProcedureContext(nullptr, esferixis_cps_mkInvalidUnsafeCont()) {
+
+			}
+
+			/**
+			 * @post Sets the parameter pointer
+			 */
+			inline void setParameter(T *param) {
+				this->c_methodContext_m.param = (void *)param;
+			}
+
+			/**
+			 * @post Gets the parameter pointer
+			 */
+			inline T * getParameter() {
+				return (T *) this->c_methodContext_m.param;
+			}
+
+			/**
+			 * @post Sets the continuation
+			 */
+			inline void setCont(esferixis_cps_unsafecont cont) {
+				this->c_context_m.cont = cont;
+			}
+
+			/**
+			 * @post Gets the continuation
+			 */
+			inline esferixis_cps_unsafecont getCont() {
+				return this->c_context_m.cont;
+			}
+
+			/**
+			 * @post Gets the pointer to C context
+			 */
+			inline esferixis_cps_procedureContext * cContext() {
+				return &(this->c_context_m);
+			}
+
+		private:
+			esferixis_cps_methodContext c_methodContext_m;
+			esferixis_cps_procedureContext c_context_m;
+		};
 	}
 }
+#endif

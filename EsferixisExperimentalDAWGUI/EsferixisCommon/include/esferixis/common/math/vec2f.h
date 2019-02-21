@@ -1,7 +1,7 @@
 /*
 BSD 3-Clause License
 
-Copyright (c) 2018, Ariel Favio Carrizo
+Copyright (c) 2019, Ariel Favio Carrizo
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -50,6 +50,13 @@ inline esferixis_vec2f esferixis_vec2f_new(float x, float y) {
 	return result;
 }
 
+inline esferixis_vec2f esferixis_vec2f_negate(esferixis_vec2f a) {
+	a.x = -a.x;
+	a.y = -a.y;
+
+	return a;
+}
+
 inline esferixis_vec2f esferixis_vec2f_add(esferixis_vec2f a, esferixis_vec2f b) {
 	esferixis_vec2f result;
 
@@ -59,11 +66,29 @@ inline esferixis_vec2f esferixis_vec2f_add(esferixis_vec2f a, esferixis_vec2f b)
 	return result;
 }
 
+inline esferixis_vec2f esferixis_vec2f_sub(esferixis_vec2f a, esferixis_vec2f b) {
+	esferixis_vec2f result;
+
+	result.x = a.x - b.x;
+	result.y = a.y - b.y;
+
+	return result;
+}
+
 inline esferixis_vec2f esferixis_vec2f_scale(esferixis_vec2f a, float scalar) {
 	esferixis_vec2f result;
 
 	result.x = a.x * scalar;
 	result.y = a.y * scalar;
+
+	return result;
+}
+
+inline esferixis_vec2f esferixis_vec2f_scale_2d(esferixis_vec2f a, esferixis_vec2f b) {
+	esferixis_vec2f result;
+
+	result.x = a.x * b.x;
+	result.y = a.y * b.y;
 
 	return result;
 }
@@ -111,6 +136,13 @@ namespace esferixis {
 			}
 
 			/**
+			 * @post Scales the vector with the specified vector
+			 */
+			esferixis::math::Vec2f scale_2d(esferixis::math::Vec2f scale) {
+				return esferixis::math::Vec2f(esferixis_vec2f_scale_2d(this->c_vec_m, scale.c_vec_m));
+			}
+
+			/**
 			 * @post Returns the C vector 
 			 */
 			inline esferixis_vec2f cVec2f() const {
@@ -119,6 +151,14 @@ namespace esferixis {
 
 			esferixis::math::Vec2f operator+(const esferixis::math::Vec2f& other) const {
 				return esferixis::math::Vec2f( esferixis_vec2f_add(this->c_vec_m, other.c_vec_m) );
+			}
+
+			esferixis::math::Vec2f operator-(const esferixis::math::Vec2f& other) const {
+				return esferixis::math::Vec2f(esferixis_vec2f_sub(this->c_vec_m, other.c_vec_m));
+			}
+
+			esferixis::math::Vec2f operator-() const {
+				return esferixis::math::Vec2f(esferixis_vec2f_negate(this->c_vec_m));
 			}
 
 		private:

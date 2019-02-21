@@ -129,22 +129,17 @@
     <ClInclude Include="EsferixisQtMisc.h" />
     <ClInclude Include="EsferixisQtPainterAux.h" />
     <ClInclude Include="HNoteSegmentMultigraph.h" />
-    <ClInclude Include="MultigraphCHNoteSegment.h" />
-    <ClInclude Include="MultigraphCHNoteSegmentMock.h" />
-    <ClInclude Include="MultigraphCView.h" />
     <ClInclude Include="EsferixisQtApplication.h" />
-    <ClInclude Include="MultigraphCViewMock.h" />
+    <ClInclude Include="ModifiableNoteSegmentViewMock.h" />
     <ClInclude Include="MultigraphCViewMockTestWindow.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="EsferixisQtPainterAux.cpp" />
     <ClCompile Include="HNoteSegmentMultigraph.cpp" />
-    <ClCompile Include="MultigraphCHNoteSegment.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="EsferixisQtApplication.cpp" />
-    <ClCompile Include="MultigraphCHNoteSegmentMock.cpp" />
-    <ClCompile Include="MultigraphCViewMock.cpp" />
+    <ClCompile Include="ModifiableNoteSegmentViewMock.cpp" />
     <ClCompile Include="MultigraphCViewMockTestWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
