@@ -39,15 +39,36 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <Qt>
 #include <qpainter.h>
 #include <QPaintEvent>
+#include <qgridlayout.h>
 #include "esferixis/daw/gui/common/grid.h"
 #include "EsferixisQtPainterAux.h"
 
 #define SELFCLASS esferixis::daw::gui::HNoteSegmentMultigraph
 
+const int SELFCLASS::scrollBarMaxValue = 10000000;
+
 void SELFCLASS::create(esferixis::daw::gui::HNoteSegmentMultigraph::Essence essence, esferixis_cps_cont *nextCont) {
 	struct STM {
 		static void onCreateWidget(esferixis::daw::gui::HNoteSegmentMultigraph *self, esferixis_cps_cont *nextCont) {
-			self->widget_m = new SELFCLASS::LocalQWidget(self);
+			QGridLayout *layout = new QGridLayout();
+			layout->setHorizontalSpacing(0);
+			layout->setVerticalSpacing(0);
+
+			self->rootWidget_m = new QWidget();
+			self->rootWidget_m->setLayout(layout);
+
+			self->pictureWidget_m = new SELFCLASS::PictureWidget(self);
+			layout->addWidget(self->pictureWidget_m, 0, 0);
+
+			self->hScrollBar_m = new QScrollBar(::Qt::Horizontal);
+			self->hScrollBar_m->setMinimum(0);
+			self->hScrollBar_m->setMaximum(scrollBarMaxValue);
+			layout->addWidget(self->hScrollBar_m, 1, 0);
+
+			self->vScrollBar_m = new QScrollBar(::Qt::Vertical);
+			self->vScrollBar_m->setMinimum(0);
+			self->vScrollBar_m->setMaximum(scrollBarMaxValue);
+			layout->addWidget(self->vScrollBar_m, 0, 1);
 
 			*nextCont = self->essence_m.onWaitingViewCreation;
 		}
@@ -94,13 +115,60 @@ void SELFCLASS::create(esferixis::daw::gui::HNoteSegmentMultigraph::Essence esse
 		}
 
 		static void onNewElementsBoundingBox(esferixis::daw::gui::HNoteSegmentMultigraph *self, esferixis_cps_cont *nextCont) {
+			esferixis::Qt::Application::toGuiThread(esferixis::cps::mkCont(onUpdateScrollBars, self), nextCont);
+		}
+
+		static void onUpdateScrollBars(esferixis::daw::gui::HNoteSegmentMultigraph *self, esferixis_cps_cont *nextCont) {
+			const esferixis_rectf viewArea = esferixis_daw_gui_modifiableview_getViewArea(self->view_m);
+			const esferixis_vec2f viewAreaSize = esferixis_rectf_size(viewArea);
+
+			const esferixis_rectf elementsBoundingBox = esferixis_daw_gui_modifiableview_getElementsBoundingBox(self->view_m);
+			const esferixis_vec2f elementsBoundingBoxSize = esferixis_rectf_size(elementsBoundingBox);
+
+			if (elementsBoundingBoxSize.x > viewAreaSize.x) {
+				const double width = (double)elementsBoundingBoxSize.x - (double)viewAreaSize.x;
+
+				const double pageWidth = (double)SELFCLASS::scrollBarMaxValue * (double)viewAreaSize.x / width;
+				const int position = std::min(
+					SELFCLASS::scrollBarMaxValue,
+					std::max(0, (int) ( ( (double)viewArea.topLeft.x - (double)elementsBoundingBox.topLeft.x) / width ) )
+				);
+
+				self->hScrollBar_m->setSingleStep(pageWidth * 0.01);
+				self->hScrollBar_m->setPageStep(pageWidth);
+				self->hScrollBar_m->setValue(position);
+				self->hScrollBar_m->setEnabled(true);
+			}
+			else {
+				self->hScrollBar_m->setEnabled(false);
+			}
+
+			if (elementsBoundingBoxSize.y > viewAreaSize.y) {
+				const double height = (double)elementsBoundingBoxSize.y - (double)viewAreaSize.y;
+
+				const double pageHeight = (double)SELFCLASS::scrollBarMaxValue * (double)viewAreaSize.y / (double) height;
+				const int position = std::min(
+					SELFCLASS::scrollBarMaxValue,
+					std::max(0, (int)(((double)viewArea.topLeft.y - (double)elementsBoundingBox.topLeft.y) / height))
+				);
+
+				self->vScrollBar_m->setSingleStep(pageHeight * 0.01);
+				self->vScrollBar_m->setPageStep(pageHeight);
+				self->vScrollBar_m->setValue(position);
+				self->vScrollBar_m->setEnabled(true);
+			}
+			else {
+				self->vScrollBar_m->setEnabled(false);
+			}
+
+
 			*nextCont = self->viewState_m.onUpdated.onSuccess;
 		}
 
 		static void onClose_deleteSelf(SELFCLASS *self, esferixis_cps_cont *nextCont) {
 			esferixis_cps_unsafecont cont = self->nextExternalCont_m;
 
-			self->widget_m->detachFromMultigraph();
+			self->pictureWidget_m->detachFromMultigraph();
 
 			delete self;
 
@@ -129,10 +197,11 @@ void SELFCLASS::create(esferixis::daw::gui::HNoteSegmentMultigraph::Essence esse
 		e->stateFeedback.element = (void **) &(self->viewState_m.referencedElement_m);
 		e->stateFeedback.onElementLoad = esferixis::cps::mkCont(STM::onElementLoad, self);
 		e->stateFeedback.onElementUnload = esferixis::cps::mkCont(STM::onElementLoad, self);
+		e->stateFeedback.onNewElementsBoundingBox = esferixis::cps::mkCont(STM::onNewElementsBoundingBox, self);
 		e->stateFeedback.onUpdated = &(self->viewState_m.onUpdated);
 	}
 
-	self->widget_m = nullptr;
+	self->pictureWidget_m = nullptr;
 	self->view_m = nullptr;
 	self->essence_m = essence;
 
@@ -151,7 +220,7 @@ void SELFCLASS::create(esferixis::daw::gui::HNoteSegmentMultigraph::Essence esse
 }
 
 QWidget * SELFCLASS::widget() const {
-	return this->widget_m;
+	return this->rootWidget_m;
 }
 
 void SELFCLASS::setBackgroundColor(QColor color) {
@@ -168,11 +237,11 @@ void SELFCLASS::destroy(const esferixis_cps_unsafecont cont, esferixis_cps_cont 
 	esferixis_daw_gui_modifiableview_close(this->view_m, this->closeViewContext_m.cContext(), nextCont);
 }
 
-SELFCLASS::LocalQWidget::LocalQWidget(esferixis::daw::gui::HNoteSegmentMultigraph *multigraph) {
+SELFCLASS::PictureWidget::PictureWidget(esferixis::daw::gui::HNoteSegmentMultigraph *multigraph) {
 	this->multigraph_m = multigraph;
 }
 
-void SELFCLASS::LocalQWidget::paintEvent(QPaintEvent *event) {
+void SELFCLASS::PictureWidget::paintEvent(QPaintEvent *event) {
 	const esferixis_rectf viewArea = esferixis_daw_gui_modifiableview_getViewArea(this->multigraph_m->view_m);
 	const esferixis_vec2f viewAreaSize = esferixis_rectf_size(viewArea);
 	const esferixis_vec2f sizeFactor = esferixis_vec2f_new((float)this->size().width() / (float)viewAreaSize.x, (float) this->size().height() / (float)viewAreaSize.y);
@@ -197,6 +266,6 @@ void SELFCLASS::LocalQWidget::paintEvent(QPaintEvent *event) {
 	}
 }
 
-void SELFCLASS::LocalQWidget::detachFromMultigraph() {
+void SELFCLASS::PictureWidget::detachFromMultigraph() {
 	this->multigraph_m = nullptr;
 }

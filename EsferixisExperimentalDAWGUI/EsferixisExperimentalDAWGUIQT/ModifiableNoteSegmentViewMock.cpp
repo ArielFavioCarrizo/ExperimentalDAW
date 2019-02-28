@@ -49,6 +49,10 @@ namespace impl {
 			esferixis_rectf viewArea;
 			esferixis_rectf elementsBoundingBox;
 			esferixis::LinkedList<impl::NoteSegment::ImplData *> noteSegments;
+
+			esferixis_cps_unsafecont nextExternalCont;
+
+			esferixis_daw_gui_modifiableview_contextEssence context;
 		};
 
 		void createElement(esferixis_cps_procedureContext *context, esferixis_cps_cont *nextCont);
@@ -342,6 +346,20 @@ namespace impl {
 }
 
 void esferixis_daw_gui_test_createNoteSegmentViewMock(esferixis_daw_gui_modifiableview_contextEssence *context, esferixis_cps_cont *nextCont) {
+	struct STM{
+		static void onNewBoundingBox_failure(impl::View::ImplData *selfImpl, esferixis_cps_cont *nextCont) {
+			*(selfImpl->nextExternalCont.exception) = esferixis::cps::createException(
+				"Cannot create view mock because bounding box notification has failed -> " + esferixis::cps::destructiveExceptMsgCopy(*(selfImpl->nextExternalCont.exception))
+			);
+
+			*nextCont = selfImpl->nextExternalCont.onFailure;
+
+			*(selfImpl->context.instance) = nullptr;
+
+			delete selfImpl;
+		}
+	};
+
 	impl::View::ImplData *selfImpl = new impl::View::ImplData();
 
 	selfImpl->view.implData = (void *) selfImpl;
@@ -349,7 +367,25 @@ void esferixis_daw_gui_test_createNoteSegmentViewMock(esferixis_daw_gui_modifiab
 	selfImpl->stateFeedback = context->stateFeedback;
 	selfImpl->viewArea = context->viewArea;
 
-	*(context->instance) = &(selfImpl->view);
+	// Mock
+	selfImpl->elementsBoundingBox = esferixis_rectf_new(
+		esferixis_vec2f_new(0.0f, 0.0f),
+		esferixis_vec2f_new(2000.0f, 2000.0f)
+	);
 
-	*nextCont = context->onCreated.onSuccess;
+	selfImpl->nextExternalCont = context->onCreated;
+	selfImpl->context = *context;
+	*(selfImpl->context.instance) = &(selfImpl->view);
+
+	{
+		esferixis_cps_unsafecont cont;
+
+		cont.exception = context->onCreated.exception;
+		cont.onSuccess = selfImpl->nextExternalCont.onSuccess;
+		cont.onFailure = esferixis::cps::mkCont(STM::onNewBoundingBox_failure, selfImpl);
+
+		*(selfImpl->stateFeedback.onUpdated) = cont;
+	}
+
+	*nextCont = selfImpl->stateFeedback.onNewElementsBoundingBox;
 }

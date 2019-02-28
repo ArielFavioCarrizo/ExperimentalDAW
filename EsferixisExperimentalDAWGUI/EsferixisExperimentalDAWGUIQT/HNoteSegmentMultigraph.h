@@ -41,6 +41,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <esferixis/daw/gui/common/grid.h>
 
 #include <qwidget.h>
+#include <qscrollbar.h>
 
 namespace esferixis {
 	namespace daw {
@@ -90,9 +91,9 @@ namespace esferixis {
 				void destroy(esferixis_cps_unsafecont cont, esferixis_cps_cont *nextCont);
 
 			private:
-				class LocalQWidget final : public QWidget {
+				class PictureWidget final : public QWidget {
 				public:
-					LocalQWidget(esferixis::daw::gui::HNoteSegmentMultigraph *multigraph);
+					PictureWidget(esferixis::daw::gui::HNoteSegmentMultigraph *multigraph);
 
 					void paintEvent(QPaintEvent *event) override;
 
@@ -111,7 +112,12 @@ namespace esferixis {
 
 				Essence essence_m;
 
-				LocalQWidget *widget_m;
+				PictureWidget *pictureWidget_m;
+				QScrollBar *hScrollBar_m;
+				QScrollBar *vScrollBar_m;
+				QWidget *rootWidget_m;
+
+				static const int scrollBarMaxValue;
 
 				QColor backgroundColor_m;
 				esferixis::daw::gui::Grid grid_m;
